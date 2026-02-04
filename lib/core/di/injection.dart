@@ -8,6 +8,7 @@ import 'package:convo/features/home/presentation/bloc/singup_bloc/singup_bloc.da
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
+
 part "injection_auth.dart";
 part "injection_home.dart";
 part "injection_bloc.dart";

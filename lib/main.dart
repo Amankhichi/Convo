@@ -1,9 +1,9 @@
 import 'package:convo/core/di/injection.dart';
 import 'package:convo/features/home/presentation/pages/splash_page.dart';
 import 'package:device_preview/device_preview.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 Future<void> main()async {
   await Injection.initial();
 runApp( DevicePreview(

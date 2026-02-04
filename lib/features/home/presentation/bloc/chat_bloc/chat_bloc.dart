@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:convo/core/enum/status.dart';
 import 'package:convo/core/model/user_model.dart';
 import 'package:convo/features/home/domain_usecase/contact_usecase.dart';
-import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:permission_handler/permission_handler.dart';
 
