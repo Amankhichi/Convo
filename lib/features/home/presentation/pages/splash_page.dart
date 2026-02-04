@@ -22,12 +22,18 @@ void initState() {
     final id = prefs.getString("id");
     print("test id $id");
 
-    if (id.) {
-      Navigator.of(context).push(MaterialPageRoute(builder: (_) =>  HomePage()));
-    }else{
-      Navigator.of(context).push(MaterialPageRoute(builder: (_) =>  SingupPage()));
+if (id?.isNotEmpty == true) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (_) => HomePage()),
+  );
+} else {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (_) => SingupPage()),
+  );
+}
 
-    }
   });
 }
 
