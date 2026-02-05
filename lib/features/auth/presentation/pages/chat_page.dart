@@ -1,12 +1,15 @@
 import 'package:convo/core/model/user_model.dart';
+import 'package:convo/features/home/presentation/bloc/chat_bloc/chat_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:convo/core/const.dart/app_colors.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChatPage extends StatelessWidget {
   final UserModel users;
 
-  const ChatPage( {super.key, required this.users,});
+   ChatPage( {super.key, required this.users,});
 
+  TextEditingController mssg=TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,7 +43,7 @@ class ChatPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "userName",
+                  users.name,
                   style: TextStyle(
                     color: AppColors.textColor(context),
                     fontSize: 18,
@@ -48,7 +51,8 @@ class ChatPage extends StatelessWidget {
                   ),
                 ),
                 const Text(
-                  "online",
+                  // users.online.bool,
+                  "jg",
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.greenAccent,
@@ -98,6 +102,10 @@ class ChatPage extends StatelessWidget {
                 ),
                 Expanded(
                   child: TextField(
+                    onTap: () {
+                      context.read<ChatBloc>().add(ChatEvent.sendMssg(mssg: mssg.text,  receiverId: users.id.toString()));
+                    },
+                      controller: mssg,
                     decoration: InputDecoration(
                       hintText: "Type a message",
                       filled: true,

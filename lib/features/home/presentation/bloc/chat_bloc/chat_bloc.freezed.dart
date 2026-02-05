@@ -21,32 +21,38 @@ mixin _$ChatEvent {
   TResult when<TResult extends Object?>({
     required TResult Function() init,
     required TResult Function() contactsLoading,
+    required TResult Function(String mssg, String receiverId) sendMssg,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? init,
     TResult? Function()? contactsLoading,
+    TResult? Function(String mssg, String receiverId)? sendMssg,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? init,
     TResult Function()? contactsLoading,
+    TResult Function(String mssg, String receiverId)? sendMssg,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Init value) init,
     required TResult Function(_ContactsLoading value) contactsLoading,
+    required TResult Function(_SendMssg value) sendMssg,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Init value)? init,
     TResult? Function(_ContactsLoading value)? contactsLoading,
+    TResult? Function(_SendMssg value)? sendMssg,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Init value)? init,
     TResult Function(_ContactsLoading value)? contactsLoading,
+    TResult Function(_SendMssg value)? sendMssg,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
 }
@@ -114,6 +120,7 @@ class _$InitImpl implements _Init {
   TResult when<TResult extends Object?>({
     required TResult Function() init,
     required TResult Function() contactsLoading,
+    required TResult Function(String mssg, String receiverId) sendMssg,
   }) {
     return init();
   }
@@ -123,6 +130,7 @@ class _$InitImpl implements _Init {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? init,
     TResult? Function()? contactsLoading,
+    TResult? Function(String mssg, String receiverId)? sendMssg,
   }) {
     return init?.call();
   }
@@ -132,6 +140,7 @@ class _$InitImpl implements _Init {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? init,
     TResult Function()? contactsLoading,
+    TResult Function(String mssg, String receiverId)? sendMssg,
     required TResult orElse(),
   }) {
     if (init != null) {
@@ -145,6 +154,7 @@ class _$InitImpl implements _Init {
   TResult map<TResult extends Object?>({
     required TResult Function(_Init value) init,
     required TResult Function(_ContactsLoading value) contactsLoading,
+    required TResult Function(_SendMssg value) sendMssg,
   }) {
     return init(this);
   }
@@ -154,6 +164,7 @@ class _$InitImpl implements _Init {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Init value)? init,
     TResult? Function(_ContactsLoading value)? contactsLoading,
+    TResult? Function(_SendMssg value)? sendMssg,
   }) {
     return init?.call(this);
   }
@@ -163,6 +174,7 @@ class _$InitImpl implements _Init {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Init value)? init,
     TResult Function(_ContactsLoading value)? contactsLoading,
+    TResult Function(_SendMssg value)? sendMssg,
     required TResult orElse(),
   }) {
     if (init != null) {
@@ -221,6 +233,7 @@ class _$ContactsLoadingImpl implements _ContactsLoading {
   TResult when<TResult extends Object?>({
     required TResult Function() init,
     required TResult Function() contactsLoading,
+    required TResult Function(String mssg, String receiverId) sendMssg,
   }) {
     return contactsLoading();
   }
@@ -230,6 +243,7 @@ class _$ContactsLoadingImpl implements _ContactsLoading {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? init,
     TResult? Function()? contactsLoading,
+    TResult? Function(String mssg, String receiverId)? sendMssg,
   }) {
     return contactsLoading?.call();
   }
@@ -239,6 +253,7 @@ class _$ContactsLoadingImpl implements _ContactsLoading {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? init,
     TResult Function()? contactsLoading,
+    TResult Function(String mssg, String receiverId)? sendMssg,
     required TResult orElse(),
   }) {
     if (contactsLoading != null) {
@@ -252,6 +267,7 @@ class _$ContactsLoadingImpl implements _ContactsLoading {
   TResult map<TResult extends Object?>({
     required TResult Function(_Init value) init,
     required TResult Function(_ContactsLoading value) contactsLoading,
+    required TResult Function(_SendMssg value) sendMssg,
   }) {
     return contactsLoading(this);
   }
@@ -261,6 +277,7 @@ class _$ContactsLoadingImpl implements _ContactsLoading {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Init value)? init,
     TResult? Function(_ContactsLoading value)? contactsLoading,
+    TResult? Function(_SendMssg value)? sendMssg,
   }) {
     return contactsLoading?.call(this);
   }
@@ -270,6 +287,7 @@ class _$ContactsLoadingImpl implements _ContactsLoading {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Init value)? init,
     TResult Function(_ContactsLoading value)? contactsLoading,
+    TResult Function(_SendMssg value)? sendMssg,
     required TResult orElse(),
   }) {
     if (contactsLoading != null) {
@@ -281,6 +299,167 @@ class _$ContactsLoadingImpl implements _ContactsLoading {
 
 abstract class _ContactsLoading implements ChatEvent {
   const factory _ContactsLoading() = _$ContactsLoadingImpl;
+}
+
+/// @nodoc
+abstract class _$$SendMssgImplCopyWith<$Res> {
+  factory _$$SendMssgImplCopyWith(
+    _$SendMssgImpl value,
+    $Res Function(_$SendMssgImpl) then,
+  ) = __$$SendMssgImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String mssg, String receiverId});
+}
+
+/// @nodoc
+class __$$SendMssgImplCopyWithImpl<$Res>
+    extends _$ChatEventCopyWithImpl<$Res, _$SendMssgImpl>
+    implements _$$SendMssgImplCopyWith<$Res> {
+  __$$SendMssgImplCopyWithImpl(
+    _$SendMssgImpl _value,
+    $Res Function(_$SendMssgImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of ChatEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? mssg = null, Object? receiverId = null}) {
+    return _then(
+      _$SendMssgImpl(
+        mssg: null == mssg
+            ? _value.mssg
+            : mssg // ignore: cast_nullable_to_non_nullable
+                  as String,
+        receiverId: null == receiverId
+            ? _value.receiverId
+            : receiverId // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+
+class _$SendMssgImpl implements _SendMssg {
+  const _$SendMssgImpl({required this.mssg, required this.receiverId});
+
+  @override
+  final String mssg;
+  // required String sendID,
+  @override
+  final String receiverId;
+
+  @override
+  String toString() {
+    return 'ChatEvent.sendMssg(mssg: $mssg, receiverId: $receiverId)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SendMssgImpl &&
+            (identical(other.mssg, mssg) || other.mssg == mssg) &&
+            (identical(other.receiverId, receiverId) ||
+                other.receiverId == receiverId));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, mssg, receiverId);
+
+  /// Create a copy of ChatEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SendMssgImplCopyWith<_$SendMssgImpl> get copyWith =>
+      __$$SendMssgImplCopyWithImpl<_$SendMssgImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() init,
+    required TResult Function() contactsLoading,
+    required TResult Function(String mssg, String receiverId) sendMssg,
+  }) {
+    return sendMssg(mssg, receiverId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? init,
+    TResult? Function()? contactsLoading,
+    TResult? Function(String mssg, String receiverId)? sendMssg,
+  }) {
+    return sendMssg?.call(mssg, receiverId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? init,
+    TResult Function()? contactsLoading,
+    TResult Function(String mssg, String receiverId)? sendMssg,
+    required TResult orElse(),
+  }) {
+    if (sendMssg != null) {
+      return sendMssg(mssg, receiverId);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Init value) init,
+    required TResult Function(_ContactsLoading value) contactsLoading,
+    required TResult Function(_SendMssg value) sendMssg,
+  }) {
+    return sendMssg(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Init value)? init,
+    TResult? Function(_ContactsLoading value)? contactsLoading,
+    TResult? Function(_SendMssg value)? sendMssg,
+  }) {
+    return sendMssg?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Init value)? init,
+    TResult Function(_ContactsLoading value)? contactsLoading,
+    TResult Function(_SendMssg value)? sendMssg,
+    required TResult orElse(),
+  }) {
+    if (sendMssg != null) {
+      return sendMssg(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _SendMssg implements ChatEvent {
+  const factory _SendMssg({
+    required final String mssg,
+    required final String receiverId,
+  }) = _$SendMssgImpl;
+
+  String get mssg; // required String sendID,
+  String get receiverId;
+
+  /// Create a copy of ChatEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$SendMssgImplCopyWith<_$SendMssgImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc

@@ -96,7 +96,7 @@ body: state.contactStatus == Status.loading
                   ),
                   child: Row(
                     children: [
-                      Text(contactItem.id.toString(),style: TextStyle(color: Colors.white),),
+                      // Text(contactItem.id.toString(),style: TextStyle(color: Colors.white),),
                       /// 👤 Avatar
                       CircleAvatar(
                         radius: 24,
