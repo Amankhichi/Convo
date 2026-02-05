@@ -7,7 +7,7 @@ class GetUserUsecase {
   GetUserUsecase({required this.datasource});
 
   Future<UserModel?> call({required String phone}) async {
-    return datasource.isUser( phone: phone);
+    return datasource.isUser(phone: phone);
   }
 }
 

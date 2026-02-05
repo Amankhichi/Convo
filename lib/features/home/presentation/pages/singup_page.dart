@@ -148,8 +148,7 @@ SizedBox(
     ),
     onPressed: phoneController.text.length == 10
         ? () {
-            context.read<SingupBloc>().add(
-              SingupEvent.checkUser(),
+            context.read<SingupBloc>().add(SingupEvent.checkUser(),
             );
           }
         : null,

@@ -7,45 +7,42 @@ class ContactUsecase {
 
   ContactUsecase({required this.datasource});
 
-Future<List<UserModel>> call() async {
-  final apiContacts = await datasource.getUser();
-
-  final phoneContacts = await FlutterContacts.getContacts(
-    withProperties: true,
-  );
-
-  final Set<UserModel> apiNumbers = apiContacts.map((user) {
-    String number = user.phone;
-
+  String _normalizeNumber(String number) {
     number = number.replaceAll(RegExp(r'\D'), '');
-
     if (number.length > 10) {
       number = number.substring(number.length - 10);
     }
-
-    return user;
-  }).toSet();
-
-  final Set<String> phoneNumbers = phoneContacts.map((contact) {
-     String number = contact.phones.first.number;
-    number = number.replaceAll(RegExp(r'\D'), '');
-
-    if (number.length > 10) {
-      number = number.substring(number.length - 10);
-    }
-
     return number;
-  }).toSet();
-
-  final List<UserModel> matchedContacts = [];
-
-  for (final contact in apiNumbers) {
-    if (phoneNumbers.contains(contact.phone)) {
-      matchedContacts.add(contact);
-    }
   }
 
-  return matchedContacts;
+  Future<List<UserModel>> call() async {
+    final apiContacts = await datasource.getUser();
+
+    final phoneContacts = await FlutterContacts.getContacts(
+      withProperties: true,
+    );
+
+    final Map<String, UserModel> apiUsersByPhone = {
+      for (final user in apiContacts)
+        _normalizeNumber(user.phone): user,
+    };
+
+    final Set<String> phoneNumbers = phoneContacts
+        .where((c) => c.phones.isNotEmpty)
+        .map((c) => _normalizeNumber(c.phones.first.number))
+        .toSet();
+
+    final List<UserModel> matchedContacts = [];
+
+    for (final number in phoneNumbers) {
+      final user = apiUsersByPhone[number];
+      if (user != null) {
+        matchedContacts.add(user);
+      }
+    }
+
+    return matchedContacts;
+  }
 }
 
-}
+

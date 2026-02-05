@@ -195,14 +195,17 @@ class HomePage extends StatelessWidget {
         ),
       ),
 
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.green,
-        onPressed: () {
-          Navigator.of(
-            context,
-          ).push(MaterialPageRoute(builder: (context) => ContactsPage()));
-        },
-        child: Icon(Icons.add, color: Colors.white, size: 30),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(right: 20,bottom: 20),
+        child: FloatingActionButton(
+          backgroundColor: Colors.green,
+          onPressed: () {
+            Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (context) => ContactsPage()));
+          },
+          child: Icon(Icons.add, color: Colors.white, size: 30),
+        ),
       ),
     );
   }

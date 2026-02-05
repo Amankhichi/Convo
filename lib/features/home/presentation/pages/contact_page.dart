@@ -73,20 +73,9 @@ body: state.contactStatus == Status.loading
             itemCount: state.contacts.length,
             itemBuilder: (context, i) {
               final contactItem = state.contacts[i];
-              // print(contactItem);
-              // final name = contactItem.name.isNotEmpty
-              //     ? contactItem.name 
-              //     : "Unknown";
-
-              // final phone = contactItem.phone.isNotEmpty
-              //     ? contactItem.phone.first.number
-              //     : "No phone number";
-
               return GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => ChatPage(),
+                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => ChatPage(contactItem.id.toString()),
                     ),
                   );
                 },
@@ -115,7 +104,8 @@ body: state.contactStatus == Status.loading
                         radius: 24,
                         backgroundColor: AppColors.primary,
                         child: Text(
-                          contactItem.name[0].toUpperCase(),
+                          contactItem.lotti,
+                          // contactItem.name[0].toUpperCase(),
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 18,

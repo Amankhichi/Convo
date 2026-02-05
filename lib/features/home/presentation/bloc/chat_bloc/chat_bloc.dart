@@ -10,6 +10,7 @@ part 'chat_state.dart';
 part 'chat_bloc.freezed.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
+  // final UserModel;
   final ContactUsecase _contactUsecase;
 
   ChatBloc({
@@ -27,26 +28,30 @@ Future<void> __ContactsLoading(
 
   final permission = await Permission.contacts.request();
 
+  if (permission.isPermanentlyDenied) {
+    emit(state.copyWith(contactStatus: Status.error));
+    return;
+  }
+
   if (!permission.isGranted) {
-    emit(state.copyWith(contactStatus: Status.init));
+    emit(state.copyWith(contactStatus: Status.error));
     return;
   }
 
   try {
-    final matchedContacts =await _contactUsecase();
+    final matchedContacts = await _contactUsecase();
 
-    print('Contact loading Success: $matchedContacts');
     emit(
       state.copyWith(
-        // contacts: matchedContacts,
+        contacts: matchedContacts, // 👈 important
         contactStatus: Status.success,
       ),
     );
   } catch (e) {
-    print('Contact loading failed: $e');
     emit(state.copyWith(contactStatus: Status.error));
   }
 }
+
 
 
 }

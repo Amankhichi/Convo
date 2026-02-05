@@ -74,12 +74,14 @@ Future<UserModel?> isUser({required String phone}) async {
 
   if (res.statusCode == 200) {
     final List data = jsonDecode(res.body);
+    print("Get user success: ${res.body}");
+
 
     if (data.isEmpty) return null;
 
     return UserModel.fromJson(data.first);
   } else {
-    print("❌ Get user failed: ${res.body}");
+    print("Get user failed: ${res.body}");
     return null;
   }
 }

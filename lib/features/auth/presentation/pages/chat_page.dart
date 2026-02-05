@@ -4,7 +4,7 @@ import 'package:convo/core/const.dart/app_colors.dart';
 class ChatPage extends StatelessWidget {
   // final String userName;
 
-  const ChatPage({super.key, });
+  const ChatPage(String string, {super.key, });
 
   @override
   Widget build(BuildContext context) {
