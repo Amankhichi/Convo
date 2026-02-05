@@ -465,6 +465,7 @@ abstract class _SendMssg implements ChatEvent {
 /// @nodoc
 mixin _$ChatState {
   Status get contactStatus => throw _privateConstructorUsedError;
+  Status get mssgStatus => throw _privateConstructorUsedError;
   List<UserModel> get contacts => throw _privateConstructorUsedError;
 
   /// Create a copy of ChatState
@@ -479,7 +480,11 @@ abstract class $ChatStateCopyWith<$Res> {
   factory $ChatStateCopyWith(ChatState value, $Res Function(ChatState) then) =
       _$ChatStateCopyWithImpl<$Res, ChatState>;
   @useResult
-  $Res call({Status contactStatus, List<UserModel> contacts});
+  $Res call({
+    Status contactStatus,
+    Status mssgStatus,
+    List<UserModel> contacts,
+  });
 }
 
 /// @nodoc
@@ -496,12 +501,20 @@ class _$ChatStateCopyWithImpl<$Res, $Val extends ChatState>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? contactStatus = null, Object? contacts = null}) {
+  $Res call({
+    Object? contactStatus = null,
+    Object? mssgStatus = null,
+    Object? contacts = null,
+  }) {
     return _then(
       _value.copyWith(
             contactStatus: null == contactStatus
                 ? _value.contactStatus
                 : contactStatus // ignore: cast_nullable_to_non_nullable
+                      as Status,
+            mssgStatus: null == mssgStatus
+                ? _value.mssgStatus
+                : mssgStatus // ignore: cast_nullable_to_non_nullable
                       as Status,
             contacts: null == contacts
                 ? _value.contacts
@@ -522,7 +535,11 @@ abstract class _$$ChatStateImplCopyWith<$Res>
   ) = __$$ChatStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({Status contactStatus, List<UserModel> contacts});
+  $Res call({
+    Status contactStatus,
+    Status mssgStatus,
+    List<UserModel> contacts,
+  });
 }
 
 /// @nodoc
@@ -538,12 +555,20 @@ class __$$ChatStateImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? contactStatus = null, Object? contacts = null}) {
+  $Res call({
+    Object? contactStatus = null,
+    Object? mssgStatus = null,
+    Object? contacts = null,
+  }) {
     return _then(
       _$ChatStateImpl(
         contactStatus: null == contactStatus
             ? _value.contactStatus
             : contactStatus // ignore: cast_nullable_to_non_nullable
+                  as Status,
+        mssgStatus: null == mssgStatus
+            ? _value.mssgStatus
+            : mssgStatus // ignore: cast_nullable_to_non_nullable
                   as Status,
         contacts: null == contacts
             ? _value._contacts
@@ -559,12 +584,16 @@ class __$$ChatStateImplCopyWithImpl<$Res>
 class _$ChatStateImpl implements _ChatState {
   const _$ChatStateImpl({
     this.contactStatus = Status.init,
+    this.mssgStatus = Status.init,
     final List<UserModel> contacts = const [],
   }) : _contacts = contacts;
 
   @override
   @JsonKey()
   final Status contactStatus;
+  @override
+  @JsonKey()
+  final Status mssgStatus;
   final List<UserModel> _contacts;
   @override
   @JsonKey()
@@ -576,7 +605,7 @@ class _$ChatStateImpl implements _ChatState {
 
   @override
   String toString() {
-    return 'ChatState(contactStatus: $contactStatus, contacts: $contacts)';
+    return 'ChatState(contactStatus: $contactStatus, mssgStatus: $mssgStatus, contacts: $contacts)';
   }
 
   @override
@@ -586,6 +615,8 @@ class _$ChatStateImpl implements _ChatState {
             other is _$ChatStateImpl &&
             (identical(other.contactStatus, contactStatus) ||
                 other.contactStatus == contactStatus) &&
+            (identical(other.mssgStatus, mssgStatus) ||
+                other.mssgStatus == mssgStatus) &&
             const DeepCollectionEquality().equals(other._contacts, _contacts));
   }
 
@@ -593,6 +624,7 @@ class _$ChatStateImpl implements _ChatState {
   int get hashCode => Object.hash(
     runtimeType,
     contactStatus,
+    mssgStatus,
     const DeepCollectionEquality().hash(_contacts),
   );
 
@@ -608,11 +640,14 @@ class _$ChatStateImpl implements _ChatState {
 abstract class _ChatState implements ChatState {
   const factory _ChatState({
     final Status contactStatus,
+    final Status mssgStatus,
     final List<UserModel> contacts,
   }) = _$ChatStateImpl;
 
   @override
   Status get contactStatus;
+  @override
+  Status get mssgStatus;
   @override
   List<UserModel> get contacts;
 

@@ -1,6 +1,7 @@
 import 'package:convo/core/navigator_service.dart';
 import 'package:convo/features/home/datasource/user_datasource.dart';
 import 'package:convo/features/home/domain_usecase/add_user_usecase.dart';
+import 'package:convo/features/home/domain_usecase/chat_usecase.dart';
 import 'package:convo/features/home/domain_usecase/contact_usecase.dart';
 import 'package:convo/features/home/domain_usecase/get_user_usecase.dart';
 import 'package:convo/features/home/presentation/bloc/chat_bloc/chat_bloc.dart';

@@ -6,6 +6,7 @@ import 'package:convo/features/home/domain_usecase/chat_usecase.dart';
 import 'package:convo/features/home/domain_usecase/contact_usecase.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'chat_event.dart';
 part 'chat_state.dart';
@@ -55,6 +56,20 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
 
   Future<void> __SendMssg(_SendMssg event,Emitter<ChatState> emit,) async {
-  final result=await _chatUsecase(ChatPayload(senderId: event.sendID, receiverId: event.receiverId, mssg: event.mssg));
+      emit(state.copyWith(mssgStatus: Status.loading));
+
+    final prefs = await SharedPreferences.getInstance();
+    final id = prefs.getString("id");
+
+  final result=await _chatUsecase(ChatPayload(senderId: id.toString(), receiverId: event.receiverId, mssg: event.mssg));
+  if(result){
+      emit(state.copyWith(mssgStatus: Status.success));
+      emit(state.copyWith(mssgStatus: Status.init));
+    
+  }
+  else{
+      emit(state.copyWith(mssgStatus: Status.error));
+      emit(state.copyWith(mssgStatus: Status.init));
+  }
 }
 }
