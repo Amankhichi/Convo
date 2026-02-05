@@ -35,7 +35,7 @@ class UserDatasource {
   }
 
 
-Future<List<UserModel>> getUser() async {
+Future<List<UserModel>> getUsers() async {
   final url = Uri.parse(
     "https://ehmqgiqrfpvvznvsvfyu.supabase.co/rest/v1/user_list?select=*",
   );

@@ -1,10 +1,11 @@
+import 'package:convo/core/model/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:convo/core/const.dart/app_colors.dart';
 
 class ChatPage extends StatelessWidget {
-  // final String userName;
+  final UserModel users;
 
-  const ChatPage(String string, {super.key, });
+  const ChatPage( {super.key, required this.users,});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,8 @@ class ChatPage extends StatelessWidget {
             CircleAvatar(
               backgroundColor: AppColors.primary,
               child: Text(
-                "userName[0]".toUpperCase(),
+                 users.id.toString(),
+                // "userName[0]".toUpperCase(),
                 style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -72,26 +74,6 @@ class ChatPage extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.all(12),
               children: const [
-                // ChatBubble(
-                //   message: "Hey 👋",
-                //   isMe: false,
-                //   time: "10:20 AM",
-                // ),
-                // ChatBubble(
-                //   message: "Hi! How are you?",
-                //   isMe: true,
-                //   time: "10:21 AM",
-                // ),
-                // ChatBubble(
-                //   message: "I'm good, working on the app 😄",
-                //   isMe: false,
-                //   time: "10:22 AM",
-                // ),
-                // ChatBubble(
-                //   message: "Nice! UI looks clean 🔥",
-                //   isMe: true,
-                //   time: "10:23 AM",
-                // ),
               ],
             ),
           ),

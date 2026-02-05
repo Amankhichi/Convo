@@ -10,7 +10,7 @@ import 'package:convo/features/home/presentation/widgets/custom_text.dart';
 
 class ContactsPage extends StatefulWidget {
   const ContactsPage({super.key});
-
+// final UserModel user;
   @override
   State<ContactsPage> createState() => _ContactsPageState();
 }
@@ -75,9 +75,7 @@ body: state.contactStatus == Status.loading
               final contactItem = state.contacts[i];
               return GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => ChatPage(contactItem.id.toString()),
-                    ),
-                  );
+                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => ChatPage( users: state.contacts.first),),);
                 },
                 child: Container(
                   margin: const EdgeInsets.only(bottom: 10),

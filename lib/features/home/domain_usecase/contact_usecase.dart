@@ -16,7 +16,7 @@ class ContactUsecase {
   }
 
   Future<List<UserModel>> call() async {
-    final apiContacts = await datasource.getUser();
+    final apiContacts = await datasource.getUsers();
 
     final phoneContacts = await FlutterContacts.getContacts(
       withProperties: true,
