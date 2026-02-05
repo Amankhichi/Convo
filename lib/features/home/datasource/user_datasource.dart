@@ -89,7 +89,7 @@ Future<UserModel?> isUser({required String phone}) async {
 
   Future<bool> sendMssg(ChatPayload mssg) async {
     final url = Uri.parse(
-      "https://ehmqgiqrfpvvznvsvfyu.supabase.co/rest/v1/user_list",
+      "https://ehmqgiqrfpvvznvsvfyu.supabase.co/rest/v1/chats",
     );
 
     final response = await http.post(

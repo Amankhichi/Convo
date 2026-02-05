@@ -1,16 +1,13 @@
-import 'package:convo/core/enum/status.dart';
 import 'package:convo/features/auth/presentation/pages/chat_page.dart';
-import 'package:convo/features/home/presentation/bloc/chat_bloc/chat_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:convo/core/enum/status.dart';
 import 'package:convo/core/const.dart/app_colors.dart';
-import 'package:convo/features/home/presentation/widgets/custom_icon.dart';
-import 'package:convo/features/home/presentation/widgets/custom_text.dart';
+import 'package:convo/features/home/presentation/bloc/chat_bloc/chat_bloc.dart';
 
 class ContactsPage extends StatefulWidget {
   const ContactsPage({super.key});
-// final UserModel user;
+
   @override
   State<ContactsPage> createState() => _ContactsPageState();
 }
@@ -29,122 +26,60 @@ class _ContactsPageState extends State<ContactsPage> {
         return Scaffold(
           backgroundColor: AppColors.backgroundColor(context),
           appBar: AppBar(
-            toolbarHeight: 80,
             backgroundColor: AppColors.matchTheme(context),
-            leading: IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: CustomIcon(icon: Icons.arrow_back, size: 30),
-            ),
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CustomText(
-                  text: "Select Contact",
-                  size: 24,
-                  bold: FontWeight.bold,
+                const Text(
+                  "Select Contact",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-                const SizedBox(height: 4),
                 Text(
                   "${state.contacts.length} contacts",
-                  style: TextStyle(
-                    color: AppColors.textColor(context),
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: const TextStyle(fontSize: 14),
                 ),
               ],
             ),
           ),
 
-          /// BODY
-body: state.contactStatus == Status.loading
-    ? Center(
-        child: CircularProgressIndicator(color: AppColors.primary),
-      )
-    : state.contacts.isEmpty
-        ? const Center(
-            child: Text(
-              "No contacts found",
-              style: TextStyle(color: Colors.grey),
-            ),
-          )
-        : ListView.builder(
-            padding: const EdgeInsets.all(12),
-            itemCount: state.contacts.length,
-            itemBuilder: (context, i) {
-              final contactItem = state.contacts[i];
-              return GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => ChatPage( users: contactItem),),);
-                },
-                child: Container(
-                  margin: const EdgeInsets.only(bottom: 10),
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 14,
-                    horizontal: 16,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[900],
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 4,
-                        offset: Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      // Text(contactItem.id.toString(),style: TextStyle(color: Colors.white),),
-                      /// 👤 Avatar
-                      CircleAvatar(
-                        radius: 24,
-                        backgroundColor: AppColors.primary,
-                        child: Text(
-                          contactItem.lotti,
-                          // contactItem.name[0].toUpperCase(),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+          body: state.contactStatus == Status.loading
+              ? const Center(child: CircularProgressIndicator())
+              : state.contacts.isEmpty
+                  ? const Center(child: Text("No contacts found"))
+                  : ListView.builder(
+                      itemCount: state.contacts.length,
+                      padding: const EdgeInsets.all(12),
+                      itemBuilder: (context, i) {
+                        final user = state.contacts[i];
+
+                        return ListTile(
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 8,
+                            horizontal: 12,
                           ),
-                        ),
-                      ),
-
-                      const SizedBox(width: 16),
-
-                      /// 📇 Name & Phone
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              contactItem.name,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                              ),
+                          leading: CircleAvatar(
+                            backgroundColor: AppColors.primary,
+                            child: Text(
+                              user.name[0].toUpperCase(),
+                              style: const TextStyle(color: Colors.white),
                             ),
-                            const SizedBox(height: 4),
-                            Text(
-                              contactItem.phone,
-                              style: TextStyle(
-                                color: Colors.grey[400],
-                                fontSize: 14,
+                          ),
+                          title: Text(
+                            user.name,
+                            style: const TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                          subtitle: Text(user.phone),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => ChatPage(user: user),
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-
+                            );
+                          },
+                        );
+                      },
+                    ),
         );
       },
     );

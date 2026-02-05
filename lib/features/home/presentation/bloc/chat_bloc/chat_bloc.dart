@@ -1,4 +1,6 @@
 import 'package:bloc/bloc.dart';
+import 'package:convo/core/const.dart/snakbar_status.dart';
+import 'package:convo/core/di/injection.dart';
 import 'package:convo/core/enum/status.dart';
 import 'package:convo/core/model/user_model.dart';
 import 'package:convo/core/payload/chat_payload.dart';
@@ -55,21 +57,38 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
 
 
-  Future<void> __SendMssg(_SendMssg event,Emitter<ChatState> emit,) async {
-      emit(state.copyWith(mssgStatus: Status.loading));
+ Future<void> __SendMssg(
+  _SendMssg event,
+  Emitter<ChatState> emit,
+) async {
+  emit(state.copyWith(mssgStatus: Status.loading));
 
+  try {
     final prefs = await SharedPreferences.getInstance();
     final id = prefs.getString("id");
 
-  final result=await _chatUsecase(ChatPayload(senderId: id.toString(), receiverId: event.receiverId, mssg: event.mssg));
-  if(result){
-      emit(state.copyWith(mssgStatus: Status.success));
-      emit(state.copyWith(mssgStatus: Status.init));
-    
-  }
-  else{
+    if (id == null) {
       emit(state.copyWith(mssgStatus: Status.error));
-      emit(state.copyWith(mssgStatus: Status.init));
+      showError(Injection.currentContext, "Faild Fatch user id ");
+      return;
+    }
+
+    final result = await _chatUsecase(
+      ChatPayload(
+        senderId: id,
+        receiverId: event.receiverId,
+        mssg: event.mssg,
+      ),
+    );
+
+    emit(
+      state.copyWith(
+        mssgStatus: result ? Status.success : Status.error,
+      ),
+    );
+  } catch (e) {
+    emit(state.copyWith(mssgStatus: Status.error));
   }
 }
+
 }

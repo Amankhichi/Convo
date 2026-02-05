@@ -1,51 +1,78 @@
-import 'package:convo/core/const.dart/snakbar_status.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:convo/core/enum/status.dart';
 import 'package:convo/core/model/user_model.dart';
-import 'package:convo/features/home/presentation/bloc/chat_bloc/chat_bloc.dart';
-import 'package:flutter/material.dart';
 import 'package:convo/core/const.dart/app_colors.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:convo/core/const.dart/snakbar_status.dart';
+import 'package:convo/features/home/presentation/bloc/chat_bloc/chat_bloc.dart';
 
-class ChatPage extends StatelessWidget {
-  final UserModel users;
+class ChatPage extends StatefulWidget {
+  final UserModel user;
 
-  ChatPage({super.key, required this.users});
+  const ChatPage({super.key, required this.user});
 
-  TextEditingController mssg = TextEditingController();
+  @override
+  State<ChatPage> createState() => _ChatPageState();
+}
+
+class _ChatPageState extends State<ChatPage> {
+  late final TextEditingController _messageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _messageController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _messageController.dispose();
+    super.dispose();
+  }
+
+  void _sendMessage() {
+    final text = _messageController.text.trim();
+    if (text.isEmpty) return;
+
+    context.read<ChatBloc>().add(
+          ChatEvent.sendMssg(
+            mssg: text,
+            receiverId: widget.user.id.toString(),
+          ),
+        );
+
+    _messageController.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<ChatBloc, ChatState>(
       listener: (context, state) {
         if (state.mssgStatus == Status.success) {
-          showSuccess(context, "Mssg Sended");
-        } else {
-          showError(context, "Mssg faild");
+          showSuccess(context, "Message sent");
+        } else if (state.mssgStatus == Status.error) {
+          showError(context, "Message failed");
         }
       },
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor(context),
 
-        /// 🔝 APP BAR
+        /// APP BAR
         appBar: AppBar(
           backgroundColor: AppColors.matchTheme(context),
+          elevation: 1,
+          titleSpacing: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back, weight: 800),
-            color: AppColors.primary,
-            iconSize: 25,
+            icon: const Icon(Icons.arrow_back),
             onPressed: () => Navigator.pop(context),
           ),
-          titleSpacing: 0,
           title: Row(
             children: [
               CircleAvatar(
                 backgroundColor: AppColors.primary,
                 child: Text(
-                  users.id.toString(),
-                  // "userName[0]".toUpperCase(),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  widget.user.name[0].toUpperCase(),
+                  style: const TextStyle(color: Colors.white),
                 ),
               ),
               const SizedBox(width: 12),
@@ -53,48 +80,43 @@ class ChatPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    users.name,
-                    style: TextStyle(
-                      color: AppColors.textColor(context),
-                      fontSize: 18,
+                    widget.user.name,
+                    style: const TextStyle(
+                      fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   const Text(
-                    // users.online.bool,
-                    "jg",
-                    style: TextStyle(fontSize: 12, color: Colors.greenAccent),
+                    "Online",
+                    style: TextStyle(fontSize: 12, color: Colors.green),
                   ),
                 ],
               ),
             ],
           ),
-          actions: const [
-            Icon(Icons.call),
-            SizedBox(width: 16),
-            Icon(Icons.videocam),
-            SizedBox(width: 8),
-          ],
         ),
 
-        /// 💬 BODY
+        /// BODY
         body: Column(
           children: [
-            /// MESSAGES
+            /// MESSAGE LIST (placeholder for now)
             Expanded(
               child: ListView(
+                reverse: true,
                 padding: const EdgeInsets.all(12),
-                children: const [],
+                children: const [
+                  // You’ll add messages here later
+                ],
               ),
             ),
 
-            /// ✏️ MESSAGE INPUT
+            /// INPUT BAR
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: AppColors.matchTheme(context),
                 boxShadow: const [
-                  BoxShadow(color: Colors.black26, blurRadius: 6),
+                  BoxShadow(color: Colors.black12, blurRadius: 4),
                 ],
               ),
               child: Row(
@@ -105,17 +127,20 @@ class ChatPage extends StatelessWidget {
                   ),
                   Expanded(
                     child: TextField(
-                      controller: mssg,
+                      controller: _messageController,
+                      minLines: 1,
+                      maxLines: 4,
                       decoration: InputDecoration(
                         hintText: "Type a message",
                         filled: true,
-                        fillColor: Colors.grey[850],
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                        ),
+                        fillColor: Colors.grey[900],
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(24),
                           borderSide: BorderSide.none,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 10,
                         ),
                       ),
                     ),
@@ -125,18 +150,7 @@ class ChatPage extends StatelessWidget {
                     backgroundColor: AppColors.primary,
                     child: IconButton(
                       icon: const Icon(Icons.send, color: Colors.white),
-                      onPressed: () {
-                        if (mssg.text.trim().isEmpty) return;
-
-                        context.read<ChatBloc>().add(
-                          ChatEvent.sendMssg(
-                            mssg: mssg.text.trim(),
-                            receiverId: users.id.toString(),
-                          ),
-                        );
-
-                        mssg.clear();
-                      },
+                      onPressed: _sendMessage,
                     ),
                   ),
                 ],
