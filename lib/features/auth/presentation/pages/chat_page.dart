@@ -16,11 +16,11 @@ class ChatPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<ChatBloc, ChatState>(
       listener: (context, state) {
-if(state.mssgStatus==Status.success){
-  showSuccess(context, "Mssg Sended");
-}else{
-  showError(context, "Mssg faild");
-}
+        if (state.mssgStatus == Status.success) {
+          showSuccess(context, "Mssg Sended");
+        } else {
+          showError(context, "Mssg faild");
+        }
       },
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor(context),
@@ -105,14 +105,6 @@ if(state.mssgStatus==Status.success){
                   ),
                   Expanded(
                     child: TextField(
-                      onTap: () {
-                        context.read<ChatBloc>().add(
-                          ChatEvent.sendMssg(
-                            mssg: mssg.text,
-                            receiverId: users.id.toString(),
-                          ),
-                        );
-                      },
                       controller: mssg,
                       decoration: InputDecoration(
                         hintText: "Type a message",
@@ -133,7 +125,18 @@ if(state.mssgStatus==Status.success){
                     backgroundColor: AppColors.primary,
                     child: IconButton(
                       icon: const Icon(Icons.send, color: Colors.white),
-                      onPressed: () {},
+                      onPressed: () {
+                        if (mssg.text.trim().isEmpty) return;
+
+                        context.read<ChatBloc>().add(
+                          ChatEvent.sendMssg(
+                            mssg: mssg.text.trim(),
+                            receiverId: users.id.toString(),
+                          ),
+                        );
+
+                        mssg.clear();
+                      },
                     ),
                   ),
                 ],

@@ -75,7 +75,7 @@ body: state.contactStatus == Status.loading
               final contactItem = state.contacts[i];
               return GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => ChatPage( users: state.contacts.first),),);
+                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => ChatPage( users: contactItem),),);
                 },
                 child: Container(
                   margin: const EdgeInsets.only(bottom: 10),
