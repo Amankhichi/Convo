@@ -13,6 +13,6 @@ class AppColors {
   static Color opositeTheme(BuildContext context) => !Constant.isDark(context) ? Colors.black : Colors.white;
   static Color green = Colors.green;
   static Color primary = const Color(0xFF0088CC);
-  // static Color background = const Color(0xFFF4F7FA);
+  static Color background(BuildContext context) => Constant.isDark(context)?Color(0xFF0088CC):Colors.white;
 
 }

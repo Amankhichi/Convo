@@ -100,6 +100,29 @@ class _ChatPageState extends State<ChatPage> {
               Divider(thickness: 0.5, color: Colors.black26);
             },
           ),
+          actions: [
+            Row(
+              children: [
+                IconButton(
+                  onPressed: () {},
+                  icon: Icon(Icons.call, size: 25, color: Colors.white),
+                ),
+                IconButton(
+                  onPressed: () {},
+                  icon: Icon(
+                    Icons.videocam_rounded,
+                    size: 29,
+                    color: Colors.white,
+                    weight: 700,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {},
+                  icon: Icon(Icons.more_vert, size: 25, color: Colors.white),
+                ),
+              ],
+            ),
+          ],
         ),
 
         /// BODY
@@ -117,7 +140,7 @@ class _ChatPageState extends State<ChatPage> {
 
             /// INPUT BAR
             Container(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
               decoration: BoxDecoration(
                 color: AppColors.AppBarColor(context),
                 boxShadow: const [
@@ -127,18 +150,27 @@ class _ChatPageState extends State<ChatPage> {
               child: Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.emoji_emotions_outlined),
+                    color: AppColors.backgroundColor(context),
+                    icon: const Icon(Icons.emoji_emotions_outlined, size: 29),
                     onPressed: () {},
                   ),
                   Expanded(
                     child: TextField(
                       controller: _messageController,
+                      onChanged: (value) {
+                        setState(() {}); 
+                      },
                       minLines: 1,
                       maxLines: 4,
                       decoration: InputDecoration(
                         hintText: "Type a message",
+                        hintStyle: TextStyle(
+                          fontWeight: FontWeight.bold, 
+                          fontSize: 16,
+                          color: Colors.grey,
+                        ),
                         filled: true,
-                        fillColor: Colors.grey[900],
+                        fillColor: AppColors.backgroundColor(context),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(24),
                           borderSide: BorderSide.none,
@@ -152,11 +184,18 @@ class _ChatPageState extends State<ChatPage> {
                   ),
                   const SizedBox(width: 8),
                   CircleAvatar(
-                    backgroundColor: AppColors.textColor(context),
-                    child: IconButton(
-                      icon: const Icon(Icons.send, color: Colors.white),
-                      onPressed: _sendMessage,
-                    ),
+                    backgroundColor: Colors.transparent,
+                    child: _messageController.text.isNotEmpty
+                        ? IconButton(
+                            color: AppColors.background(context),
+                            icon: const Icon(Icons.send, size: 30),
+                            onPressed: _sendMessage,
+                          )
+                        : IconButton(
+                            color: AppColors.background(context),
+                            icon: const Icon(Icons.mic, size: 30),
+                            onPressed: _sendMessage,
+                          ),
                   ),
                 ],
               ),

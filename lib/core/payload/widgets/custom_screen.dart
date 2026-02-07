@@ -1,4 +1,3 @@
-import 'package:convo/core/const.dart/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomScreen extends StatelessWidget {
@@ -9,7 +8,7 @@ class CustomScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      // backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text(title),
         // if(action==true){
