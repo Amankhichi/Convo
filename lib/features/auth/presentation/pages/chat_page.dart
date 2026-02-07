@@ -5,6 +5,7 @@ import 'package:convo/core/model/user_model.dart';
 import 'package:convo/core/const.dart/app_colors.dart';
 import 'package:convo/core/const.dart/snakbar_status.dart';
 import 'package:convo/features/home/presentation/bloc/chat_bloc/chat_bloc.dart';
+import 'package:lottie/lottie.dart';
 
 class ChatPage extends StatefulWidget {
   final UserModel user;
@@ -17,7 +18,6 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   late final TextEditingController _messageController;
-
   @override
   void initState() {
     super.initState();
@@ -35,11 +35,8 @@ class _ChatPageState extends State<ChatPage> {
     if (text.isEmpty) return;
 
     context.read<ChatBloc>().add(
-          ChatEvent.sendMssg(
-            mssg: text,
-            receiverId: widget.user.id.toString(),
-          ),
-        );
+      ChatEvent.sendMssg(mssg: text, receiverId: widget.user.id.toString()),
+    );
 
     _messageController.clear();
   }
@@ -59,47 +56,55 @@ class _ChatPageState extends State<ChatPage> {
 
         /// APP BAR
         appBar: AppBar(
-          backgroundColor: AppColors.matchTheme(context),
+          toolbarHeight: 70,
+          backgroundColor: AppColors.AppBarColor(context),
           elevation: 1,
           titleSpacing: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
             onPressed: () => Navigator.pop(context),
+            icon: Icon(Icons.arrow_back, size: 30, color: Colors.white),
           ),
-          title: Row(
-            children: [
-              CircleAvatar(
-                backgroundColor: AppColors.primary,
-                child: Text(
-                  widget.user.name[0].toUpperCase(),
-                  style: const TextStyle(color: Colors.white),
+          title: ListTile(
+            contentPadding: const EdgeInsets.symmetric(),
+            leading: CircleAvatar(
+              radius: 25,
+              backgroundColor: AppColors.primary,
+              child: LottieBuilder.asset(widget.user.lotti),
+            ),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.user.name,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.user.name,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
+                Text(
+                  widget.user.online ? "online" : "offline",
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: widget.user.online ? Colors.green : Colors.grey,
                   ),
-                  const Text(
-                    "Online",
-                    style: TextStyle(fontSize: 12, color: Colors.green),
-                  ),
-                ],
-              ),
-            ],
+                ),
+              ],
+            ),
+
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => ChatPage(user: widget.user)),
+              );
+              Divider(thickness: 0.5, color: Colors.black26);
+            },
           ),
         ),
 
         /// BODY
         body: Column(
           children: [
-            /// MESSAGE LIST (placeholder for now)
             Expanded(
               child: ListView(
                 reverse: true,
@@ -114,7 +119,7 @@ class _ChatPageState extends State<ChatPage> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppColors.matchTheme(context),
+                color: AppColors.AppBarColor(context),
                 boxShadow: const [
                   BoxShadow(color: Colors.black12, blurRadius: 4),
                 ],
@@ -147,7 +152,7 @@ class _ChatPageState extends State<ChatPage> {
                   ),
                   const SizedBox(width: 8),
                   CircleAvatar(
-                    backgroundColor: AppColors.primary,
+                    backgroundColor: AppColors.textColor(context),
                     child: IconButton(
                       icon: const Icon(Icons.send, color: Colors.white),
                       onPressed: _sendMessage,

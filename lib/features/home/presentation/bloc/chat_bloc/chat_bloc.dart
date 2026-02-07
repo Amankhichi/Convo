@@ -19,11 +19,12 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final ContactUsecase _contactUsecase;
   final ChatUsecase _chatUsecase;
 
-  ChatBloc({required ContactUsecase contactusecase,
-  required ChatUsecase chatusecase,})
-    : _contactUsecase = contactusecase,
-    _chatUsecase = chatusecase,
-      super(const ChatState()) {
+  ChatBloc({
+    required ContactUsecase contactusecase,
+    required ChatUsecase chatusecase,
+  }) : _contactUsecase = contactusecase,
+       _chatUsecase = chatusecase,
+       super(const ChatState()) {
     on<_Init>(__Init);
     on<_SendMssg>(__SendMssg);
   }
@@ -56,39 +57,30 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     }
   }
 
+  Future<void> __SendMssg(_SendMssg event, Emitter<ChatState> emit) async {
+    emit(state.copyWith(mssgStatus: Status.loading));
 
- Future<void> __SendMssg(
-  _SendMssg event,
-  Emitter<ChatState> emit,
-) async {
-  emit(state.copyWith(mssgStatus: Status.loading));
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final id = prefs.getString("id");
 
-  try {
-    final prefs = await SharedPreferences.getInstance();
-    final id = prefs.getString("id");
+      if (id == null) {
+        emit(state.copyWith(mssgStatus: Status.error));
+        showError(Injection.currentContext, "Faild Fatch user id ");
+        return;
+      }
 
-    if (id == null) {
+      final result = await _chatUsecase(
+        ChatPayload(
+          senderId: id,
+          receiverId: event.receiverId,
+          mssg: event.mssg,
+        ),
+      );
+
+      emit(state.copyWith(mssgStatus: result ? Status.success : Status.error));
+    } catch (e) {
       emit(state.copyWith(mssgStatus: Status.error));
-      showError(Injection.currentContext, "Faild Fatch user id ");
-      return;
     }
-
-    final result = await _chatUsecase(
-      ChatPayload(
-        senderId: id,
-        receiverId: event.receiverId,
-        mssg: event.mssg,
-      ),
-    );
-
-    emit(
-      state.copyWith(
-        mssgStatus: result ? Status.success : Status.error,
-      ),
-    );
-  } catch (e) {
-    emit(state.copyWith(mssgStatus: Status.error));
   }
-}
-
 }
