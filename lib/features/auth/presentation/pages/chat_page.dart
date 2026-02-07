@@ -7,6 +7,7 @@ import 'package:convo/core/const.dart/snakbar_status.dart';
 import 'package:convo/features/home/presentation/bloc/chat_bloc/chat_bloc.dart';
 import 'package:lottie/lottie.dart';
 
+
 class ChatPage extends StatefulWidget {
   final UserModel user;
 
@@ -21,7 +22,6 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
-    _messageController = TextEditingController();
   }
 
   @override
@@ -54,7 +54,6 @@ class _ChatPageState extends State<ChatPage> {
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor(context),
 
-        /// APP BAR
         appBar: AppBar(
           toolbarHeight: 70,
           backgroundColor: AppColors.AppBarColor(context),
@@ -125,7 +124,6 @@ class _ChatPageState extends State<ChatPage> {
           ],
         ),
 
-        /// BODY
         body: Column(
           children: [
             Expanded(
@@ -133,12 +131,11 @@ class _ChatPageState extends State<ChatPage> {
                 reverse: true,
                 padding: const EdgeInsets.all(12),
                 children: const [
-                  // You’ll add messages here later
+
                 ],
               ),
             ),
 
-            /// INPUT BAR
             Container(
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
               decoration: BoxDecoration(
@@ -194,7 +191,7 @@ class _ChatPageState extends State<ChatPage> {
                         : IconButton(
                             color: AppColors.background(context),
                             icon: const Icon(Icons.mic, size: 30),
-                            onPressed: _sendMessage,
+                            onPressed: (){}
                           ),
                   ),
                 ],
