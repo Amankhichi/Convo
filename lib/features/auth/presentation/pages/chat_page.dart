@@ -1,5 +1,4 @@
 import 'package:convo/core/const.dart/constant.dart';
-import 'package:convo/core/model/chat_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:convo/core/enum/status.dart';
@@ -154,13 +153,31 @@ class _ChatPageState extends State<ChatPage> {
           child: Column(
             children: [
               Expanded(
-                child: ListView(
-                  reverse: true,
-                  padding: const EdgeInsets.all(12),
-                  children: const [
-                    // You’ll add messages here later
-                  ],
+                // child: ListView(
+                //   reverse: true,
+                //   padding: const EdgeInsets.all(12),
+                //   children: const [
+                //     // You’ll add messages here later
+                //   ],
+                // ),
+               child: BlocBuilder<ChatBloc, ChatState>(
+                  builder: (context, state) {
+                    return ListView.builder(
+                  itemCount: state.messages.length,
+                  itemBuilder: (context, index) {
+                    final msg = state.messages[index];
+                
+                    bool isMe = msg.senderId == preferenceId; 
+                
+                    return chatBubble(
+                      message: msg.message,
+                      isMe: isMe,
+                    );
+                  },
+                );
+                  },
                 ),
+
               ),
 
               /// INPUT BAR

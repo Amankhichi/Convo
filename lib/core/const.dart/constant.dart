@@ -16,9 +16,9 @@ return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV
 }
 final apikey=getapikey();
 
-Future<String> get SharedPreference() async {
+Future<String> Share() async {
   final prefs = await SharedPreferences.getInstance();
   final id = prefs.getString("id");
   return id.toString();
 }
-final preferenceId =SharedPreference;
+final preferenceId =Share;
