@@ -1,4 +1,5 @@
 import 'package:convo/core/const.dart/constant.dart';
+import 'package:convo/core/model/chat_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:convo/core/enum/status.dart';
@@ -19,6 +20,8 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   late final TextEditingController _messageController;
+
+
   @override
   void initState() {
     super.initState();
@@ -26,30 +29,31 @@ class _ChatPageState extends State<ChatPage> {
     context.read<ChatBloc>().add(ChatEvent.getMssg(receiverId: widget.user.id.toString()));
   }
 
+  void _sendMessage() {
+    final text = _messageController.text.trim();
+    if (text.isEmpty) return;
+    context.read<ChatBloc>().add(ChatEvent.sendMssg(mssg: text, receiverId: widget.user.id.toString()),);
+    _messageController.clear();
+  }
+  // Future<List> Chatbubble(ChatModel mssg){
+  //   return mssg.senderId.
+  // }
+
+
   @override
   void dispose() {
     _messageController.dispose();
     super.dispose();
   }
 
-  void _sendMessage() {
-    final text = _messageController.text.trim();
-    if (text.isEmpty) return;
-
-    context.read<ChatBloc>().add(
-      ChatEvent.sendMssg(mssg: text, receiverId: widget.user.id.toString()),
-    );
-
-    _messageController.clear();
-  }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<ChatBloc, ChatState>(
       listener: (context, state) {
-        if (state.mssgStatus == Status.success) {
+        if (state.SendMssgStatus == Status.success) {
           showSuccess(context, "Message sent");
-        } else if (state.mssgStatus == Status.error) {
+        } else if (state.SendMssgStatus == Status.error) {
           showError(context, "Message failed");
         }
       },
@@ -234,4 +238,38 @@ class _ChatPageState extends State<ChatPage> {
       ),
     );
   }
+
+
+
+
+
+
+
+
+
+
+  Widget chatBubble({
+  required String message,
+  required bool isMe,
+}) {
+  return Align(
+    alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+    child: Container(
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.all(12),
+      constraints: const BoxConstraints(maxWidth: 250),
+      decoration: BoxDecoration(
+        color: isMe ? Colors.blue : Colors.grey[300],
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        message,
+        style: TextStyle(
+          color: isMe ? Colors.white : Colors.black,
+        ),
+      ),
+    ),
+  );
+}
+
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 bool isDeviceThemeDark(BuildContext context) {
   Brightness brightness = MediaQuery.of(context).platformBrightness;
@@ -14,3 +15,10 @@ String getapikey(){
 return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVobXFnaXFyZnB2dnpudnN2Znl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NTg5MTcsImV4cCI6MjA3ODMzNDkxN30.G7H75FoSN3q-le2CgJzJJgMrQBq_TDSFzCWonJqq4ws";
 }
 final apikey=getapikey();
+
+Future<String> get SharedPreference() async {
+  final prefs = await SharedPreferences.getInstance();
+  final id = prefs.getString("id");
+  return id.toString();
+}
+final preferenceId =SharedPreference;
