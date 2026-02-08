@@ -7,6 +7,10 @@ class ChatEvent with _$ChatEvent {
     required String mssg,
     required String receiverId,
     }) = _SendMssg;
+  const factory ChatEvent.getMssg({
+    required String receiverId,
+  }) = _GetMssg;
+
 
 
 }

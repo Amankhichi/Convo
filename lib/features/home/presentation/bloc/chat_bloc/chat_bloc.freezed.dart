@@ -21,32 +21,38 @@ mixin _$ChatEvent {
   TResult when<TResult extends Object?>({
     required TResult Function() init,
     required TResult Function(String mssg, String receiverId) sendMssg,
+    required TResult Function(String receiverId) getMssg,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? init,
     TResult? Function(String mssg, String receiverId)? sendMssg,
+    TResult? Function(String receiverId)? getMssg,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? init,
     TResult Function(String mssg, String receiverId)? sendMssg,
+    TResult Function(String receiverId)? getMssg,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Init value) init,
     required TResult Function(_SendMssg value) sendMssg,
+    required TResult Function(_GetMssg value) getMssg,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Init value)? init,
     TResult? Function(_SendMssg value)? sendMssg,
+    TResult? Function(_GetMssg value)? getMssg,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Init value)? init,
     TResult Function(_SendMssg value)? sendMssg,
+    TResult Function(_GetMssg value)? getMssg,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
 }
@@ -114,6 +120,7 @@ class _$InitImpl implements _Init {
   TResult when<TResult extends Object?>({
     required TResult Function() init,
     required TResult Function(String mssg, String receiverId) sendMssg,
+    required TResult Function(String receiverId) getMssg,
   }) {
     return init();
   }
@@ -123,6 +130,7 @@ class _$InitImpl implements _Init {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? init,
     TResult? Function(String mssg, String receiverId)? sendMssg,
+    TResult? Function(String receiverId)? getMssg,
   }) {
     return init?.call();
   }
@@ -132,6 +140,7 @@ class _$InitImpl implements _Init {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? init,
     TResult Function(String mssg, String receiverId)? sendMssg,
+    TResult Function(String receiverId)? getMssg,
     required TResult orElse(),
   }) {
     if (init != null) {
@@ -145,6 +154,7 @@ class _$InitImpl implements _Init {
   TResult map<TResult extends Object?>({
     required TResult Function(_Init value) init,
     required TResult Function(_SendMssg value) sendMssg,
+    required TResult Function(_GetMssg value) getMssg,
   }) {
     return init(this);
   }
@@ -154,6 +164,7 @@ class _$InitImpl implements _Init {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Init value)? init,
     TResult? Function(_SendMssg value)? sendMssg,
+    TResult? Function(_GetMssg value)? getMssg,
   }) {
     return init?.call(this);
   }
@@ -163,6 +174,7 @@ class _$InitImpl implements _Init {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Init value)? init,
     TResult Function(_SendMssg value)? sendMssg,
+    TResult Function(_GetMssg value)? getMssg,
     required TResult orElse(),
   }) {
     if (init != null) {
@@ -222,7 +234,6 @@ class _$SendMssgImpl implements _SendMssg {
 
   @override
   final String mssg;
-  // required String sendID,
   @override
   final String receiverId;
 
@@ -257,6 +268,7 @@ class _$SendMssgImpl implements _SendMssg {
   TResult when<TResult extends Object?>({
     required TResult Function() init,
     required TResult Function(String mssg, String receiverId) sendMssg,
+    required TResult Function(String receiverId) getMssg,
   }) {
     return sendMssg(mssg, receiverId);
   }
@@ -266,6 +278,7 @@ class _$SendMssgImpl implements _SendMssg {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? init,
     TResult? Function(String mssg, String receiverId)? sendMssg,
+    TResult? Function(String receiverId)? getMssg,
   }) {
     return sendMssg?.call(mssg, receiverId);
   }
@@ -275,6 +288,7 @@ class _$SendMssgImpl implements _SendMssg {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? init,
     TResult Function(String mssg, String receiverId)? sendMssg,
+    TResult Function(String receiverId)? getMssg,
     required TResult orElse(),
   }) {
     if (sendMssg != null) {
@@ -288,6 +302,7 @@ class _$SendMssgImpl implements _SendMssg {
   TResult map<TResult extends Object?>({
     required TResult Function(_Init value) init,
     required TResult Function(_SendMssg value) sendMssg,
+    required TResult Function(_GetMssg value) getMssg,
   }) {
     return sendMssg(this);
   }
@@ -297,6 +312,7 @@ class _$SendMssgImpl implements _SendMssg {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Init value)? init,
     TResult? Function(_SendMssg value)? sendMssg,
+    TResult? Function(_GetMssg value)? getMssg,
   }) {
     return sendMssg?.call(this);
   }
@@ -306,6 +322,7 @@ class _$SendMssgImpl implements _SendMssg {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Init value)? init,
     TResult Function(_SendMssg value)? sendMssg,
+    TResult Function(_GetMssg value)? getMssg,
     required TResult orElse(),
   }) {
     if (sendMssg != null) {
@@ -321,7 +338,7 @@ abstract class _SendMssg implements ChatEvent {
     required final String receiverId,
   }) = _$SendMssgImpl;
 
-  String get mssg; // required String sendID,
+  String get mssg;
   String get receiverId;
 
   /// Create a copy of ChatEvent
@@ -332,10 +349,161 @@ abstract class _SendMssg implements ChatEvent {
 }
 
 /// @nodoc
+abstract class _$$GetMssgImplCopyWith<$Res> {
+  factory _$$GetMssgImplCopyWith(
+    _$GetMssgImpl value,
+    $Res Function(_$GetMssgImpl) then,
+  ) = __$$GetMssgImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String receiverId});
+}
+
+/// @nodoc
+class __$$GetMssgImplCopyWithImpl<$Res>
+    extends _$ChatEventCopyWithImpl<$Res, _$GetMssgImpl>
+    implements _$$GetMssgImplCopyWith<$Res> {
+  __$$GetMssgImplCopyWithImpl(
+    _$GetMssgImpl _value,
+    $Res Function(_$GetMssgImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of ChatEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? receiverId = null}) {
+    return _then(
+      _$GetMssgImpl(
+        receiverId: null == receiverId
+            ? _value.receiverId
+            : receiverId // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+
+class _$GetMssgImpl implements _GetMssg {
+  const _$GetMssgImpl({required this.receiverId});
+
+  @override
+  final String receiverId;
+
+  @override
+  String toString() {
+    return 'ChatEvent.getMssg(receiverId: $receiverId)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$GetMssgImpl &&
+            (identical(other.receiverId, receiverId) ||
+                other.receiverId == receiverId));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, receiverId);
+
+  /// Create a copy of ChatEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$GetMssgImplCopyWith<_$GetMssgImpl> get copyWith =>
+      __$$GetMssgImplCopyWithImpl<_$GetMssgImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() init,
+    required TResult Function(String mssg, String receiverId) sendMssg,
+    required TResult Function(String receiverId) getMssg,
+  }) {
+    return getMssg(receiverId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? init,
+    TResult? Function(String mssg, String receiverId)? sendMssg,
+    TResult? Function(String receiverId)? getMssg,
+  }) {
+    return getMssg?.call(receiverId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? init,
+    TResult Function(String mssg, String receiverId)? sendMssg,
+    TResult Function(String receiverId)? getMssg,
+    required TResult orElse(),
+  }) {
+    if (getMssg != null) {
+      return getMssg(receiverId);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Init value) init,
+    required TResult Function(_SendMssg value) sendMssg,
+    required TResult Function(_GetMssg value) getMssg,
+  }) {
+    return getMssg(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Init value)? init,
+    TResult? Function(_SendMssg value)? sendMssg,
+    TResult? Function(_GetMssg value)? getMssg,
+  }) {
+    return getMssg?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Init value)? init,
+    TResult Function(_SendMssg value)? sendMssg,
+    TResult Function(_GetMssg value)? getMssg,
+    required TResult orElse(),
+  }) {
+    if (getMssg != null) {
+      return getMssg(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _GetMssg implements ChatEvent {
+  const factory _GetMssg({required final String receiverId}) = _$GetMssgImpl;
+
+  String get receiverId;
+
+  /// Create a copy of ChatEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$GetMssgImplCopyWith<_$GetMssgImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
 mixin _$ChatState {
-  Status get contactStatus => throw _privateConstructorUsedError;
-  Status get mssgStatus => throw _privateConstructorUsedError;
   List<UserModel> get contacts => throw _privateConstructorUsedError;
+  Status get contactStatus => throw _privateConstructorUsedError;
+  Status get SendMssgStatus => throw _privateConstructorUsedError;
+  Status get GetMssgStatus => throw _privateConstructorUsedError;
+  List<ChatModel> get messages => throw _privateConstructorUsedError;
 
   /// Create a copy of ChatState
   /// with the given fields replaced by the non-null parameter values.
@@ -350,9 +518,11 @@ abstract class $ChatStateCopyWith<$Res> {
       _$ChatStateCopyWithImpl<$Res, ChatState>;
   @useResult
   $Res call({
-    Status contactStatus,
-    Status mssgStatus,
     List<UserModel> contacts,
+    Status contactStatus,
+    Status SendMssgStatus,
+    Status GetMssgStatus,
+    List<ChatModel> messages,
   });
 }
 
@@ -371,24 +541,34 @@ class _$ChatStateCopyWithImpl<$Res, $Val extends ChatState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? contactStatus = null,
-    Object? mssgStatus = null,
     Object? contacts = null,
+    Object? contactStatus = null,
+    Object? SendMssgStatus = null,
+    Object? GetMssgStatus = null,
+    Object? messages = null,
   }) {
     return _then(
       _value.copyWith(
-            contactStatus: null == contactStatus
-                ? _value.contactStatus
-                : contactStatus // ignore: cast_nullable_to_non_nullable
-                      as Status,
-            mssgStatus: null == mssgStatus
-                ? _value.mssgStatus
-                : mssgStatus // ignore: cast_nullable_to_non_nullable
-                      as Status,
             contacts: null == contacts
                 ? _value.contacts
                 : contacts // ignore: cast_nullable_to_non_nullable
                       as List<UserModel>,
+            contactStatus: null == contactStatus
+                ? _value.contactStatus
+                : contactStatus // ignore: cast_nullable_to_non_nullable
+                      as Status,
+            SendMssgStatus: null == SendMssgStatus
+                ? _value.SendMssgStatus
+                : SendMssgStatus // ignore: cast_nullable_to_non_nullable
+                      as Status,
+            GetMssgStatus: null == GetMssgStatus
+                ? _value.GetMssgStatus
+                : GetMssgStatus // ignore: cast_nullable_to_non_nullable
+                      as Status,
+            messages: null == messages
+                ? _value.messages
+                : messages // ignore: cast_nullable_to_non_nullable
+                      as List<ChatModel>,
           )
           as $Val,
     );
@@ -405,9 +585,11 @@ abstract class _$$ChatStateImplCopyWith<$Res>
   @override
   @useResult
   $Res call({
-    Status contactStatus,
-    Status mssgStatus,
     List<UserModel> contacts,
+    Status contactStatus,
+    Status SendMssgStatus,
+    Status GetMssgStatus,
+    List<ChatModel> messages,
   });
 }
 
@@ -425,24 +607,34 @@ class __$$ChatStateImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? contactStatus = null,
-    Object? mssgStatus = null,
     Object? contacts = null,
+    Object? contactStatus = null,
+    Object? SendMssgStatus = null,
+    Object? GetMssgStatus = null,
+    Object? messages = null,
   }) {
     return _then(
       _$ChatStateImpl(
-        contactStatus: null == contactStatus
-            ? _value.contactStatus
-            : contactStatus // ignore: cast_nullable_to_non_nullable
-                  as Status,
-        mssgStatus: null == mssgStatus
-            ? _value.mssgStatus
-            : mssgStatus // ignore: cast_nullable_to_non_nullable
-                  as Status,
         contacts: null == contacts
             ? _value._contacts
             : contacts // ignore: cast_nullable_to_non_nullable
                   as List<UserModel>,
+        contactStatus: null == contactStatus
+            ? _value.contactStatus
+            : contactStatus // ignore: cast_nullable_to_non_nullable
+                  as Status,
+        SendMssgStatus: null == SendMssgStatus
+            ? _value.SendMssgStatus
+            : SendMssgStatus // ignore: cast_nullable_to_non_nullable
+                  as Status,
+        GetMssgStatus: null == GetMssgStatus
+            ? _value.GetMssgStatus
+            : GetMssgStatus // ignore: cast_nullable_to_non_nullable
+                  as Status,
+        messages: null == messages
+            ? _value._messages
+            : messages // ignore: cast_nullable_to_non_nullable
+                  as List<ChatModel>,
       ),
     );
   }
@@ -452,17 +644,14 @@ class __$$ChatStateImplCopyWithImpl<$Res>
 
 class _$ChatStateImpl implements _ChatState {
   const _$ChatStateImpl({
-    this.contactStatus = Status.init,
-    this.mssgStatus = Status.init,
     final List<UserModel> contacts = const [],
-  }) : _contacts = contacts;
+    this.contactStatus = Status.init,
+    this.SendMssgStatus = Status.init,
+    this.GetMssgStatus = Status.init,
+    final List<ChatModel> messages = const [],
+  }) : _contacts = contacts,
+       _messages = messages;
 
-  @override
-  @JsonKey()
-  final Status contactStatus;
-  @override
-  @JsonKey()
-  final Status mssgStatus;
   final List<UserModel> _contacts;
   @override
   @JsonKey()
@@ -473,8 +662,26 @@ class _$ChatStateImpl implements _ChatState {
   }
 
   @override
+  @JsonKey()
+  final Status contactStatus;
+  @override
+  @JsonKey()
+  final Status SendMssgStatus;
+  @override
+  @JsonKey()
+  final Status GetMssgStatus;
+  final List<ChatModel> _messages;
+  @override
+  @JsonKey()
+  List<ChatModel> get messages {
+    if (_messages is EqualUnmodifiableListView) return _messages;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_messages);
+  }
+
+  @override
   String toString() {
-    return 'ChatState(contactStatus: $contactStatus, mssgStatus: $mssgStatus, contacts: $contacts)';
+    return 'ChatState(contacts: $contacts, contactStatus: $contactStatus, SendMssgStatus: $SendMssgStatus, GetMssgStatus: $GetMssgStatus, messages: $messages)';
   }
 
   @override
@@ -482,19 +689,24 @@ class _$ChatStateImpl implements _ChatState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ChatStateImpl &&
+            const DeepCollectionEquality().equals(other._contacts, _contacts) &&
             (identical(other.contactStatus, contactStatus) ||
                 other.contactStatus == contactStatus) &&
-            (identical(other.mssgStatus, mssgStatus) ||
-                other.mssgStatus == mssgStatus) &&
-            const DeepCollectionEquality().equals(other._contacts, _contacts));
+            (identical(other.SendMssgStatus, SendMssgStatus) ||
+                other.SendMssgStatus == SendMssgStatus) &&
+            (identical(other.GetMssgStatus, GetMssgStatus) ||
+                other.GetMssgStatus == GetMssgStatus) &&
+            const DeepCollectionEquality().equals(other._messages, _messages));
   }
 
   @override
   int get hashCode => Object.hash(
     runtimeType,
-    contactStatus,
-    mssgStatus,
     const DeepCollectionEquality().hash(_contacts),
+    contactStatus,
+    SendMssgStatus,
+    GetMssgStatus,
+    const DeepCollectionEquality().hash(_messages),
   );
 
   /// Create a copy of ChatState
@@ -508,17 +720,23 @@ class _$ChatStateImpl implements _ChatState {
 
 abstract class _ChatState implements ChatState {
   const factory _ChatState({
-    final Status contactStatus,
-    final Status mssgStatus,
     final List<UserModel> contacts,
+    final Status contactStatus,
+    final Status SendMssgStatus,
+    final Status GetMssgStatus,
+    final List<ChatModel> messages,
   }) = _$ChatStateImpl;
 
   @override
+  List<UserModel> get contacts;
+  @override
   Status get contactStatus;
   @override
-  Status get mssgStatus;
+  Status get SendMssgStatus;
   @override
-  List<UserModel> get contacts;
+  Status get GetMssgStatus;
+  @override
+  List<ChatModel> get messages;
 
   /// Create a copy of ChatState
   /// with the given fields replaced by the non-null parameter values.

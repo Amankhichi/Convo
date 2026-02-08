@@ -23,6 +23,7 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
     super.initState();
     _messageController = TextEditingController();
+    context.read<ChatBloc>().add(ChatEvent.getMssg(receiverId: widget.user.id.toString()));
   }
 
   @override
