@@ -5,7 +5,6 @@ class ChatEvent with _$ChatEvent {
   const factory ChatEvent.init() = _Init;
   const factory ChatEvent.sendMssg({ 
     required String mssg,
-    // required String sendID,
     required String receiverId,
     }) = _SendMssg;
 

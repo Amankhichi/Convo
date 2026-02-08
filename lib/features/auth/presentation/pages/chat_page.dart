@@ -1,3 +1,4 @@
+import 'package:convo/core/const.dart/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:convo/core/enum/status.dart';
@@ -53,6 +54,7 @@ class _ChatPageState extends State<ChatPage> {
       },
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor(context),
+
         /// APP BAR
         appBar: AppBar(
           toolbarHeight: 70,
@@ -131,14 +133,19 @@ class _ChatPageState extends State<ChatPage> {
           ],
         ),
 
+        
+
         /// BODY
         body: Container(
           decoration: BoxDecoration(
-    image: DecorationImage(
-      image: AssetImage("assests/wallpapers/DarkThem.png"),
-      fit: BoxFit.cover, // 👈 full screen
-    ),
-  ),
+            image:isDeviceThemeDark(context)? DecorationImage(
+              image: AssetImage("assests/wallpapers/DarkThem.png"),
+              fit: BoxFit.cover, 
+            ):DecorationImage(
+              image: AssetImage("assests/wallpapers/LightThem.png"),
+              fit: BoxFit.cover, 
+            ),
+          ),
           child: Column(
             children: [
               Expanded(
@@ -150,10 +157,13 @@ class _ChatPageState extends State<ChatPage> {
                   ],
                 ),
               ),
-          
+
               /// INPUT BAR
               Container(
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 10,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.AppBarColor(context),
                   boxShadow: const [

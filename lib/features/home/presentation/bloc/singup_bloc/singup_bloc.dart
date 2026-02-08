@@ -7,6 +7,7 @@ import 'package:convo/features/home/domain_usecase/add_user_usecase.dart';
 import 'package:convo/features/home/domain_usecase/get_user_usecase.dart';
 import 'package:convo/features/home/presentation/pages/add_name_page.dart';
 import 'package:convo/features/home/presentation/pages/home_page.dart';
+import 'package:convo/features/home/presentation/pages/singup_page.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -91,6 +92,8 @@ class SingupBloc extends Bloc<SingupEvent, SingupState> {
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString("id", user.id.toString());
+    await prefs.setString("phone", user.phone.toString());
+
 
     emit(
       state.copyWith(
@@ -106,7 +109,7 @@ class SingupBloc extends Bloc<SingupEvent, SingupState> {
   }
 
   Future<void> __checkNumber(_CheckNumber event, Emitter<SingupState> emit) async {
-    emit(state.copyWith( checkuserStatus: Status.loading));
+    emit(state.copyWith( checkNumberStatus: Status.loading));
     final user = await _getUserUsecase(phone: state.phone);
 
     print("test 33 $user");
@@ -114,6 +117,8 @@ class SingupBloc extends Bloc<SingupEvent, SingupState> {
     if (user != null) {
       final prefs = await SharedPreferences.getInstance();
       prefs.setString("id", user.id.toString());
+      prefs.setString("phone", user.phone.toString());
+
       emit(
         state.copyWith(
           profile: user,
@@ -124,13 +129,12 @@ class SingupBloc extends Bloc<SingupEvent, SingupState> {
           lotti: user.lotti,
         ),
       );
-    emit(state.copyWith( checkuserStatus: Status.success));
+    emit(state.copyWith( checkNumberStatus: Status.success));
 
 
-      Navigator.pushReplacement(Injection.currentContext,MaterialPageRoute(builder: (_) => HomePage()),
-      );
+      Navigator.pushReplacement(Injection.currentContext,MaterialPageRoute(builder: (_) => HomePage()),);
     } else {
-    emit(state.copyWith( checkuserStatus: Status.error));
+    emit(state.copyWith( checkNumberStatus: Status.error));
       Navigator.pushReplacement(
         Injection.currentContext,
         MaterialPageRoute(builder: (_) => const AddNamePage(lotti: '')),
@@ -140,5 +144,28 @@ class SingupBloc extends Bloc<SingupEvent, SingupState> {
 
     Future<void> __CheckUser(_CheckUser event, Emitter<SingupState> emit) async {
     emit(state.copyWith(checkuserStatus: Status.loading));
+
+    final prefs = await SharedPreferences.getInstance();
+    final phone = prefs.getString("phone");
+    final user = await _getUserUsecase(phone: phone.toString());
+    if(user != null){
+          emit(
+        state.copyWith(
+          profile: user,
+          name: user.name,
+          nickName: user.nickName,
+          phone: user.phone,
+          about: user.about,
+          lotti: user.lotti,
+        ),
+      );
+    emit(state.copyWith( checkuserStatus: Status.success));
+      Navigator.pushReplacement(Injection.currentContext,MaterialPageRoute(builder: (_) => HomePage()),);
+    }else{
+    emit(state.copyWith( checkuserStatus: Status.error));
+      Navigator.pushReplacement(Injection.currentContext,MaterialPageRoute(builder: (_) => SingupPage()),);
+
+
+    }
   }
 }
