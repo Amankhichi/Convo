@@ -7,7 +7,6 @@ import 'package:convo/core/const.dart/snakbar_status.dart';
 import 'package:convo/features/home/presentation/bloc/chat_bloc/chat_bloc.dart';
 import 'package:lottie/lottie.dart';
 
-
 class ChatPage extends StatefulWidget {
   final UserModel user;
 
@@ -22,6 +21,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
+    _messageController = TextEditingController();
   }
 
   @override
@@ -53,7 +53,7 @@ class _ChatPageState extends State<ChatPage> {
       },
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor(context),
-
+        /// APP BAR
         appBar: AppBar(
           toolbarHeight: 70,
           backgroundColor: AppColors.AppBarColor(context),
@@ -65,11 +65,18 @@ class _ChatPageState extends State<ChatPage> {
           ),
           title: ListTile(
             contentPadding: const EdgeInsets.symmetric(),
-            leading: CircleAvatar(
-              radius: 25,
-              backgroundColor: AppColors.primary,
-              child: LottieBuilder.asset(widget.user.lotti),
+            leading: Container(
+              height: 50,
+              width: 50,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.primary,
+              ),
+              child: ClipOval(
+                child: Lottie.asset(widget.user.lotti, fit: BoxFit.cover),
+              ),
             ),
+
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -124,80 +131,94 @@ class _ChatPageState extends State<ChatPage> {
           ],
         ),
 
-        body: Column(
-          children: [
-            Expanded(
-              child: ListView(
-                reverse: true,
-                padding: const EdgeInsets.all(12),
-                children: const [
-
-                ],
+        /// BODY
+        body: Container(
+          decoration: BoxDecoration(
+    image: DecorationImage(
+      image: AssetImage("assests/wallpapers/DarkThem.png"),
+      fit: BoxFit.cover, // 👈 full screen
+    ),
+  ),
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  reverse: true,
+                  padding: const EdgeInsets.all(12),
+                  children: const [
+                    // You’ll add messages here later
+                  ],
+                ),
               ),
-            ),
-
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-              decoration: BoxDecoration(
-                color: AppColors.AppBarColor(context),
-                boxShadow: const [
-                  BoxShadow(color: Colors.black12, blurRadius: 4),
-                ],
-              ),
-              child: Row(
-                children: [
-                  IconButton(
-                    color: AppColors.backgroundColor(context),
-                    icon: const Icon(Icons.emoji_emotions_outlined, size: 29),
-                    onPressed: () {},
-                  ),
-                  Expanded(
-                    child: TextField(
-                      controller: _messageController,
-                      onChanged: (value) {
-                        setState(() {}); 
-                      },
-                      minLines: 1,
-                      maxLines: 4,
-                      decoration: InputDecoration(
-                        hintText: "Type a message",
-                        hintStyle: TextStyle(
-                          fontWeight: FontWeight.bold, 
-                          fontSize: 16,
-                          color: Colors.grey,
+          
+              /// INPUT BAR
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+                decoration: BoxDecoration(
+                  color: AppColors.AppBarColor(context),
+                  boxShadow: const [
+                    BoxShadow(color: Colors.black12, blurRadius: 4),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    IconButton(
+                      color: AppColors.background(context),
+                      icon: const Icon(Icons.emoji_emotions_outlined, size: 29),
+                      onPressed: () {},
+                    ),
+                    Expanded(
+                      child: TextField(
+                        controller: _messageController,
+                        onChanged: (value) {
+                          setState(() {});
+                        },
+                        style: TextStyle(
+                          color: AppColors.invertTextColor(context),
+                          fontWeight: FontWeight.w600,
                         ),
-                        filled: true,
-                        fillColor: AppColors.backgroundColor(context),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(24),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 10,
+                        minLines: 1,
+                        maxLines: 4,
+                        decoration: InputDecoration(
+                          hintText: "Type a message",
+                          hintStyle: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.grey,
+                          ),
+                          filled: true,
+                          fillColor: AppColors.backgroundColor(context),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(24),
+                            borderSide: BorderSide.none,
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 10,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  CircleAvatar(
-                    backgroundColor: Colors.transparent,
-                    child: _messageController.text.isNotEmpty
-                        ? IconButton(
-                            color: AppColors.background(context),
-                            icon: const Icon(Icons.send, size: 30),
-                            onPressed: _sendMessage,
-                          )
-                        : IconButton(
-                            color: AppColors.background(context),
-                            icon: const Icon(Icons.mic, size: 30),
-                            onPressed: (){}
-                          ),
-                  ),
-                ],
+                    const SizedBox(width: 8),
+                    CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      child: _messageController.text.isNotEmpty
+                          ? IconButton(
+                              color: AppColors.background(context),
+                              icon: const Icon(Icons.send, size: 30),
+                              onPressed: _sendMessage,
+                            )
+                          : IconButton(
+                              color: AppColors.background(context),
+                              icon: const Icon(Icons.mic, size: 30),
+                              onPressed: () {},
+                            ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

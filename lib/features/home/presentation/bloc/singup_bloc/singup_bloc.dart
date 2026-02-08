@@ -32,7 +32,9 @@ class SingupBloc extends Bloc<SingupEvent, SingupState> {
     on<_Online>(__Online);
     on<_About>(__About);
     on<_Add>(__Add);
-    on<_CheckUser>(__checkUser);
+    on<_CheckNumber>(__checkNumber);
+    on<_CheckUser>(__CheckUser);
+
   }
   Future<void> __Init(_Init event, Emitter<SingupState> emit) async {}
 
@@ -103,7 +105,8 @@ class SingupBloc extends Bloc<SingupEvent, SingupState> {
     );
   }
 
-  Future<void> __checkUser(_CheckUser event, Emitter<SingupState> emit) async {
+  Future<void> __checkNumber(_CheckNumber event, Emitter<SingupState> emit) async {
+    emit(state.copyWith( checkuserStatus: Status.loading));
     final user = await _getUserUsecase(phone: state.phone);
 
     print("test 33 $user");
@@ -121,15 +124,21 @@ class SingupBloc extends Bloc<SingupEvent, SingupState> {
           lotti: user.lotti,
         ),
       );
+    emit(state.copyWith( checkuserStatus: Status.success));
+
 
       Navigator.pushReplacement(Injection.currentContext,MaterialPageRoute(builder: (_) => HomePage()),
       );
     } else {
-      print("Test 1 Failed");
+    emit(state.copyWith( checkuserStatus: Status.error));
       Navigator.pushReplacement(
         Injection.currentContext,
         MaterialPageRoute(builder: (_) => const AddNamePage(lotti: '')),
       );
     }
+  }
+
+    Future<void> __CheckUser(_CheckUser event, Emitter<SingupState> emit) async {
+    emit(state.copyWith(checkuserStatus: Status.loading));
   }
 }

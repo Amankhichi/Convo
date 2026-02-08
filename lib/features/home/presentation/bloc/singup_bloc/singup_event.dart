@@ -10,5 +10,7 @@ class SingupEvent with _$SingupEvent {
   const factory SingupEvent.lotti(String value) = _Lotti;
   const factory SingupEvent.online(bool value) = _Online;
   const factory SingupEvent.add() = _Add;
+  const factory SingupEvent.checkNumber() = _CheckNumber;
   const factory SingupEvent.checkUser() = _CheckUser;
+
 }
