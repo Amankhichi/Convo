@@ -1,4 +1,5 @@
 import 'package:convo/core/const.dart/constant.dart';
+import 'package:convo/features/auth/presentation/widgets/mssg_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:convo/core/enum/status.dart';
@@ -34,9 +35,6 @@ class _ChatPageState extends State<ChatPage> {
     context.read<ChatBloc>().add(ChatEvent.sendMssg(mssg: text, receiverId: widget.user.id.toString()),);
     _messageController.clear();
   }
-  // Future<List> Chatbubble(ChatModel mssg){
-  //   return mssg.senderId.
-  // }
 
 
   @override
@@ -163,13 +161,14 @@ class _ChatPageState extends State<ChatPage> {
                child: BlocBuilder<ChatBloc, ChatState>(
                   builder: (context, state) {
                     return ListView.builder(
+                  reverse: true,
                   itemCount: state.messages.length,
                   itemBuilder: (context, index) {
                     final msg = state.messages[index];
                 
                     bool isMe = msg.senderId == preferenceId; 
                 
-                    return chatBubble(
+                    return MssgWidgets(
                       message: msg.message,
                       isMe: isMe,
                     );
@@ -255,38 +254,5 @@ class _ChatPageState extends State<ChatPage> {
       ),
     );
   }
-
-
-
-
-
-
-
-
-
-
-  Widget chatBubble({
-  required String message,
-  required bool isMe,
-}) {
-  return Align(
-    alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-    child: Container(
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      padding: const EdgeInsets.all(12),
-      constraints: const BoxConstraints(maxWidth: 250),
-      decoration: BoxDecoration(
-        color: isMe ? Colors.blue : Colors.grey[300],
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        message,
-        style: TextStyle(
-          color: isMe ? Colors.white : Colors.black,
-        ),
-      ),
-    ),
-  );
-}
 
 }

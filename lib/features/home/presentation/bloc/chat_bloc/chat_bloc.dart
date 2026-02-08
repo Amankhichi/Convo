@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:convo/core/const.dart/constant.dart';
 import 'package:convo/core/const.dart/snakbar_status.dart';
 import 'package:convo/core/di/injection.dart';
 import 'package:convo/core/enum/status.dart';
@@ -10,14 +11,12 @@ import 'package:convo/features/home/domain_usecase/chat_usecase.dart';
 import 'package:convo/features/home/domain_usecase/contact_usecase.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'chat_event.dart';
 part 'chat_state.dart';
 part 'chat_bloc.freezed.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
-  // final UserModel;
   final ContactUsecase _contactUsecase;
   final ChatUsecase _chatUsecase;
   final GetMssgUseCase _getmssgusecase;
@@ -55,7 +54,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
       emit(
         state.copyWith(
-          contacts: matchedContacts, // 👈 important
+          contacts: matchedContacts, 
           contactStatus: Status.success,
         ),
       );
@@ -68,10 +67,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     emit(state.copyWith(SendMssgStatus: Status.loading));
 
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final id = prefs.getString("id");
 
-      if (id == null) {
+      if (preferenceId.toString().isEmpty ) {
         emit(state.copyWith(SendMssgStatus: Status.error));
         showError(Injection.currentContext, "Faild Fatch user id ");
         return;
@@ -79,7 +76,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
       final result = await _chatUsecase(
         ChatPayload(
-          senderId: id,
+          senderId: preferenceId.toString(),
           receiverId: event.receiverId,
           mssg: event.mssg,
         ),
@@ -94,28 +91,24 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
    Future<void>  __GetMssg(_GetMssg event, Emitter<ChatState> emit) async {
   emit(state.copyWith(GetMssgStatus: Status.loading));
 
-  final prefs = await SharedPreferences.getInstance();
-  final id = prefs.getString("id");
 
-  if (id == null) {
+  if (preferenceId.toString().isEmpty) {
     emit(state.copyWith(GetMssgStatus: Status.error,));
     return;
   }
 
   try {
     final messages = await _getmssgusecase(
-      senderId: id,
+      senderId: preferenceId.toString(),
       receiverId: event.receiverId,
     );
 
-    emit(state.copyWith(
-      GetMssgStatus: Status.success,
-      messages: messages,
-    ));
+    emit(state.copyWith(GetMssgStatus: Status.success,messages: messages,));
+    emit(state.copyWith(GetMssgStatus: Status.init,));
   } catch (e) {
-    emit(state.copyWith(
-      GetMssgStatus: Status.error,
-    ));
+    emit(state.copyWith(GetMssgStatus: Status.error));
+    emit(state.copyWith(GetMssgStatus: Status.init,));
+
   }
 }
 

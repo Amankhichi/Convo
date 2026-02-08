@@ -13,8 +13,7 @@ Future<List<ChatModel>> getMessages({
   required String receiverId,
 }) async {
   final url = Uri.parse(
-    "https://ehmqgiqrfpvvznvsvfyu.supabase.co/rest/v1/chats"
-    "?or=(senderId.eq.$senderId,receiverId.eq.$receiverId)"
+    "https://ehmqgiqrfpvvznvsvfyu.supabase.co/rest/v1/chats?senderId.eq.$senderId or receiverId.eq.$receiverId"
     "&select=*"
     "&order=created_at.asc",
   );
