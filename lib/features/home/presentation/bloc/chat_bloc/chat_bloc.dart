@@ -99,10 +99,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   try {
     final messages = await _getmssgusecase(
-      senderId: preferenceId.toString(),
-      receiverId: event.receiverId,
+      // senderId: preferenceId.toString(),
+      // receiverId: event.receiverId,
     );
-
+    print("Massages $messages");
     emit(state.copyWith(GetMssgStatus: Status.success,messages: messages,));
     emit(state.copyWith(GetMssgStatus: Status.init,));
   } catch (e) {

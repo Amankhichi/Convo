@@ -8,12 +8,14 @@ import 'package:http/http.dart' as http;
 class ChatDatasource {
 
     // Set user Data
-Future<List<ChatModel>> getMessages({
-  required String senderId,
-  required String receiverId,
-}) async {
+Future<List<ChatModel>> getMessages(
+//   {
+//   required String senderId,
+//   required String receiverId,
+// }
+) async {
   final url = Uri.parse(
-    "https://ehmqgiqrfpvvznvsvfyu.supabase.co/rest/v1/chats?senderId.eq.$senderId or receiverId.eq.$receiverId"
+    "https://ehmqgiqrfpvvznvsvfyu.supabase.co/rest/v1/chats?select=*"
     "&select=*"
     "&order=created_at.asc",
   );

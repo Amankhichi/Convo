@@ -142,7 +142,9 @@ class _ChatPageState extends State<ChatPage> {
           decoration: BoxDecoration(
             image:isDeviceThemeDark(context)? DecorationImage(
               image: AssetImage("assests/wallpapers/DarkThem.png"),
-              fit: BoxFit.cover, 
+              // fit: BoxFit.cover,
+              fit: BoxFit.fitWidth,
+              alignment: Alignment.topCenter
             ):DecorationImage(
               image: AssetImage("assests/wallpapers/LightThem.png"),
               fit: BoxFit.cover, 
@@ -151,13 +153,6 @@ class _ChatPageState extends State<ChatPage> {
           child: Column(
             children: [
               Expanded(
-                // child: ListView(
-                //   reverse: true,
-                //   padding: const EdgeInsets.all(12),
-                //   children: const [
-                //     // You’ll add messages here later
-                //   ],
-                // ),
                child: BlocBuilder<ChatBloc, ChatState>(
                   builder: (context, state) {
                     return ListView.builder(

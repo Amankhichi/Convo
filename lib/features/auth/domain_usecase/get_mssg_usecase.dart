@@ -6,7 +6,11 @@ class GetMssgUseCase {
 
   GetMssgUseCase({required this.datasource});
 
-  Future<List<ChatModel>> call({required String senderId,required String receiverId,}) {
-    return datasource.getMessages(senderId: senderId,receiverId: receiverId,);
+  Future<List<ChatModel>> call(
+    // {required String senderId,required String receiverId,}
+    ) {
+    return datasource.getMessages(
+      // senderId: senderId,receiverId: receiverId,
+      );
   }
 }
