@@ -164,8 +164,6 @@ class SingupBloc extends Bloc<SingupEvent, SingupState> {
     }else{
     emit(state.copyWith( checkuserStatus: Status.error));
       Navigator.pushReplacement(Injection.currentContext,MaterialPageRoute(builder: (_) => SingupPage()),);
-
-
     }
   }
 }

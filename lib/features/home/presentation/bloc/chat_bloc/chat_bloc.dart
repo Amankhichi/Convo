@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:convo/core/const.dart/constant.dart';
 import 'package:convo/core/const.dart/snakbar_status.dart';
 import 'package:convo/core/di/injection.dart';
 import 'package:convo/core/enum/status.dart';
@@ -9,8 +8,11 @@ import 'package:convo/core/payload/chat_payload.dart';
 import 'package:convo/features/auth/domain_usecase/get_mssg_usecase.dart';
 import 'package:convo/features/home/domain_usecase/chat_usecase.dart';
 import 'package:convo/features/home/domain_usecase/contact_usecase.dart';
+import 'package:convo/features/home/presentation/bloc/singup_bloc/singup_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart' show ReadContext;
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'chat_event.dart';
 part 'chat_state.dart';
@@ -65,10 +67,12 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   Future<void> __SendMssg(_SendMssg event, Emitter<ChatState> emit) async {
     emit(state.copyWith(SendMssgStatus: Status.loading));
+        final prefs = await SharedPreferences.getInstance();
+        final id = prefs.getString("id");
 
     try {
 
-      if (preferenceId.toString().isEmpty ) {
+      if (id.toString().isEmpty ) {
         emit(state.copyWith(SendMssgStatus: Status.error));
         showError(Injection.currentContext, "Faild Fatch user id ");
         return;
@@ -76,11 +80,12 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
       final result = await _chatUsecase(
         ChatPayload(
-          senderId: preferenceId.toString(),
+          senderId: id.toString(),
           receiverId: event.receiverId,
           mssg: event.mssg,
         ),
       );
+      add(_Init());
 
       emit(state.copyWith(SendMssgStatus: result ? Status.success : Status.error));
     } catch (e) {
@@ -88,28 +93,41 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     }
   }
 
-   Future<void>  __GetMssg(_GetMssg event, Emitter<ChatState> emit) async {
+  Future<void> __GetMssg(_GetMssg event, Emitter<ChatState> emit) async {
+
   emit(state.copyWith(GetMssgStatus: Status.loading));
 
+  final profile = Injection.currentContext.read<SingupBloc>().state.profile;
 
-  if (preferenceId.toString().isEmpty) {
-    emit(state.copyWith(GetMssgStatus: Status.error,));
+  if (profile == null) {
+    print("Profile is null");
+    emit(state.copyWith(GetMssgStatus: Status.error));
     return;
   }
 
   try {
-    final messages = await _getmssgusecase(
-      // senderId: preferenceId.toString(),
-      // receiverId: event.receiverId,
-    );
-    print("Massages $messages");
-    emit(state.copyWith(GetMssgStatus: Status.success,messages: messages,));
-    emit(state.copyWith(GetMssgStatus: Status.init,));
-  } catch (e) {
-    emit(state.copyWith(GetMssgStatus: Status.error));
-    emit(state.copyWith(GetMssgStatus: Status.init,));
 
+    final messagess = await _getmssgusecase(
+      senderId: profile.id.toString(),
+      receiverId: event.receiverId,
+    );
+
+
+    emit(state.copyWith(
+      GetMssgStatus: Status.success,
+      messages: messagess,
+    ));
+    print("Messagesss: $messagess");
+
+    // emit(state.copyWith(GetMssgStatus: Status.init));
+
+  } catch (e) {
+    print("Error GetMssg: $e");
+
+    emit(state.copyWith(GetMssgStatus: Status.error));
+    emit(state.copyWith(GetMssgStatus: Status.init));
   }
 }
+
 
 }

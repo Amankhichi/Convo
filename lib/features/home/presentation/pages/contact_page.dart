@@ -34,7 +34,7 @@ class _ContactsPageState extends State<ContactsPage> {
 
             leading: IconButton(
               onPressed: () => Navigator.pop(context),
-              icon: Icon(Icons.arrow_back, size: 30, color: Colors.white),
+              icon: Icon(Icons.arrow_back, size: 30, color: AppColors.textColor(context)),
             ),
 
             title: RichText(
@@ -70,64 +70,69 @@ class _ContactsPageState extends State<ContactsPage> {
                   itemBuilder: (context, i) {
                     final user = state.contacts[i];
 
-                    return Container(
-                      margin: const EdgeInsets.symmetric(vertical: 2),
-                      decoration: BoxDecoration(
-                        color: AppColors.matchTheme(context),
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.15),
-                            blurRadius: 6,
-                            spreadRadius: 0,
-                            offset: Offset(0, 3), // 👈 shadow only bottom
-                          ),
-                        ],
-                      ),
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.symmetric(
-                          // vertical: 2,
-                          horizontal: 17,
-                        ),
-                        leading: CircleAvatar(
-                          radius: 22,
-                          backgroundColor: AppColors.primary,
-                          child: Text(
-                            user.name[0].toUpperCase(),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        title: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            CustomText(
-                              text: user.name,
-                              bold: FontWeight.w600,
-                              size: 20,
-                            ),
-                            Text(
-                              user.about,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 15,
-                                color: AppColors.iconColor(context),
-                              ),
+                    return RefreshIndicator(
+                      onRefresh: () async {
+                        setState(() {});
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(vertical: 2),
+                        decoration: BoxDecoration(
+                          color: AppColors.matchTheme(context),
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.15),
+                              blurRadius: 6,
+                              spreadRadius: 0,
+                              offset: Offset(0, 3), // 👈 shadow only bottom
                             ),
                           ],
                         ),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => ChatPage(user: user),
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.symmetric(
+                            // vertical: 2,
+                            horizontal: 17,
+                          ),
+                          leading: CircleAvatar(
+                            radius: 22,
+                            backgroundColor: AppColors.primary,
+                            child: Text(
+                              user.name[0].toUpperCase(),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                          );
-                          Divider(thickness: 0.5, color: Colors.black26);
-                        },
+                          ),
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CustomText(
+                                text: user.name,
+                                bold: FontWeight.w600,
+                                size: 20,
+                              ),
+                              Text(
+                                user.about,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 15,
+                                  color: AppColors.iconColor(context),
+                                ),
+                              ),
+                            ],
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => ChatPage(user: user),
+                              ),
+                            );
+                            Divider(thickness: 0.5, color: Colors.black26);
+                          },
+                        ),
                       ),
                     );
                   },
