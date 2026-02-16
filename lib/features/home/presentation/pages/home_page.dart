@@ -29,9 +29,9 @@ class HomePage extends StatelessWidget {
         title: Text(
               " ConVO",
               style: TextStyle(
-                fontSize: 28,
+                fontSize: 30,
                 fontWeight: FontWeight.w900,
-                color: AppColors.textColor(context),
+                color: AppColors.primary,
               ),
             ),
         actions: [
