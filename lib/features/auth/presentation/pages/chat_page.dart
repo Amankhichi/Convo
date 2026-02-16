@@ -1,6 +1,9 @@
 import 'package:convo/core/const.dart/constant.dart';
 import 'package:convo/core/enum/status.dart';
+import 'package:convo/features/auth/presentation/pages/contact_user_profile_page.dart';
+import 'package:convo/features/auth/presentation/widgets/mssg_widgets.dart';
 import 'package:convo/features/home/presentation/bloc/singup_bloc/singup_bloc.dart';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:convo/core/model/user_model.dart';
@@ -21,15 +24,23 @@ class _ChatPageState extends State<ChatPage> {
   late final TextEditingController _messageController;
   final FocusNode _focusNode = FocusNode();
   bool isMe = false;
+  bool emoji = false;
+  bool mssgSelected = false;
+  Set<String> mssgIdSelected = {};
+  bool mssgEdit = false;
+  String? editingMessageId;
+  
+  bool isReplying = false;
+  String? replyMessage;
+  String? replyMessageId;
+
   @override
   void initState() {
     super.initState();
     _messageController = TextEditingController();
-    Future.delayed(const Duration(microseconds: 1), () async {
-      context.read<ChatBloc>().add(
-        ChatEvent.getMssg(receiverId: widget.user.id.toString()),
-      );
-    });
+    context.read<ChatBloc>().add(
+      ChatEvent.getMssg(receiverId: widget.user.id.toString()),
+    );
 
     Future.delayed(Duration(milliseconds: 300), () {
       _focusNode.requestFocus();
@@ -43,7 +54,11 @@ class _ChatPageState extends State<ChatPage> {
       final text = _messageController.text.trim();
       if (text.isEmpty) return;
       context.read<ChatBloc>().add(
-        ChatEvent.sendMssg(mssg: text, receiverId: widget.user.id.toString()),
+        ChatEvent.sendMssg(
+          mssg: text,
+          receiverId: widget.user.id.toString(),
+          reply: replyMessage.toString(),
+        ),
       );
       _messageController.clear();
     });
@@ -57,242 +72,403 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.backgroundColor(context),
+    return BlocBuilder<ChatBloc, ChatState>(
+      builder: (context, state) {
+        return Scaffold(
+          backgroundColor: AppColors.backgroundColor(context),
 
-      /// APP BAR
-      appBar: AppBar(
-        toolbarHeight: 70,
-        backgroundColor: AppColors.AppBarColor(context),
-        elevation: 1,
-        titleSpacing: 0,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: Icon(Icons.arrow_back, size: 30, color: Colors.white),
-        ),
-        title: ListTile(
-          contentPadding: const EdgeInsets.symmetric(),
-          leading: Container(
-            height: 50,
-            width: 50,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.primary,
+          /// APP BAR
+          appBar: AppBar(
+            toolbarHeight: 70,
+            backgroundColor: AppColors.AppBarColor(context),
+            titleSpacing: 0,
+            leading: IconButton(
+              icon: Icon(
+                mssgSelected ? Icons.close : Icons.arrow_back,
+                color: Colors.white,
+              ),
+              onPressed: () => mssgSelected
+                  ? setState(() {
+                      mssgSelected = false;
+                      mssgIdSelected.clear();
+                    })
+                  : Navigator.pop(context),
             ),
-            child: ClipOval(
-              child: Lottie.asset(widget.user.lotti, fit: BoxFit.cover),
-            ),
-          ),
+            title: ListTile(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ContactUserProfilePage(
+                      child: Lottie.asset(widget.user.lotti, fit: BoxFit.cover),
+                    ),
+                  ),
+                );
+              },
 
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                widget.user.name,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+              contentPadding: EdgeInsets.zero,
+              leading: CircleAvatar(
+                radius: 25,
+                backgroundColor: AppColors.primary,
+                child: ClipOval(
+                  child: Lottie.asset(widget.user.lotti, fit: BoxFit.cover),
                 ),
               ),
-              Text(
+              title: Text(
+                widget.user.name,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              subtitle: Text(
                 widget.user.online ? "online" : "offline",
                 style: TextStyle(
-                  fontSize: 13,
-                  color: widget.user.online ? Colors.green : Colors.grey,
+                  color: widget.user.online
+                      ? isDeviceThemeDark(context)
+                            ? Colors.green
+                            : Colors.white
+                      : Colors.white,
                 ),
               ),
-            ],
-          ),
-
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => ChatPage(user: widget.user)),
-            );
-            Divider(thickness: 0.5, color: Colors.black26);
-          },
-        ),
-        actions: [
-          Row(
-            children: [
-              IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.call, size: 25, color: Colors.white),
-              ),
-              IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  Icons.videocam_rounded,
-                  size: 29,
-                  color: Colors.white,
-                  weight: 700,
-                ),
-              ),
-              IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.more_vert, size: 25, color: Colors.white),
-              ),
-            ],
-          ),
-        ],
-      ),
-
-      /// BODY
-      body: Container(
-        height: double.infinity,
-        decoration: BoxDecoration(
-          image: isDeviceThemeDark(context)
-              ? DecorationImage(
-                  image: AssetImage("assests/wallpapers/DarkThem.png"),
-                  // fit: BoxFit.cover,
-                  fit: BoxFit.fitWidth,
-                  alignment: Alignment.topCenter,
-                )
-              : DecorationImage(
-                  image: AssetImage("assests/wallpapers/LightThem.png"),
-                  fit: BoxFit.fitWidth,
-                ),
-        ),
-        child: Column(
-          children: [
-            Expanded(
-              child: BlocBuilder<SingupBloc, SingupState>(
-                builder: (context, sstate) {
-                  return Expanded(
-                    child: BlocBuilder<ChatBloc, ChatState>(
-                      builder: (context, state) {
-                        final profile = context
-                            .read<SingupBloc>()
-                            .state
-                            .profile;
-
-                        if (state.GetMssgStatus == Status.loading) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
+            ),
+            actions: mssgSelected? [
+                    if (mssgIdSelected.length == 1)
+                      IconButton(
+                        icon: const Icon(Icons.edit, color: Colors.white),
+                        onPressed: () {
+                          final id = mssgIdSelected.first;
+                          final msg = state.messages.firstWhere(
+                            (e) => e.id.toString() == id,
                           );
-                        }
 
-                        if (state.messages.isEmpty) {
-                          return const Center(child: Text("No messages"));
-                        }
+                          _messageController.text = msg.message;
 
-                        return ListView.builder(
-                          reverse: true,
-                          itemCount: state.messages.length,
-                          itemBuilder: (context, index) {
-                            final msg = state.messages[state.messages.length - index - 1];
+                          setState(() {
+                            mssgEdit = true;
+                            editingMessageId = id;
+                            mssgSelected = false;
+                            mssgIdSelected.clear();
+                          });
+                        },
+                      ),
 
-                            final bool isMe =
-                                msg.senderId == profile?.id.toString();
-                            print("msg.senderId: ${msg.senderId}");
-                            print("profile.id: ${profile?.id}");
-                            print("isMe: $isMe");
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.white),
+                      onPressed: () => setState(() {
+                        mssgSelected = false;
+                        mssgIdSelected.clear();
+                      }),
+                    ),
+                  ] : [
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(Icons.call, color: Colors.white, size: 28),
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(Icons.videocam, color: Colors.white, size: 28),
+                    ),
+                    GestureDetector(
+                      onTap: () {},
+                      child: Icon(
+                        Icons.more_vert,
+                        color: Colors.white,
+                        size: 28,
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                  ],
+          ),
 
-                            return Align(
-                              alignment: isMe
-                                  ? Alignment.centerRight
-                                  : Alignment.centerLeft,
-                              child: Container(
-                                margin: const EdgeInsets.symmetric(
-                                  vertical: 5,
-                                  horizontal: 12,
-                                ),
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  color: isMe
-                                      ? Colors.blue
-                                      : Colors.grey.shade300,
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Text(
-                                  msg.message, // ✅ SHOW REAL MESSAGE
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    color: isMe ? Colors.white : Colors.black,
+          /// BODY
+          body: Container(
+            height: double.infinity,
+            decoration: BoxDecoration(
+              image: isDeviceThemeDark(context)
+                  ? DecorationImage(
+                      image: AssetImage("assests/wallpapers/wallpaper2.jpg"),
+                      fit: BoxFit.cover,
+                      alignment: Alignment.topCenter,
+                    )
+                  : DecorationImage(
+                      image: AssetImage("assests/wallpapers/LightThem.png"),
+                      fit: BoxFit.fitWidth,
+                    ),
+            ),
+
+            child: Column(
+              children: [
+                Expanded(
+                  child: BlocBuilder<SingupBloc, SingupState>(
+                    builder: (context, sstate) {
+                      final profile = context.read<SingupBloc>().state.profile;
+                      return state.GetMssgStatus == Status.loading
+                          ? Center(child: CircularProgressIndicator())
+                          : ListView.builder(
+                              reverse: true,
+                              itemCount: state.messages.length,
+                              itemBuilder: (context, index) {
+                          final msg = state.messages[state.messages.length -index -1];
+
+                          final bool isMe = msg.senderId == profile?.id.toString();
+
+                          return Dismissible(
+                                  key: Key(msg.id.toString()),
+                                  direction: DismissDirection.startToEnd,
+
+                                  confirmDismiss: (_) async {
+                                    setState(() {
+                                      isReplying = true;
+                                      replyMessage = msg.message;
+                                      replyMessageId = msg.id.toString();
+                                    });
+                                    return false;
+                                  },
+
+                                  background: Container(
+                                    alignment: Alignment.centerLeft,
+                                    padding: const EdgeInsets.only(left: 20),
+                                    child: const Icon(
+                                      Icons.reply,
+                                      color: Colors.blue,
+                                    ),
                                   ),
+
+                                  child: GestureDetector(
+                                    onLongPress: () {
+                                      setState(() {
+                                        mssgSelected = true;
+                                        mssgIdSelected.add(msg.id.toString());
+                                      });
+                                    },
+                                    onTap: () {
+                                      if (mssgSelected) {
+                                        setState(() {
+                                          final id = msg.id.toString();
+
+                                          if (mssgIdSelected.contains(id)) {
+                                            mssgIdSelected.remove(id);
+
+                                            if (mssgIdSelected.isEmpty) {
+                                              mssgSelected = false;
+                                            }
+                                          } else {
+                                            mssgIdSelected.add(id);
+                                          }
+                                        });
+                                      }
+                                    },
+                                    child: Row(
+                                      children: [
+                                        if (mssgSelected)
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                              left: 8,
+                                            ),
+                                            child: Icon(
+                                              mssgIdSelected.contains(
+                                                    msg.id.toString(),
+                                                  )
+                                                  ? Icons.check_circle
+                                                  : Icons
+                                                        .radio_button_unchecked,
+                                              color: Colors.blue,
+                                            ),
+                                          ),
+
+                                        Expanded(child: MssgWidgets(isMe: isMe,message: msg.message,),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                    },
+                  ),
+                ),
+
+                ///Reply INPUT BAR
+                if (isReplying)
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(8),
+                    color: Colors.grey.shade200,
+                    child: Row(
+                      children: [
+                        Container(width: 4, height: 40, color: Colors.blue),
+                        const SizedBox(width: 8),
+
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Replying to",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.blue,
                                 ),
                               ),
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  );
-                },
-              ),
-            ),
-
-            /// INPUT BAR
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-              decoration: BoxDecoration(
-                color: AppColors.AppBarColor(context),
-                boxShadow: const [
-                  BoxShadow(color: Colors.black12, blurRadius: 4),
-                ],
-              ),
-              child: Row(
-                children: [
-                  IconButton(
-                    color: AppColors.background(context),
-                    icon: const Icon(Icons.emoji_emotions_outlined, size: 29),
-                    onPressed: () {},
-                  ),
-                  Expanded(
-                    child: TextField(
-                      controller: _messageController,
-                      focusNode: _focusNode,
-                      onChanged: (value) {
-                        setState(() {});
-                      },
-                      style: TextStyle(
-                        color: AppColors.invertTextColor(context),
-                        fontWeight: FontWeight.w600,
-                      ),
-                      minLines: 1,
-                      maxLines: 4,
-                      decoration: InputDecoration(
-                        hintText: "Type is message",
-                        hintStyle: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: Colors.grey,
-                        ),
-                        filled: true,
-                        fillColor: AppColors.backgroundColor(context),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(24),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 10,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  CircleAvatar(
-                    backgroundColor: Colors.transparent,
-                    child: _messageController.text.isNotEmpty
-                        ? IconButton(
-                            color: AppColors.background(context),
-                            icon: const Icon(Icons.send, size: 30),
-                            onPressed: _sendMessage,
-                          )
-                        : IconButton(
-                            color: AppColors.background(context),
-                            icon: const Icon(Icons.mic, size: 30),
-                            onPressed: () {},
+                              Text(
+                                replyMessage ?? "",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
                           ),
+                        ),
+
+                        IconButton(
+                          icon: const Icon(Icons.close),
+                          onPressed: () {
+                            setState(() {
+                              isReplying = false;
+                              replyMessage = null;
+                              replyMessageId = null;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                ],
-              ),
+                // INPUT BAR
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 4,
+                    horizontal: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.AppBarColor(context),
+                    boxShadow: const [
+                      BoxShadow(color: Colors.black12, blurRadius: 4),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      /// Emoji Button
+                      IconButton(
+                        color: AppColors.background(context),
+                        iconSize: 25,
+                        icon: emoji
+                            ? Icon(Icons.keyboard)
+                            : Icon(Icons.emoji_emotions_outlined),
+                        onPressed: () async {
+                          final keyboardOpen =
+                              MediaQuery.of(context).viewInsets.bottom > 0;
+
+                          if (keyboardOpen) {
+                            FocusScope.of(context).unfocus();
+
+                            await Future.delayed(
+                              const Duration(milliseconds: 120),
+                            );
+
+                            if (mounted) {
+                              setState(() => emoji = true);
+                            }
+                          } else {
+                            if (emoji) {
+                              setState(() => emoji = false);
+                              FocusScope.of(context).requestFocus(_focusNode);
+                            } else {
+                              setState(() => emoji = true);
+                            }
+                          }
+                        },
+                      ),
+
+                      /// Text Field
+                      Expanded(
+                        child: TextField(
+                          controller: _messageController,
+                          focusNode: _focusNode,
+                          minLines: 1,
+                          maxLines: 4,
+                          onChanged: (v) {
+                            if (mssgEdit && v.trim().isEmpty) {
+                              setState(() {
+                                mssgEdit = false;
+                                editingMessageId = null;
+                              });
+                            } else {
+                              setState(() {});
+                            }
+                          },
+                          style: TextStyle(
+                            color: AppColors.invertTextColor(context),
+                            fontWeight: FontWeight.w600,
+                          ),
+                          decoration: InputDecoration(
+                            hintText: "Type a message...",
+                            filled: true,
+                            fillColor: AppColors.backgroundColor(context),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(24),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 10,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(width: 8),
+
+                      /// Mic / Send / Edit Button
+                      CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                        child: _messageController.text.trim().isEmpty
+                            ? IconButton(
+                                color: AppColors.background(context),
+                                onPressed: () {},
+                                icon: const Icon(Icons.mic, size: 28),
+                              )
+                            : mssgEdit
+                            ? IconButton(
+                                color: AppColors.background(context),
+                                onPressed: () {
+                                  setState(() {
+                                    mssgEdit = false;
+                                    editingMessageId = null;
+                                  });
+
+                                  _messageController.clear();
+                                },
+                                icon: const Icon(Icons.check, size: 28),
+                              )
+                            : IconButton(
+                                color: AppColors.background(context),
+                                onPressed: () {
+                                  _sendMessage();
+                                },
+                                icon: const Icon(Icons.send, size: 28),
+                              ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                if (emoji)
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    height: MediaQuery.of(context).size.height * 0.35,
+                    child: EmojiPicker(
+                      textEditingController: _messageController,
+                      config: const Config(
+                        categoryViewConfig: CategoryViewConfig(
+                          initCategory: Category.SMILEYS,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

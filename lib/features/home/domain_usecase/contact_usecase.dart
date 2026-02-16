@@ -1,6 +1,7 @@
 import 'package:convo/core/model/user_model.dart';
 import 'package:convo/features/home/datasource/user_datasource.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ContactUsecase {
   final UserDatasource datasource;
@@ -22,6 +23,10 @@ class ContactUsecase {
       withProperties: true,
     );
 
+    final prefs = await SharedPreferences.getInstance();
+  final myNumber = prefs.getString("phone") ?? "";
+  // final myNumber = _normalizeNumber(myNumber);
+
     final Map<String, UserModel> apiUsersByPhone = {
       for (final user in apiContacts)
         _normalizeNumber(user.phone): user,
@@ -36,6 +41,7 @@ class ContactUsecase {
 
     for (final number in phoneNumbers) {
       final user = apiUsersByPhone[number];
+      if (number == myNumber) continue;
       if (user != null) {
         matchedContacts.add(user);
       }

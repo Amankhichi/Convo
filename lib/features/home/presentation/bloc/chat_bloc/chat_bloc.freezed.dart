@@ -20,19 +20,20 @@ mixin _$ChatEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() init,
-    required TResult Function(String mssg, String receiverId) sendMssg,
+    required TResult Function(String mssg, String receiverId, String reply)
+    sendMssg,
     required TResult Function(String receiverId) getMssg,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? init,
-    TResult? Function(String mssg, String receiverId)? sendMssg,
+    TResult? Function(String mssg, String receiverId, String reply)? sendMssg,
     TResult? Function(String receiverId)? getMssg,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? init,
-    TResult Function(String mssg, String receiverId)? sendMssg,
+    TResult Function(String mssg, String receiverId, String reply)? sendMssg,
     TResult Function(String receiverId)? getMssg,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
@@ -119,7 +120,8 @@ class _$InitImpl implements _Init {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() init,
-    required TResult Function(String mssg, String receiverId) sendMssg,
+    required TResult Function(String mssg, String receiverId, String reply)
+    sendMssg,
     required TResult Function(String receiverId) getMssg,
   }) {
     return init();
@@ -129,7 +131,7 @@ class _$InitImpl implements _Init {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? init,
-    TResult? Function(String mssg, String receiverId)? sendMssg,
+    TResult? Function(String mssg, String receiverId, String reply)? sendMssg,
     TResult? Function(String receiverId)? getMssg,
   }) {
     return init?.call();
@@ -139,7 +141,7 @@ class _$InitImpl implements _Init {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? init,
-    TResult Function(String mssg, String receiverId)? sendMssg,
+    TResult Function(String mssg, String receiverId, String reply)? sendMssg,
     TResult Function(String receiverId)? getMssg,
     required TResult orElse(),
   }) {
@@ -195,7 +197,7 @@ abstract class _$$SendMssgImplCopyWith<$Res> {
     $Res Function(_$SendMssgImpl) then,
   ) = __$$SendMssgImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({String mssg, String receiverId});
+  $Res call({String mssg, String receiverId, String reply});
 }
 
 /// @nodoc
@@ -211,7 +213,11 @@ class __$$SendMssgImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? mssg = null, Object? receiverId = null}) {
+  $Res call({
+    Object? mssg = null,
+    Object? receiverId = null,
+    Object? reply = null,
+  }) {
     return _then(
       _$SendMssgImpl(
         mssg: null == mssg
@@ -222,6 +228,10 @@ class __$$SendMssgImplCopyWithImpl<$Res>
             ? _value.receiverId
             : receiverId // ignore: cast_nullable_to_non_nullable
                   as String,
+        reply: null == reply
+            ? _value.reply
+            : reply // ignore: cast_nullable_to_non_nullable
+                  as String,
       ),
     );
   }
@@ -230,16 +240,22 @@ class __$$SendMssgImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$SendMssgImpl implements _SendMssg {
-  const _$SendMssgImpl({required this.mssg, required this.receiverId});
+  const _$SendMssgImpl({
+    required this.mssg,
+    required this.receiverId,
+    required this.reply,
+  });
 
   @override
   final String mssg;
   @override
   final String receiverId;
+  @override
+  final String reply;
 
   @override
   String toString() {
-    return 'ChatEvent.sendMssg(mssg: $mssg, receiverId: $receiverId)';
+    return 'ChatEvent.sendMssg(mssg: $mssg, receiverId: $receiverId, reply: $reply)';
   }
 
   @override
@@ -249,11 +265,12 @@ class _$SendMssgImpl implements _SendMssg {
             other is _$SendMssgImpl &&
             (identical(other.mssg, mssg) || other.mssg == mssg) &&
             (identical(other.receiverId, receiverId) ||
-                other.receiverId == receiverId));
+                other.receiverId == receiverId) &&
+            (identical(other.reply, reply) || other.reply == reply));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, mssg, receiverId);
+  int get hashCode => Object.hash(runtimeType, mssg, receiverId, reply);
 
   /// Create a copy of ChatEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -267,32 +284,33 @@ class _$SendMssgImpl implements _SendMssg {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() init,
-    required TResult Function(String mssg, String receiverId) sendMssg,
+    required TResult Function(String mssg, String receiverId, String reply)
+    sendMssg,
     required TResult Function(String receiverId) getMssg,
   }) {
-    return sendMssg(mssg, receiverId);
+    return sendMssg(mssg, receiverId, reply);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? init,
-    TResult? Function(String mssg, String receiverId)? sendMssg,
+    TResult? Function(String mssg, String receiverId, String reply)? sendMssg,
     TResult? Function(String receiverId)? getMssg,
   }) {
-    return sendMssg?.call(mssg, receiverId);
+    return sendMssg?.call(mssg, receiverId, reply);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? init,
-    TResult Function(String mssg, String receiverId)? sendMssg,
+    TResult Function(String mssg, String receiverId, String reply)? sendMssg,
     TResult Function(String receiverId)? getMssg,
     required TResult orElse(),
   }) {
     if (sendMssg != null) {
-      return sendMssg(mssg, receiverId);
+      return sendMssg(mssg, receiverId, reply);
     }
     return orElse();
   }
@@ -336,10 +354,12 @@ abstract class _SendMssg implements ChatEvent {
   const factory _SendMssg({
     required final String mssg,
     required final String receiverId,
+    required final String reply,
   }) = _$SendMssgImpl;
 
   String get mssg;
   String get receiverId;
+  String get reply;
 
   /// Create a copy of ChatEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -420,7 +440,8 @@ class _$GetMssgImpl implements _GetMssg {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() init,
-    required TResult Function(String mssg, String receiverId) sendMssg,
+    required TResult Function(String mssg, String receiverId, String reply)
+    sendMssg,
     required TResult Function(String receiverId) getMssg,
   }) {
     return getMssg(receiverId);
@@ -430,7 +451,7 @@ class _$GetMssgImpl implements _GetMssg {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? init,
-    TResult? Function(String mssg, String receiverId)? sendMssg,
+    TResult? Function(String mssg, String receiverId, String reply)? sendMssg,
     TResult? Function(String receiverId)? getMssg,
   }) {
     return getMssg?.call(receiverId);
@@ -440,7 +461,7 @@ class _$GetMssgImpl implements _GetMssg {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? init,
-    TResult Function(String mssg, String receiverId)? sendMssg,
+    TResult Function(String mssg, String receiverId, String reply)? sendMssg,
     TResult Function(String receiverId)? getMssg,
     required TResult orElse(),
   }) {

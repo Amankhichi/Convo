@@ -83,6 +83,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           senderId: id.toString(),
           receiverId: event.receiverId,
           mssg: event.mssg,
+          reply: event.reply,
         ),
       );
       add(_Init());

@@ -57,7 +57,7 @@ dependencies:
   # flutter_icons:
   # android: true
   # ios: true
-  # image_path: 'assets/img/akFood.png'
+  # image_path: 'assests/img/convo img.jpeg'
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
@@ -88,6 +88,8 @@ flutter:
   assets:
       - assests/lotti/
       - assests/wallpapers/
+      - assests/img/
+
 
   #   - images/a_dot_ham.jpeg
 
