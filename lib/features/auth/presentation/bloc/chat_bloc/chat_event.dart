@@ -11,6 +11,8 @@ class ChatEvent with _$ChatEvent {
   const factory ChatEvent.getMssg({
     required String receiverId,
   }) = _GetMssg;
+  const factory ChatEvent.isMe(bool value) = _IsMe;
+
 
 
 

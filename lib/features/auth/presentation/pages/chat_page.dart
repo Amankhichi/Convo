@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:convo/core/model/user_model.dart';
 import 'package:convo/core/const.dart/app_colors.dart';
-import 'package:convo/features/home/presentation/bloc/chat_bloc/chat_bloc.dart';
+import 'package:convo/features/auth/presentation/bloc/chat_bloc/chat_bloc.dart';
 import 'package:lottie/lottie.dart';
 
 class ChatPage extends StatefulWidget {
@@ -23,13 +23,13 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   late final TextEditingController _messageController;
   final FocusNode _focusNode = FocusNode();
-  bool isMe = false;
+  // bool isMe = false;
   bool emoji = false;
   bool mssgSelected = false;
   Set<String> mssgIdSelected = {};
   bool mssgEdit = false;
   String? editingMessageId;
-  
+
   bool isReplying = false;
   String? replyMessage;
   String? replyMessageId;
@@ -132,7 +132,8 @@ class _ChatPageState extends State<ChatPage> {
                 ),
               ),
             ),
-            actions: mssgSelected? [
+            actions: mssgSelected
+                ? [
                     if (mssgIdSelected.length == 1)
                       IconButton(
                         icon: const Icon(Icons.edit, color: Colors.white),
@@ -160,7 +161,8 @@ class _ChatPageState extends State<ChatPage> {
                         mssgIdSelected.clear();
                       }),
                     ),
-                  ] : [
+                  ]
+                : [
                     IconButton(
                       onPressed: () {},
                       icon: Icon(Icons.call, color: Colors.white, size: 28),
@@ -209,11 +211,15 @@ class _ChatPageState extends State<ChatPage> {
                               reverse: true,
                               itemCount: state.messages.length,
                               itemBuilder: (context, index) {
-                          final msg = state.messages[state.messages.length -index -1];
+                                final msg =
+                                    state.messages[state.messages.length -
+                                        index -
+                                        1];
 
-                          final bool isMe = msg.senderId == profile?.id.toString();
+                                final bool isMe =
+                                    msg.senderId == profile?.id.toString();
 
-                          return Dismissible(
+                                return Dismissible(
                                   key: Key(msg.id.toString()),
                                   direction: DismissDirection.startToEnd,
 
@@ -222,7 +228,9 @@ class _ChatPageState extends State<ChatPage> {
                                       isReplying = true;
                                       replyMessage = msg.message;
                                       replyMessageId = msg.id.toString();
+                                      _focusNode.requestFocus();
                                     });
+
                                     return false;
                                   },
 
@@ -277,7 +285,13 @@ class _ChatPageState extends State<ChatPage> {
                                             ),
                                           ),
 
-                                        Expanded(child: MssgWidgets(isMe: isMe,message: msg.message,),
+                                        Expanded(
+                                          child: MssgWidgets(
+                                            isMe: isMe,
+                                            message: msg.message,
+                                            replyMessage: msg.reply,
+                                            time: msg.createdAt,
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -349,32 +363,18 @@ class _ChatPageState extends State<ChatPage> {
                     children: [
                       /// Emoji Button
                       IconButton(
-                        color: AppColors.background(context),
-                        iconSize: 25,
-                        icon: emoji
-                            ? Icon(Icons.keyboard)
-                            : Icon(Icons.emoji_emotions_outlined),
-                        onPressed: () async {
-                          final keyboardOpen =
-                              MediaQuery.of(context).viewInsets.bottom > 0;
+                        icon: Icon(
+                          emoji
+                              ? Icons.keyboard
+                              : Icons.emoji_emotions_outlined,
+                        ),
+                        onPressed: () {
+                          setState(() => emoji = !emoji);
 
-                          if (keyboardOpen) {
-                            FocusScope.of(context).unfocus();
-
-                            await Future.delayed(
-                              const Duration(milliseconds: 120),
-                            );
-
-                            if (mounted) {
-                              setState(() => emoji = true);
-                            }
+                          if (emoji) {
+                            _focusNode.unfocus(); // hide keyboard
                           } else {
-                            if (emoji) {
-                              setState(() => emoji = false);
-                              FocusScope.of(context).requestFocus(_focusNode);
-                            } else {
-                              setState(() => emoji = true);
-                            }
+                            _focusNode.requestFocus(); // show keyboard
                           }
                         },
                       ),
@@ -386,6 +386,9 @@ class _ChatPageState extends State<ChatPage> {
                           focusNode: _focusNode,
                           minLines: 1,
                           maxLines: 4,
+                          onTap: () {
+                            setState(() => emoji = false);
+                          },
                           onChanged: (v) {
                             if (mssgEdit && v.trim().isEmpty) {
                               setState(() {
@@ -393,7 +396,9 @@ class _ChatPageState extends State<ChatPage> {
                                 editingMessageId = null;
                               });
                             } else {
-                              setState(() {});
+                              setState(() {
+                                // emoji=false;
+                              });
                             }
                           },
                           style: TextStyle(
@@ -451,15 +456,18 @@ class _ChatPageState extends State<ChatPage> {
                   ),
                 ),
 
-                if (emoji)
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    height: MediaQuery.of(context).size.height * 0.35,
-                    child: EmojiPicker(
-                      textEditingController: _messageController,
-                      config: const Config(
-                        categoryViewConfig: CategoryViewConfig(
-                          initCategory: Category.SMILEYS,
+                if (emoji && MediaQuery.of(context).viewInsets.bottom == 0)
+                  AnimatedSlide(
+                    duration: const Duration(milliseconds: 50),
+                    offset: emoji ? Offset.zero : const Offset(0, 1),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.35,
+                      child: EmojiPicker(
+                        textEditingController: _messageController,
+                        config: const Config(
+                          categoryViewConfig: CategoryViewConfig(
+                            initCategory: Category.SMILEYS,
+                          ),
                         ),
                       ),
                     ),

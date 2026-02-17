@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:convo/core/enum/status.dart';
 import 'package:convo/core/const.dart/app_colors.dart';
-import 'package:convo/features/home/presentation/bloc/chat_bloc/chat_bloc.dart';
+import 'package:convo/features/auth/presentation/bloc/chat_bloc/chat_bloc.dart';
 
 class ContactsPage extends StatefulWidget {
   const ContactsPage({super.key});

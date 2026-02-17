@@ -6,7 +6,7 @@ import 'package:convo/features/home/domain_usecase/add_user_usecase.dart';
 import 'package:convo/features/home/domain_usecase/chat_usecase.dart';
 import 'package:convo/features/home/domain_usecase/contact_usecase.dart';
 import 'package:convo/features/home/domain_usecase/get_user_usecase.dart';
-import 'package:convo/features/home/presentation/bloc/chat_bloc/chat_bloc.dart';
+import 'package:convo/features/auth/presentation/bloc/chat_bloc/chat_bloc.dart';
 import 'package:convo/features/home/presentation/bloc/singup_bloc/singup_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';

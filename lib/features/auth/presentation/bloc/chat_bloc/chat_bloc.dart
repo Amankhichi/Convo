@@ -32,9 +32,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
        _getmssgusecase = getmssgusecase,
        super(const ChatState()) {
     on<_Init>(__Init);
+    on<_IsMe>(__IsMe);
     on<_SendMssg>(__SendMssg);
     on<_GetMssg>(__GetMssg);
-
   }
   Future<void> __Init(_Init event, Emitter<ChatState> emit) async {
     emit(state.copyWith(contactStatus: Status.loading));
@@ -56,7 +56,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
       emit(
         state.copyWith(
-          contacts: matchedContacts, 
+          contacts: matchedContacts,
           contactStatus: Status.success,
         ),
       );
@@ -67,12 +67,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   Future<void> __SendMssg(_SendMssg event, Emitter<ChatState> emit) async {
     emit(state.copyWith(SendMssgStatus: Status.loading));
-        final prefs = await SharedPreferences.getInstance();
-        final id = prefs.getString("id");
+    final prefs = await SharedPreferences.getInstance();
+    final id = prefs.getString("id");
 
     try {
-
-      if (id.toString().isEmpty ) {
+      if (id.toString().isEmpty) {
         emit(state.copyWith(SendMssgStatus: Status.error));
         showError(Injection.currentContext, "Faild Fatch user id ");
         return;
@@ -88,47 +87,44 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       );
       add(_Init());
 
-      emit(state.copyWith(SendMssgStatus: result ? Status.success : Status.error));
+      emit(
+        state.copyWith(SendMssgStatus: result ? Status.success : Status.error),
+      );
     } catch (e) {
       emit(state.copyWith(SendMssgStatus: Status.error));
     }
   }
 
   Future<void> __GetMssg(_GetMssg event, Emitter<ChatState> emit) async {
+    emit(state.copyWith(GetMssgStatus: Status.loading));
 
-  emit(state.copyWith(GetMssgStatus: Status.loading));
+    final profile = Injection.currentContext.read<SingupBloc>().state.profile;
 
-  final profile = Injection.currentContext.read<SingupBloc>().state.profile;
+    if (profile == null) {
+      print("Profile is null");
+      emit(state.copyWith(GetMssgStatus: Status.error));
+      return;
+    }
 
-  if (profile == null) {
-    print("Profile is null");
-    emit(state.copyWith(GetMssgStatus: Status.error));
-    return;
+    try {
+      final messagess = await _getmssgusecase(
+        senderId: profile.id.toString(),
+        receiverId: event.receiverId,
+      );
+
+      emit(state.copyWith(GetMssgStatus: Status.success, messages: messagess));
+      print("Messagesss: $messagess");
+
+      // emit(state.copyWith(GetMssgStatus: Status.init));
+    } catch (e) {
+      print("Error GetMssg: $e");
+
+      emit(state.copyWith(GetMssgStatus: Status.error));
+      emit(state.copyWith(GetMssgStatus: Status.init));
+    }
   }
 
-  try {
-
-    final messagess = await _getmssgusecase(
-      senderId: profile.id.toString(),
-      receiverId: event.receiverId,
-    );
-
-
-    emit(state.copyWith(
-      GetMssgStatus: Status.success,
-      messages: messagess,
-    ));
-    print("Messagesss: $messagess");
-
-    // emit(state.copyWith(GetMssgStatus: Status.init));
-
-  } catch (e) {
-    print("Error GetMssg: $e");
-
-    emit(state.copyWith(GetMssgStatus: Status.error));
-    emit(state.copyWith(GetMssgStatus: Status.init));
+    Future<void> __IsMe(_IsMe event, Emitter<ChatState> emit) async {
+    emit(state.copyWith(isme: event.value));
   }
-}
-
-
 }
