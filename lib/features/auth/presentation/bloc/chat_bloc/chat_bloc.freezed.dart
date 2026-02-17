@@ -943,7 +943,6 @@ abstract class _ChatState implements ChatState {
     final Status SendMssgStatus,
     final Status GetMssgStatus,
     final List<ChatModel> messages,
-    final bool isMe,
   }) = _$ChatStateImpl;
 
   @override
