@@ -45,23 +45,6 @@ class _ChatPageState extends State<ChatPage> {
     Future.delayed(Duration(milliseconds: 300), () {
       _focusNode.requestFocus();
     });
-
-    _sendMessage();
-  }
-
-  void _sendMessage() {
-    Future.delayed(const Duration(microseconds: 1), () async {
-      final text = _messageController.text.trim();
-      if (text.isEmpty) return;
-      context.read<ChatBloc>().add(
-        ChatEvent.sendMssg(
-          mssg: text,
-          receiverId: widget.user.id.toString(),
-          reply: replyMessage.toString(),
-        ),
-      );
-      _messageController.clear();
-    });
   }
 
   @override
@@ -447,7 +430,13 @@ class _ChatPageState extends State<ChatPage> {
                             : IconButton(
                                 color: AppColors.background(context),
                                 onPressed: () {
-                                  _sendMessage();
+                                  context.read<ChatBloc>().add(
+                                    ChatEvent.sendMssg(
+                                      mssg: _messageController.text.trim(),
+                                      receiverId: widget.user.id.toString(),
+                                      reply: replyMessage.toString(),
+                                    ),
+                                  );
                                 },
                                 icon: const Icon(Icons.send, size: 28),
                               ),

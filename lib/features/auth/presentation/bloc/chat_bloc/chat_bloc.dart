@@ -32,7 +32,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
        _getmssgusecase = getmssgusecase,
        super(const ChatState()) {
     on<_Init>(__Init);
-    on<_IsMe>(__IsMe);
+    // on<_IsMe>(__IsMe);
     on<_SendMssg>(__SendMssg);
     on<_GetMssg>(__GetMssg);
   }
@@ -124,7 +124,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     }
   }
 
-    Future<void> __IsMe(_IsMe event, Emitter<ChatState> emit) async {
-    emit(state.copyWith(isme: event.value));
-  }
+  //   Future<void> __IsMe(_IsMe event, Emitter<ChatState> emit) async {
+  //   emit(state.copyWith(isMe: event.value));
+  // }
 }
