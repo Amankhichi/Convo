@@ -41,4 +41,33 @@ class ChatDatasource {
   }
 }
 
+
+ Future<bool> deleteMessage({
+  required int mssgId,
+}) async {
+
+  final url = Uri.parse(
+    "https://ehmqgiqrfpvvznvsvfyu.supabase.co/rest/v1/chats?id=eq.$mssgId",
+  );
+
+  final response = await http.delete(
+    url,
+    headers: {
+      "apikey": apikey,
+      "Authorization": "Bearer $apikey",
+      "Content-Type": "application/json",
+      "Prefer": "return=minimal", // IMPORTANT for delete
+    },
+  );
+
+  if (response.statusCode == 204) {
+    print("✅ Message Deleted Successfully");
+    return true;
+  } else {
+    print("❌ Delete Failed: ${response.statusCode}");
+    print("❌ Body: ${response.body}");
+    return false;
+  }
+}
+
 }

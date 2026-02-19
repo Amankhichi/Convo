@@ -34,7 +34,11 @@ class _ContactsPageState extends State<ContactsPage> {
 
             leading: IconButton(
               onPressed: () => Navigator.pop(context),
-              icon: Icon(Icons.arrow_back, size: 30, color: AppColors.textColor(context)),
+              icon: Icon(
+                Icons.arrow_back,
+                size: 30,
+                color: AppColors.textColor(context),
+              ),
             ),
 
             title: RichText(
@@ -126,10 +130,20 @@ class _ContactsPageState extends State<ContactsPage> {
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                builder: (_) => ChatPage(user: user),
+                              PageRouteBuilder(
+                                pageBuilder: (_, __, ___) =>
+                                    ChatPage(user: user),
+                                transitionsBuilder: (_, a, __, c) =>
+                                    SlideTransition(
+                                      position: Tween(
+                                        begin: const Offset(1, 0),
+                                        end: Offset.zero,
+                                      ).animate(a),
+                                      child: c,
+                                    ),
                               ),
                             );
+
                             Divider(thickness: 0.5, color: Colors.black26);
                           },
                         ),

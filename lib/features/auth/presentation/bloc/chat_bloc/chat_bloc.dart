@@ -5,6 +5,7 @@ import 'package:convo/core/enum/status.dart';
 import 'package:convo/core/model/chat_model.dart';
 import 'package:convo/core/model/user_model.dart';
 import 'package:convo/core/payload/chat_payload.dart';
+import 'package:convo/features/auth/domain_usecase/delet_mssg_usecase.dart';
 import 'package:convo/features/auth/domain_usecase/get_mssg_usecase.dart';
 import 'package:convo/features/home/domain_usecase/chat_usecase.dart';
 import 'package:convo/features/home/domain_usecase/contact_usecase.dart';
@@ -22,18 +23,22 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final ContactUsecase _contactUsecase;
   final ChatUsecase _chatUsecase;
   final GetMssgUseCase _getmssgusecase;
+  final DeletMssgUsecase _deletMssgUsecase;
 
   ChatBloc({
     required ContactUsecase contactusecase,
     required ChatUsecase chatusecase,
     required GetMssgUseCase getmssgusecase,
+    required DeletMssgUsecase deletmssgusecase,
   }) : _contactUsecase = contactusecase,
        _chatUsecase = chatusecase,
        _getmssgusecase = getmssgusecase,
+       _deletMssgUsecase=deletmssgusecase,
        super(const ChatState()) {
     on<_Init>(__Init);
     on<_SendMssg>(__SendMssg);
     on<_GetMssg>(__GetMssg);
+    on<_DeletMssg>(__DeletMssg);
   }
   Future<void> __Init(_Init event, Emitter<ChatState> emit) async {
     emit(state.copyWith(contactStatus: Status.loading));
@@ -82,13 +87,14 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           receiverId: event.receiverId,
           mssg: event.mssg,
           reply: event.reply,
+          block: false,
         ),
       );
-      add(_Init());
 
       emit(
         state.copyWith(SendMssgStatus: result ? Status.success : Status.error),
       );
+      add(_Init());
     } catch (e) {
       emit(state.copyWith(SendMssgStatus: Status.error));
     }
@@ -118,5 +124,24 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       emit(state.copyWith(GetMssgStatus: Status.init));
     }
   }
+
+Future<void> __DeletMssg(_DeletMssg event, Emitter<ChatState> emit) async {
+  emit(state.copyWith(DeleteMssgStatus: Status.loading));
+
+  final success = await _deletMssgUsecase(mssgId: event.mssId);
+
+  if (success) {
+    add(_Init());
+    emit(state.copyWith(DeleteMssgStatus: Status.success));
+    
+
+    // reset after UI update
+    await Future.delayed(const Duration(milliseconds: 300));
+    emit(state.copyWith(DeleteMssgStatus: Status.init));
+  } else {
+    emit(state.copyWith(DeleteMssgStatus: Status.error));
+  }
+}
+
 
 }

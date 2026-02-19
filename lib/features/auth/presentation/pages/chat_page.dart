@@ -5,11 +5,13 @@ import 'package:convo/features/auth/presentation/widgets/mssg_widgets.dart';
 import 'package:convo/features/home/presentation/bloc/singup_bloc/singup_bloc.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:convo/core/model/user_model.dart';
 import 'package:convo/core/const.dart/app_colors.dart';
 import 'package:convo/features/auth/presentation/bloc/chat_bloc/chat_bloc.dart';
 import 'package:lottie/lottie.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ChatPage extends StatefulWidget {
   final UserModel user;
@@ -27,6 +29,8 @@ class _ChatPageState extends State<ChatPage> {
   bool emoji = false;
   bool mssgSelected = false;
   Set<String> mssgIdSelected = {};
+  Set<String> mssgCopySelected = {};
+
   bool mssgEdit = false;
   String? editingMessageId;
 
@@ -63,7 +67,7 @@ class _ChatPageState extends State<ChatPage> {
           /// APP BAR
           appBar: AppBar(
             toolbarHeight: 70,
-            backgroundColor: AppColors.AppBarColor(context),
+            backgroundColor: AppColors.ChatprofileColor(context),
             titleSpacing: 0,
             leading: IconButton(
               icon: Icon(
@@ -72,6 +76,7 @@ class _ChatPageState extends State<ChatPage> {
               ),
               onPressed: () => mssgSelected
                   ? setState(() {
+                    _focusNode.unfocus();
                       mssgSelected = false;
                       mssgIdSelected.clear();
                     })
@@ -80,13 +85,18 @@ class _ChatPageState extends State<ChatPage> {
             title: ListTile(
               onTap: () {
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => ContactUserProfilePage(
-                      child: Lottie.asset(widget.user.lotti, fit: BoxFit.cover),
-                    ),
-                  ),
-                );
+  context,
+  PageRouteBuilder(
+    pageBuilder: (_, __, ___) => ContactUserProfilePage(user: widget.user,),
+    transitionsBuilder: (_, a, __, c) =>
+        SlideTransition(
+          position: Tween(begin: const Offset(-1, 0), end: Offset.zero)
+              .animate(a),
+          child: c,
+        ),
+  ),
+);
+
               },
 
               contentPadding: EdgeInsets.zero,
@@ -102,6 +112,7 @@ class _ChatPageState extends State<ChatPage> {
                 style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
+                  fontSize: 18,
                 ),
               ),
               subtitle: Text(
@@ -136,13 +147,43 @@ class _ChatPageState extends State<ChatPage> {
                           });
                         },
                       ),
+                      
+
+                    IconButton(
+                      icon: Icon(Icons.copy, color: Colors.white),
+                      onPressed: () async {
+                        if (mssgCopySelected.isEmpty) return;
+
+                        final copyText = mssgCopySelected.join("\n");
+
+                        await Clipboard.setData(ClipboardData(text: copyText));
+
+                        Fluttertoast.showToast(
+                          msg: "Text Copied",
+                          gravity: ToastGravity.CENTER,
+                        );
+
+                        setState(() {
+                          mssgSelected = false;
+                          mssgCopySelected.clear();
+                        });
+                      },
+                    ),
 
                     IconButton(
                       icon: const Icon(Icons.delete, color: Colors.white),
-                      onPressed: () => setState(() {
-                        mssgSelected = false;
-                        mssgIdSelected.clear();
-                      }),
+                      onPressed: () {
+                        for (final id in mssgIdSelected) {
+                          context.read<ChatBloc>().add(
+                            ChatEvent.deletMssg(mssId: int.parse(id)),
+                          );
+                        }
+
+                        setState(() {
+                          mssgSelected = false;
+                          mssgIdSelected.clear();
+                        });
+                      },
                     ),
                   ]
                 : [
@@ -231,6 +272,9 @@ class _ChatPageState extends State<ChatPage> {
                                       setState(() {
                                         mssgSelected = true;
                                         mssgIdSelected.add(msg.id.toString());
+                                        mssgCopySelected.add(
+                                          msg.message.toString(),
+                                        );
                                       });
                                     },
                                     onTap: () {
@@ -246,6 +290,7 @@ class _ChatPageState extends State<ChatPage> {
                                             }
                                           } else {
                                             mssgIdSelected.add(id);
+                                            mssgCopySelected.add(id);
                                           }
                                         });
                                       }
@@ -337,7 +382,7 @@ class _ChatPageState extends State<ChatPage> {
                     horizontal: 10,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.AppBarColor(context),
+                    color: AppColors.ChatprofileColor(context),
                     boxShadow: const [
                       BoxShadow(color: Colors.black12, blurRadius: 4),
                     ],
@@ -346,6 +391,8 @@ class _ChatPageState extends State<ChatPage> {
                     children: [
                       /// Emoji Button
                       IconButton(
+                        iconSize: 30,
+                        color: AppColors.background(context),
                         icon: Icon(
                           emoji
                               ? Icons.keyboard
@@ -410,12 +457,14 @@ class _ChatPageState extends State<ChatPage> {
                         backgroundColor: Colors.transparent,
                         child: _messageController.text.trim().isEmpty
                             ? IconButton(
+                                iconSize: 30,
                                 color: AppColors.background(context),
                                 onPressed: () {},
                                 icon: const Icon(Icons.mic, size: 28),
                               )
                             : mssgEdit
                             ? IconButton(
+                                iconSize: 30,
                                 color: AppColors.background(context),
                                 onPressed: () {
                                   setState(() {
@@ -428,6 +477,7 @@ class _ChatPageState extends State<ChatPage> {
                                 icon: const Icon(Icons.check, size: 28),
                               )
                             : IconButton(
+                                iconSize: 30,
                                 color: AppColors.background(context),
                                 onPressed: () {
                                   context.read<ChatBloc>().add(
@@ -437,6 +487,7 @@ class _ChatPageState extends State<ChatPage> {
                                       reply: replyMessage.toString(),
                                     ),
                                   );
+                                  _messageController.clear();
                                 },
                                 icon: const Icon(Icons.send, size: 28),
                               ),

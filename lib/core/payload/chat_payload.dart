@@ -3,6 +3,7 @@ class ChatPayload {
   final String receiverId;
   final String mssg;
   final String reply;
+  final bool block;
 
 
   ChatPayload({
@@ -10,6 +11,8 @@ class ChatPayload {
     required this.receiverId,
     required this.mssg,
     required this.reply,
+    required this.block,
+
   });
 
   Map<String, dynamic> toJson() => {
@@ -17,6 +20,7 @@ class ChatPayload {
         "receiverId": receiverId,
         "mssg": mssg,
         "reply": reply,
+        "block": block,
       };
 
   // ✅ Convert JSON → Dart object
@@ -25,6 +29,7 @@ class ChatPayload {
         receiverId: json["receiverId"],
         mssg: json["mssg"],
         reply: json["reply"],
+        block: json["block"],
 
       );
 }

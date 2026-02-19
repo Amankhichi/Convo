@@ -23,21 +23,21 @@ mixin _$ChatEvent {
     required TResult Function(String mssg, String receiverId, String reply)
     sendMssg,
     required TResult Function(String receiverId) getMssg,
-    required TResult Function(bool value) isMe,
+    required TResult Function(int mssId) deletMssg,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? init,
     TResult? Function(String mssg, String receiverId, String reply)? sendMssg,
     TResult? Function(String receiverId)? getMssg,
-    TResult? Function(bool value)? isMe,
+    TResult? Function(int mssId)? deletMssg,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? init,
     TResult Function(String mssg, String receiverId, String reply)? sendMssg,
     TResult Function(String receiverId)? getMssg,
-    TResult Function(bool value)? isMe,
+    TResult Function(int mssId)? deletMssg,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -45,21 +45,21 @@ mixin _$ChatEvent {
     required TResult Function(_Init value) init,
     required TResult Function(_SendMssg value) sendMssg,
     required TResult Function(_GetMssg value) getMssg,
-    required TResult Function(_IsMe value) isMe,
+    required TResult Function(_DeletMssg value) deletMssg,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Init value)? init,
     TResult? Function(_SendMssg value)? sendMssg,
     TResult? Function(_GetMssg value)? getMssg,
-    TResult? Function(_IsMe value)? isMe,
+    TResult? Function(_DeletMssg value)? deletMssg,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Init value)? init,
     TResult Function(_SendMssg value)? sendMssg,
     TResult Function(_GetMssg value)? getMssg,
-    TResult Function(_IsMe value)? isMe,
+    TResult Function(_DeletMssg value)? deletMssg,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
 }
@@ -129,7 +129,7 @@ class _$InitImpl implements _Init {
     required TResult Function(String mssg, String receiverId, String reply)
     sendMssg,
     required TResult Function(String receiverId) getMssg,
-    required TResult Function(bool value) isMe,
+    required TResult Function(int mssId) deletMssg,
   }) {
     return init();
   }
@@ -140,7 +140,7 @@ class _$InitImpl implements _Init {
     TResult? Function()? init,
     TResult? Function(String mssg, String receiverId, String reply)? sendMssg,
     TResult? Function(String receiverId)? getMssg,
-    TResult? Function(bool value)? isMe,
+    TResult? Function(int mssId)? deletMssg,
   }) {
     return init?.call();
   }
@@ -151,7 +151,7 @@ class _$InitImpl implements _Init {
     TResult Function()? init,
     TResult Function(String mssg, String receiverId, String reply)? sendMssg,
     TResult Function(String receiverId)? getMssg,
-    TResult Function(bool value)? isMe,
+    TResult Function(int mssId)? deletMssg,
     required TResult orElse(),
   }) {
     if (init != null) {
@@ -166,7 +166,7 @@ class _$InitImpl implements _Init {
     required TResult Function(_Init value) init,
     required TResult Function(_SendMssg value) sendMssg,
     required TResult Function(_GetMssg value) getMssg,
-    required TResult Function(_IsMe value) isMe,
+    required TResult Function(_DeletMssg value) deletMssg,
   }) {
     return init(this);
   }
@@ -177,7 +177,7 @@ class _$InitImpl implements _Init {
     TResult? Function(_Init value)? init,
     TResult? Function(_SendMssg value)? sendMssg,
     TResult? Function(_GetMssg value)? getMssg,
-    TResult? Function(_IsMe value)? isMe,
+    TResult? Function(_DeletMssg value)? deletMssg,
   }) {
     return init?.call(this);
   }
@@ -188,7 +188,7 @@ class _$InitImpl implements _Init {
     TResult Function(_Init value)? init,
     TResult Function(_SendMssg value)? sendMssg,
     TResult Function(_GetMssg value)? getMssg,
-    TResult Function(_IsMe value)? isMe,
+    TResult Function(_DeletMssg value)? deletMssg,
     required TResult orElse(),
   }) {
     if (init != null) {
@@ -299,7 +299,7 @@ class _$SendMssgImpl implements _SendMssg {
     required TResult Function(String mssg, String receiverId, String reply)
     sendMssg,
     required TResult Function(String receiverId) getMssg,
-    required TResult Function(bool value) isMe,
+    required TResult Function(int mssId) deletMssg,
   }) {
     return sendMssg(mssg, receiverId, reply);
   }
@@ -310,7 +310,7 @@ class _$SendMssgImpl implements _SendMssg {
     TResult? Function()? init,
     TResult? Function(String mssg, String receiverId, String reply)? sendMssg,
     TResult? Function(String receiverId)? getMssg,
-    TResult? Function(bool value)? isMe,
+    TResult? Function(int mssId)? deletMssg,
   }) {
     return sendMssg?.call(mssg, receiverId, reply);
   }
@@ -321,7 +321,7 @@ class _$SendMssgImpl implements _SendMssg {
     TResult Function()? init,
     TResult Function(String mssg, String receiverId, String reply)? sendMssg,
     TResult Function(String receiverId)? getMssg,
-    TResult Function(bool value)? isMe,
+    TResult Function(int mssId)? deletMssg,
     required TResult orElse(),
   }) {
     if (sendMssg != null) {
@@ -336,7 +336,7 @@ class _$SendMssgImpl implements _SendMssg {
     required TResult Function(_Init value) init,
     required TResult Function(_SendMssg value) sendMssg,
     required TResult Function(_GetMssg value) getMssg,
-    required TResult Function(_IsMe value) isMe,
+    required TResult Function(_DeletMssg value) deletMssg,
   }) {
     return sendMssg(this);
   }
@@ -347,7 +347,7 @@ class _$SendMssgImpl implements _SendMssg {
     TResult? Function(_Init value)? init,
     TResult? Function(_SendMssg value)? sendMssg,
     TResult? Function(_GetMssg value)? getMssg,
-    TResult? Function(_IsMe value)? isMe,
+    TResult? Function(_DeletMssg value)? deletMssg,
   }) {
     return sendMssg?.call(this);
   }
@@ -358,7 +358,7 @@ class _$SendMssgImpl implements _SendMssg {
     TResult Function(_Init value)? init,
     TResult Function(_SendMssg value)? sendMssg,
     TResult Function(_GetMssg value)? getMssg,
-    TResult Function(_IsMe value)? isMe,
+    TResult Function(_DeletMssg value)? deletMssg,
     required TResult orElse(),
   }) {
     if (sendMssg != null) {
@@ -461,7 +461,7 @@ class _$GetMssgImpl implements _GetMssg {
     required TResult Function(String mssg, String receiverId, String reply)
     sendMssg,
     required TResult Function(String receiverId) getMssg,
-    required TResult Function(bool value) isMe,
+    required TResult Function(int mssId) deletMssg,
   }) {
     return getMssg(receiverId);
   }
@@ -472,7 +472,7 @@ class _$GetMssgImpl implements _GetMssg {
     TResult? Function()? init,
     TResult? Function(String mssg, String receiverId, String reply)? sendMssg,
     TResult? Function(String receiverId)? getMssg,
-    TResult? Function(bool value)? isMe,
+    TResult? Function(int mssId)? deletMssg,
   }) {
     return getMssg?.call(receiverId);
   }
@@ -483,7 +483,7 @@ class _$GetMssgImpl implements _GetMssg {
     TResult Function()? init,
     TResult Function(String mssg, String receiverId, String reply)? sendMssg,
     TResult Function(String receiverId)? getMssg,
-    TResult Function(bool value)? isMe,
+    TResult Function(int mssId)? deletMssg,
     required TResult orElse(),
   }) {
     if (getMssg != null) {
@@ -498,7 +498,7 @@ class _$GetMssgImpl implements _GetMssg {
     required TResult Function(_Init value) init,
     required TResult Function(_SendMssg value) sendMssg,
     required TResult Function(_GetMssg value) getMssg,
-    required TResult Function(_IsMe value) isMe,
+    required TResult Function(_DeletMssg value) deletMssg,
   }) {
     return getMssg(this);
   }
@@ -509,7 +509,7 @@ class _$GetMssgImpl implements _GetMssg {
     TResult? Function(_Init value)? init,
     TResult? Function(_SendMssg value)? sendMssg,
     TResult? Function(_GetMssg value)? getMssg,
-    TResult? Function(_IsMe value)? isMe,
+    TResult? Function(_DeletMssg value)? deletMssg,
   }) {
     return getMssg?.call(this);
   }
@@ -520,7 +520,7 @@ class _$GetMssgImpl implements _GetMssg {
     TResult Function(_Init value)? init,
     TResult Function(_SendMssg value)? sendMssg,
     TResult Function(_GetMssg value)? getMssg,
-    TResult Function(_IsMe value)? isMe,
+    TResult Function(_DeletMssg value)? deletMssg,
     required TResult orElse(),
   }) {
     if (getMssg != null) {
@@ -543,33 +543,35 @@ abstract class _GetMssg implements ChatEvent {
 }
 
 /// @nodoc
-abstract class _$$IsMeImplCopyWith<$Res> {
-  factory _$$IsMeImplCopyWith(
-    _$IsMeImpl value,
-    $Res Function(_$IsMeImpl) then,
-  ) = __$$IsMeImplCopyWithImpl<$Res>;
+abstract class _$$DeletMssgImplCopyWith<$Res> {
+  factory _$$DeletMssgImplCopyWith(
+    _$DeletMssgImpl value,
+    $Res Function(_$DeletMssgImpl) then,
+  ) = __$$DeletMssgImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({bool value});
+  $Res call({int mssId});
 }
 
 /// @nodoc
-class __$$IsMeImplCopyWithImpl<$Res>
-    extends _$ChatEventCopyWithImpl<$Res, _$IsMeImpl>
-    implements _$$IsMeImplCopyWith<$Res> {
-  __$$IsMeImplCopyWithImpl(_$IsMeImpl _value, $Res Function(_$IsMeImpl) _then)
-    : super(_value, _then);
+class __$$DeletMssgImplCopyWithImpl<$Res>
+    extends _$ChatEventCopyWithImpl<$Res, _$DeletMssgImpl>
+    implements _$$DeletMssgImplCopyWith<$Res> {
+  __$$DeletMssgImplCopyWithImpl(
+    _$DeletMssgImpl _value,
+    $Res Function(_$DeletMssgImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of ChatEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? value = null}) {
+  $Res call({Object? mssId = null}) {
     return _then(
-      _$IsMeImpl(
-        null == value
-            ? _value.value
-            : value // ignore: cast_nullable_to_non_nullable
-                  as bool,
+      _$DeletMssgImpl(
+        mssId: null == mssId
+            ? _value.mssId
+            : mssId // ignore: cast_nullable_to_non_nullable
+                  as int,
       ),
     );
   }
@@ -577,35 +579,35 @@ class __$$IsMeImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$IsMeImpl implements _IsMe {
-  const _$IsMeImpl(this.value);
+class _$DeletMssgImpl implements _DeletMssg {
+  const _$DeletMssgImpl({required this.mssId});
 
   @override
-  final bool value;
+  final int mssId;
 
   @override
   String toString() {
-    return 'ChatEvent.isMe(value: $value)';
+    return 'ChatEvent.deletMssg(mssId: $mssId)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$IsMeImpl &&
-            (identical(other.value, value) || other.value == value));
+            other is _$DeletMssgImpl &&
+            (identical(other.mssId, mssId) || other.mssId == mssId));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, value);
+  int get hashCode => Object.hash(runtimeType, mssId);
 
   /// Create a copy of ChatEvent
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$IsMeImplCopyWith<_$IsMeImpl> get copyWith =>
-      __$$IsMeImplCopyWithImpl<_$IsMeImpl>(this, _$identity);
+  _$$DeletMssgImplCopyWith<_$DeletMssgImpl> get copyWith =>
+      __$$DeletMssgImplCopyWithImpl<_$DeletMssgImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -614,9 +616,9 @@ class _$IsMeImpl implements _IsMe {
     required TResult Function(String mssg, String receiverId, String reply)
     sendMssg,
     required TResult Function(String receiverId) getMssg,
-    required TResult Function(bool value) isMe,
+    required TResult Function(int mssId) deletMssg,
   }) {
-    return isMe(value);
+    return deletMssg(mssId);
   }
 
   @override
@@ -625,9 +627,9 @@ class _$IsMeImpl implements _IsMe {
     TResult? Function()? init,
     TResult? Function(String mssg, String receiverId, String reply)? sendMssg,
     TResult? Function(String receiverId)? getMssg,
-    TResult? Function(bool value)? isMe,
+    TResult? Function(int mssId)? deletMssg,
   }) {
-    return isMe?.call(value);
+    return deletMssg?.call(mssId);
   }
 
   @override
@@ -636,11 +638,11 @@ class _$IsMeImpl implements _IsMe {
     TResult Function()? init,
     TResult Function(String mssg, String receiverId, String reply)? sendMssg,
     TResult Function(String receiverId)? getMssg,
-    TResult Function(bool value)? isMe,
+    TResult Function(int mssId)? deletMssg,
     required TResult orElse(),
   }) {
-    if (isMe != null) {
-      return isMe(value);
+    if (deletMssg != null) {
+      return deletMssg(mssId);
     }
     return orElse();
   }
@@ -651,9 +653,9 @@ class _$IsMeImpl implements _IsMe {
     required TResult Function(_Init value) init,
     required TResult Function(_SendMssg value) sendMssg,
     required TResult Function(_GetMssg value) getMssg,
-    required TResult Function(_IsMe value) isMe,
+    required TResult Function(_DeletMssg value) deletMssg,
   }) {
-    return isMe(this);
+    return deletMssg(this);
   }
 
   @override
@@ -662,9 +664,9 @@ class _$IsMeImpl implements _IsMe {
     TResult? Function(_Init value)? init,
     TResult? Function(_SendMssg value)? sendMssg,
     TResult? Function(_GetMssg value)? getMssg,
-    TResult? Function(_IsMe value)? isMe,
+    TResult? Function(_DeletMssg value)? deletMssg,
   }) {
-    return isMe?.call(this);
+    return deletMssg?.call(this);
   }
 
   @override
@@ -673,25 +675,25 @@ class _$IsMeImpl implements _IsMe {
     TResult Function(_Init value)? init,
     TResult Function(_SendMssg value)? sendMssg,
     TResult Function(_GetMssg value)? getMssg,
-    TResult Function(_IsMe value)? isMe,
+    TResult Function(_DeletMssg value)? deletMssg,
     required TResult orElse(),
   }) {
-    if (isMe != null) {
-      return isMe(this);
+    if (deletMssg != null) {
+      return deletMssg(this);
     }
     return orElse();
   }
 }
 
-abstract class _IsMe implements ChatEvent {
-  const factory _IsMe(final bool value) = _$IsMeImpl;
+abstract class _DeletMssg implements ChatEvent {
+  const factory _DeletMssg({required final int mssId}) = _$DeletMssgImpl;
 
-  bool get value;
+  int get mssId;
 
   /// Create a copy of ChatEvent
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$IsMeImplCopyWith<_$IsMeImpl> get copyWith =>
+  _$$DeletMssgImplCopyWith<_$DeletMssgImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -702,7 +704,7 @@ mixin _$ChatState {
   Status get SendMssgStatus => throw _privateConstructorUsedError;
   Status get GetMssgStatus => throw _privateConstructorUsedError;
   List<ChatModel> get messages => throw _privateConstructorUsedError;
-  bool get isMe => throw _privateConstructorUsedError;
+  Status get DeleteMssgStatus => throw _privateConstructorUsedError;
 
   /// Create a copy of ChatState
   /// with the given fields replaced by the non-null parameter values.
@@ -722,7 +724,7 @@ abstract class $ChatStateCopyWith<$Res> {
     Status SendMssgStatus,
     Status GetMssgStatus,
     List<ChatModel> messages,
-    bool isMe,
+    Status DeleteMssgStatus,
   });
 }
 
@@ -746,7 +748,7 @@ class _$ChatStateCopyWithImpl<$Res, $Val extends ChatState>
     Object? SendMssgStatus = null,
     Object? GetMssgStatus = null,
     Object? messages = null,
-    Object? isMe = null,
+    Object? DeleteMssgStatus = null,
   }) {
     return _then(
       _value.copyWith(
@@ -770,10 +772,10 @@ class _$ChatStateCopyWithImpl<$Res, $Val extends ChatState>
                 ? _value.messages
                 : messages // ignore: cast_nullable_to_non_nullable
                       as List<ChatModel>,
-            isMe: null == isMe
-                ? _value.isMe
-                : isMe // ignore: cast_nullable_to_non_nullable
-                      as bool,
+            DeleteMssgStatus: null == DeleteMssgStatus
+                ? _value.DeleteMssgStatus
+                : DeleteMssgStatus // ignore: cast_nullable_to_non_nullable
+                      as Status,
           )
           as $Val,
     );
@@ -795,7 +797,7 @@ abstract class _$$ChatStateImplCopyWith<$Res>
     Status SendMssgStatus,
     Status GetMssgStatus,
     List<ChatModel> messages,
-    bool isMe,
+    Status DeleteMssgStatus,
   });
 }
 
@@ -818,7 +820,7 @@ class __$$ChatStateImplCopyWithImpl<$Res>
     Object? SendMssgStatus = null,
     Object? GetMssgStatus = null,
     Object? messages = null,
-    Object? isMe = null,
+    Object? DeleteMssgStatus = null,
   }) {
     return _then(
       _$ChatStateImpl(
@@ -842,10 +844,10 @@ class __$$ChatStateImplCopyWithImpl<$Res>
             ? _value._messages
             : messages // ignore: cast_nullable_to_non_nullable
                   as List<ChatModel>,
-        isMe: null == isMe
-            ? _value.isMe
-            : isMe // ignore: cast_nullable_to_non_nullable
-                  as bool,
+        DeleteMssgStatus: null == DeleteMssgStatus
+            ? _value.DeleteMssgStatus
+            : DeleteMssgStatus // ignore: cast_nullable_to_non_nullable
+                  as Status,
       ),
     );
   }
@@ -860,7 +862,7 @@ class _$ChatStateImpl implements _ChatState {
     this.SendMssgStatus = Status.init,
     this.GetMssgStatus = Status.init,
     final List<ChatModel> messages = const [],
-    this.isMe = false,
+    this.DeleteMssgStatus = Status.init,
   }) : _contacts = contacts,
        _messages = messages;
 
@@ -893,11 +895,11 @@ class _$ChatStateImpl implements _ChatState {
 
   @override
   @JsonKey()
-  final bool isMe;
+  final Status DeleteMssgStatus;
 
   @override
   String toString() {
-    return 'ChatState(contacts: $contacts, contactStatus: $contactStatus, SendMssgStatus: $SendMssgStatus, GetMssgStatus: $GetMssgStatus, messages: $messages, isMe: $isMe)';
+    return 'ChatState(contacts: $contacts, contactStatus: $contactStatus, SendMssgStatus: $SendMssgStatus, GetMssgStatus: $GetMssgStatus, messages: $messages, DeleteMssgStatus: $DeleteMssgStatus)';
   }
 
   @override
@@ -913,7 +915,8 @@ class _$ChatStateImpl implements _ChatState {
             (identical(other.GetMssgStatus, GetMssgStatus) ||
                 other.GetMssgStatus == GetMssgStatus) &&
             const DeepCollectionEquality().equals(other._messages, _messages) &&
-            (identical(other.isMe, isMe) || other.isMe == isMe));
+            (identical(other.DeleteMssgStatus, DeleteMssgStatus) ||
+                other.DeleteMssgStatus == DeleteMssgStatus));
   }
 
   @override
@@ -924,7 +927,7 @@ class _$ChatStateImpl implements _ChatState {
     SendMssgStatus,
     GetMssgStatus,
     const DeepCollectionEquality().hash(_messages),
-    isMe,
+    DeleteMssgStatus,
   );
 
   /// Create a copy of ChatState
@@ -943,6 +946,7 @@ abstract class _ChatState implements ChatState {
     final Status SendMssgStatus,
     final Status GetMssgStatus,
     final List<ChatModel> messages,
+    final Status DeleteMssgStatus,
   }) = _$ChatStateImpl;
 
   @override
@@ -956,7 +960,7 @@ abstract class _ChatState implements ChatState {
   @override
   List<ChatModel> get messages;
   @override
-  bool get isMe;
+  Status get DeleteMssgStatus;
 
   /// Create a copy of ChatState
   /// with the given fields replaced by the non-null parameter values.

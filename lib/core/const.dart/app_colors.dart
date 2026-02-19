@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   static Color textColor(BuildContext context) => Constant.isDark(context)?Colors.white:Color(0xFF0088CC);
-  static Color AppBarColor(BuildContext context) => Constant.isDark(context)?Colors.black :Color(0xFF0088CC);
-
+  static Color ChatprofileColor(BuildContext context) => Constant.isDark(context)?Colors.black :Color(0xFF0088CC);
+  static Color AppBarColor(BuildContext context) => Constant.isDark(context)?Colors.white.withOpacity(0.08) :Color(0xFF0088CC);
   static Color invertTextColor(BuildContext context) => Constant.isDark(context) ? Colors.white : Colors.black;
-  static Color backgroundColor(BuildContext context) => Constant.isDark(context) ? const Color.fromARGB(255, 31, 29, 29) : Colors.white;
+  static Color backgroundColor(BuildContext context) => Constant.isDark(context) ? const Color.fromARGB(255, 31, 29, 29) : const Color.fromARGB(255, 238, 235, 235);
   static Color iconColor(BuildContext context) => !Constant.isDark(context) ? Colors.black : Colors.white;
   static Color matchTheme(BuildContext context) => Constant.isDark(context) ? Colors.black : Colors.white;
   static Color opositeTheme(BuildContext context) => !Constant.isDark(context) ? Colors.black : Colors.white;
