@@ -1,4 +1,4 @@
-import 'package:convo/features/auth/datasource/chat_datasource.dart';
+import 'package:convo/features/chat/datasource/chat_datasource.dart';
 
 class DeletMssgUsecase {
   final ChatDatasource datasource;

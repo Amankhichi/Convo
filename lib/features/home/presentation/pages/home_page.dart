@@ -1,7 +1,7 @@
 import 'package:convo/core/const.dart/app_colors.dart';
 import 'package:convo/features/auth/presentation/pages/profile_page.dart';
 import 'package:convo/features/contact/presentation/pages/contact_page.dart';
-import 'package:convo/features/home/presentation/pages/singup_page.dart';
+import 'package:convo/features/home/presentation/pages/login_page.dart';
 import 'package:convo/features/home/presentation/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -89,7 +89,7 @@ class _HomePageState extends State<HomePage> {
                 leading: const Icon(Icons.logout),
                 title: const Text("Logout"),
                 onTap: () async {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=> SingupPage()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=> LoginPage()));
                   final prefs = await SharedPreferences.getInstance();
                   await prefs.remove("id"); 
                 },

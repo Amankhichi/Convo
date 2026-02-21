@@ -1,7 +1,7 @@
 import 'package:convo/core/const.dart/constant.dart';
 import 'package:convo/core/enum/status.dart';
-import 'package:convo/features/auth/presentation/pages/contact_user_profile_page.dart';
-import 'package:convo/features/auth/presentation/widgets/mssg_widgets.dart';
+import 'package:convo/features/chat/presentation/pages/contact_user_profile_page.dart';
+import 'package:convo/features/chat/presentation/widgets/mssg_widgets.dart';
 import 'package:convo/features/home/presentation/bloc/singup_bloc/singup_bloc.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:convo/core/model/user_model.dart';
 import 'package:convo/core/const.dart/app_colors.dart';
-import 'package:convo/features/auth/presentation/bloc/chat_bloc/chat_bloc.dart';
+import 'package:convo/features/chat/presentation/bloc/chat_bloc/chat_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 

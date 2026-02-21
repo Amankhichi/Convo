@@ -2,7 +2,7 @@ import 'package:convo/core/const.dart/app_colors.dart';
 import 'package:convo/core/enum/status.dart';
 import 'package:convo/features/auth/presentation/pages/welcome_page.dart';
 import 'package:convo/features/home/presentation/bloc/singup_bloc/singup_bloc.dart';
-import 'package:convo/features/home/presentation/pages/singup_page.dart';
+import 'package:convo/features/home/presentation/pages/login_page.dart';
 import 'package:convo/features/home/presentation/widgets/custom_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -55,7 +55,7 @@ class _AddNamePageState extends State<AddNamePage> {
           leading: IconButton(
             color: AppColors.textColor(context),
             onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const SingupPage()));
+              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const LoginPage()));
             },
             icon: CustomIcon(icon: Icons.arrow_back, size: 35,),
           ),

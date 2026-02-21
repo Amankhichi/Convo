@@ -1,5 +1,5 @@
 import 'package:convo/core/model/chat_model.dart';
-import 'package:convo/features/auth/datasource/chat_datasource.dart';
+import 'package:convo/features/chat/datasource/chat_datasource.dart';
 
 class GetMssgUseCase {
   final ChatDatasource datasource;

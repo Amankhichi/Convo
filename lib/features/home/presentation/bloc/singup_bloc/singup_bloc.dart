@@ -7,7 +7,7 @@ import 'package:convo/features/home/domain_usecase/add_user_usecase.dart';
 import 'package:convo/features/home/domain_usecase/get_user_usecase.dart';
 import 'package:convo/features/home/presentation/pages/add_name_page.dart';
 import 'package:convo/features/home/presentation/pages/home_page.dart';
-import 'package:convo/features/home/presentation/pages/singup_page.dart';
+import 'package:convo/features/home/presentation/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -191,7 +191,7 @@ class SingupBloc extends Bloc<SingupEvent, SingupState> {
       emit(state.copyWith(checkuserStatus: Status.error));
       Navigator.pushReplacement(
         Injection.currentContext,
-        MaterialPageRoute(builder: (_) => SingupPage()),
+        MaterialPageRoute(builder: (_) => LoginPage()),
       );
     }
   }
