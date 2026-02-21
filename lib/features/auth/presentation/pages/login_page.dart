@@ -1,5 +1,5 @@
 import 'package:convo/core/const.dart/app_colors.dart';
-import 'package:convo/features/home/presentation/bloc/singup_bloc/singup_bloc.dart';
+import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
 import 'package:convo/features/home/presentation/widgets/country.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SingupBloc, SingupState>(
+    return BlocBuilder<LoginBloc, LoginState>(
       builder: (context, state) {
         return Scaffold(
           backgroundColor: AppColors.backgroundColor(context),
@@ -113,8 +113,8 @@ class _LoginPageState extends State<LoginPage> {
                           ],
                           onChanged: (value) {
                             setState(() {}); 
-                            context.read<SingupBloc>().add(
-                                  SingupEvent.phone(value),
+                            context.read<LoginBloc>().add(
+                                  LoginEvent.phone(value),
                                 );
                           },
                           decoration: InputDecoration(
@@ -147,8 +147,8 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       onPressed: phoneController.text.length == 10
                           ? () {
-                              context.read<SingupBloc>().add(
-                                    SingupEvent.checkNumber(),
+                              context.read<LoginBloc>().add(
+                                    LoginEvent.checkNumber(),
                                   );
                             }
                           : null,

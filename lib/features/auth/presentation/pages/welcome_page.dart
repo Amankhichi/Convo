@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:convo/features/home/presentation/bloc/singup_bloc/singup_bloc.dart';
+import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
 import 'package:convo/features/home/presentation/pages/home_page.dart';
 import 'package:convo/features/home/presentation/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +25,7 @@ class _WelcomePageState extends State<WelcomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SingupBloc, SingupState>(
+    return BlocBuilder<LoginBloc, LoginState>(
       builder: (context, state) {
         return Scaffold(
           body: Stack(

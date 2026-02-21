@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:convo/core/enum/status.dart';
 import 'package:convo/core/const.dart/app_colors.dart';
-import 'package:convo/features/chat/presentation/bloc/chat_bloc/chat_bloc.dart';
 
 class ContactsPage extends StatefulWidget {
   const ContactsPage({super.key});
@@ -23,7 +22,7 @@ class _ContactsPageState extends State<ContactsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ChatBloc, ChatState>(
+    return BlocBuilder<ContactBloc, ContactState>(
       builder: (context, state) {
         return Scaffold(
           backgroundColor: AppColors.backgroundColor(context),

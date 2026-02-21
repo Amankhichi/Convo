@@ -1,8 +1,8 @@
 import 'package:convo/core/const.dart/constant.dart';
 import 'package:convo/core/enum/status.dart';
+import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
 import 'package:convo/features/chat/presentation/pages/contact_user_profile_page.dart';
 import 'package:convo/features/chat/presentation/widgets/mssg_widgets.dart';
-import 'package:convo/features/home/presentation/bloc/singup_bloc/singup_bloc.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -243,10 +243,10 @@ class _ChatPageState extends State<ChatPage> {
               child: Column(
                 children: [
                   Expanded(
-                    child: BlocBuilder<SingupBloc, SingupState>(
+                    child: BlocBuilder<LoginBloc, LoginState>(
                       builder: (context, sstate) {
                         final profile = context
-                            .read<SingupBloc>()
+                            .read<LoginBloc>()
                             .state
                             .profile;
                         return state.GetMssgStatus == Status.loading

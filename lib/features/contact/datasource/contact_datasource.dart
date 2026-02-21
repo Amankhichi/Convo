@@ -22,6 +22,7 @@ class ContactDatasource {
   );
 
   if (res.statusCode == 200) {
+    print("Success get user ");
     final List data = jsonDecode(res.body);
     return data.map((e) => UserModel.fromJson(e)).toList();
   } else {

@@ -1,14 +1,14 @@
+import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
-import 'package:convo/features/home/presentation/bloc/singup_bloc/singup_bloc.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SingupBloc, SingupState>(
+    return BlocBuilder<LoginBloc, LoginState>(
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(

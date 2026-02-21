@@ -1,5 +1,5 @@
-import 'package:convo/features/home/presentation/bloc/singup_bloc/singup_bloc.dart';
-import 'package:convo/features/home/presentation/pages/add_name_page.dart';
+import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
+import 'package:convo/features/auth/presentation/pages/add_name_page.dart';
 import 'package:convo/features/home/presentation/widgets/custom_text.dart';
 import 'package:convo/features/home/presentation/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
@@ -56,11 +56,11 @@ class LottiAnimationWidget extends StatelessWidget {
                     actions: [
                       Column(
                         children: [
-                          CustomTextfield(label: "Nick name", onChanged: (v){context.read<SingupBloc>().add(SingupEvent.nickName(v));}),
+                          CustomTextfield(label: "Nick name", onChanged: (v){context.read<LoginBloc>().add(LoginEvent.nickName(v));}),
 
                           TextButton(
                             onPressed: () { 
-                              context.read<SingupBloc>().add(SingupEvent.lotti(lottiList[index]));
+                              context.read<LoginBloc>().add(LoginEvent.lotti(lottiList[index]));
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(

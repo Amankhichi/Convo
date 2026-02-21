@@ -2,7 +2,7 @@ part of "injection.dart";
 
 class InjectionBloc {
 
-  static SingupBloc get singupbloc => SingupBloc(
+  static LoginBloc get loginbloc => LoginBloc(
     adduserusecase: getIt<AddUserUsecase>(),
     getuserusecase: getIt<GetUserUsecase>(),
   );

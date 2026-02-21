@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => InjectionBloc.singupbloc),
+        BlocProvider(create: (context) => InjectionBloc.loginbloc),
         BlocProvider(create: (context) => InjectionBloc.chatbloc),
         BlocProvider(create: (context) => InjectionBloc.contactbloc),
       ],

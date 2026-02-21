@@ -5,12 +5,12 @@ import 'package:convo/core/enum/status.dart';
 import 'package:convo/core/model/chat_model.dart';
 import 'package:convo/core/model/user_model.dart';
 import 'package:convo/core/payload/chat_payload.dart';
+import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
 import 'package:convo/features/chat/domain_usecase/delet_mssg_usecase.dart';
 import 'package:convo/features/chat/domain_usecase/edit_meesage_usecase.dart';
 import 'package:convo/features/chat/domain_usecase/get_mssg_usecase.dart';
 import 'package:convo/features/home/domain_usecase/chat_usecase.dart';
 // import 'package:convo/features/contact/domain_usecase/contact_usecase.dart';
-import 'package:convo/features/home/presentation/bloc/singup_bloc/singup_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show ReadContext;
 import 'package:freezed_annotation/freezed_annotation.dart';
 // import 'package:permission_handler/permission_handler.dart';
@@ -108,7 +108,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   Future<void> __GetMssg(_GetMssg event, Emitter<ChatState> emit) async {
     emit(state.copyWith(GetMssgStatus: Status.loading));
 
-    final profile = Injection.currentContext.read<SingupBloc>().state.profile;
+    final profile = Injection.currentContext.read<LoginBloc>().state.profile;
 
     if (profile == null) {
       emit(state.copyWith(GetMssgStatus: Status.error));

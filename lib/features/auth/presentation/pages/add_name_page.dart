@@ -1,8 +1,8 @@
 import 'package:convo/core/const.dart/app_colors.dart';
 import 'package:convo/core/enum/status.dart';
+import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
 import 'package:convo/features/auth/presentation/pages/welcome_page.dart';
-import 'package:convo/features/home/presentation/bloc/singup_bloc/singup_bloc.dart';
-import 'package:convo/features/home/presentation/pages/login_page.dart';
+import 'package:convo/features/auth/presentation/pages/login_page.dart';
 import 'package:convo/features/home/presentation/widgets/custom_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,7 +40,7 @@ class _AddNamePageState extends State<AddNamePage> {
   ];
   @override
   Widget build(BuildContext context) {
-    return BlocListener<SingupBloc, SingupState>(
+    return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
         if (state.adduserStatus == Status.success) {
           Navigator.pushReplacement(
@@ -98,7 +98,7 @@ class _AddNamePageState extends State<AddNamePage> {
                 controller: nameController,
                 label: "Full name",
                 onChanged: (value) {
-                  context.read<SingupBloc>().add(SingupEvent.name(value));
+                  context.read<LoginBloc>().add(LoginEvent.name(value));
                 },
               ),
 
@@ -118,7 +118,7 @@ class _AddNamePageState extends State<AddNamePage> {
                     position: PopupMenuPosition.over,
                     icon: const Icon(Icons.arrow_drop_down),
                     onSelected: (v) =>
-                        context.read<SingupBloc>().add(SingupEvent.about(v)),
+                        context.read<LoginBloc>().add(LoginEvent.about(v)),
                     itemBuilder: (_) => options
                         .map((e) => PopupMenuItem(value: e, child: Text(e)))
                         .toList(),
@@ -138,7 +138,7 @@ class _AddNamePageState extends State<AddNamePage> {
         ),
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-          child: BlocBuilder<SingupBloc, SingupState>(
+          child: BlocBuilder<LoginBloc, LoginState>(
             builder: (context, state) {
               return SizedBox(
                 height: 52,
@@ -147,7 +147,7 @@ class _AddNamePageState extends State<AddNamePage> {
                   onPressed: state.name.isEmpty
                       ? null
                       : () {
-                          context.read<SingupBloc>().add(SingupEvent.add());
+                          context.read<LoginBloc>().add(LoginEvent.add());
                         },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,

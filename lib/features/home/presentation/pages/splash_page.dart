@@ -1,4 +1,4 @@
-import 'package:convo/features/home/presentation/bloc/singup_bloc/singup_bloc.dart';
+import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:convo/core/const.dart/app_colors.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,7 +17,7 @@ void initState() {
   super.initState();
 
   Future.delayed(const Duration(seconds: 2), () async {
-  context.read<SingupBloc>().add(SingupEvent.checkUser());
+  context.read<LoginBloc>().add(LoginEvent.checkUser());
   });
 }
 
