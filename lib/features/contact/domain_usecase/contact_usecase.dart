@@ -1,10 +1,10 @@
 import 'package:convo/core/model/user_model.dart';
-import 'package:convo/features/home/datasource/user_datasource.dart';
+import 'package:convo/features/contact/datasource/contact_datasource.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ContactUsecase {
-  final UserDatasource datasource;
+  final ContactDatasource datasource;
 
   ContactUsecase({required this.datasource});
 

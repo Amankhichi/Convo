@@ -1,15 +1,21 @@
 import 'package:convo/core/const.dart/app_colors.dart';
 import 'package:convo/core/model/user_model.dart';
+import 'package:convo/features/auth/presentation/bloc/chat_bloc/chat_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 
-class ContactUserProfilePage extends StatelessWidget {
-   ContactUserProfilePage({
-    super.key,
-    required this.user,
-  });
+class ContactUserProfilePage extends StatefulWidget {
+  const ContactUserProfilePage({super.key, required this.user});
 
   final UserModel user;
+
+  @override
+  State<ContactUserProfilePage> createState() => _ContactUserProfilePageState();
+}
+
+class _ContactUserProfilePageState extends State<ContactUserProfilePage> {
+  bool block = false;
 
   @override
   Widget build(BuildContext context) {
@@ -19,11 +25,17 @@ class ContactUserProfilePage extends StatelessWidget {
         backgroundColor: AppColors.AppBarColor(context),
         elevation: 0,
         leading: BackButton(color: Colors.white),
-        title: Text(user.name, style: const TextStyle(fontWeight: FontWeight.bold,color: Colors.white)),
+        title: Text(
+          widget.user.name,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
         actions: [
           IconButton(
             onPressed: () {},
-            icon: const Icon(Icons.more_vert,color: Colors.white,),
+            icon: const Icon(Icons.more_vert, color: Colors.white),
           ),
         ],
       ),
@@ -43,17 +55,19 @@ class ContactUserProfilePage extends StatelessWidget {
                 ),
               ),
               child: CircleAvatar(
-                radius: 65,
-                backgroundColor: Colors.black,
-                child: Lottie.asset(user.lotti, fit: BoxFit.cover),
-              ),
+                  radius: 65,
+                  backgroundColor: AppColors.primary,
+                  child: ClipOval(
+                    child: Lottie.asset(widget.user.lotti, fit: BoxFit.cover),
+                  ),
+                ),
             ),
 
             const SizedBox(height: 15),
 
             /// Name
             Text(
-              user.nickName,
+              widget.user.nickName,
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
@@ -65,11 +79,11 @@ class ContactUserProfilePage extends StatelessWidget {
 
             /// Status
             Text(
-              user.online ? "Online" : "Offline",
+              widget.user.online ? "Online" : "Offline",
               style: TextStyle(
-                color: user.online ?  Colors.green : Colors.grey,
+                color: widget.user.online ? Colors.green : Colors.grey,
                 fontSize: 18,
-                fontWeight: FontWeight.w900
+                fontWeight: FontWeight.w900,
               ),
             ),
 
@@ -86,14 +100,16 @@ class ContactUserProfilePage extends StatelessWidget {
             ),
 
             const SizedBox(height: 30),
-
-            /// 🔥 About Card
             _glassCard(
               context,
               title: "About",
               child: Text(
-                user.about,
-                style: const TextStyle(color: Colors.white70, fontSize: 18,fontWeight: FontWeight.w600),
+                widget.user.about,
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
 
@@ -103,62 +119,108 @@ class ContactUserProfilePage extends StatelessWidget {
               title: "Phone",
               child: const Text(
                 "+91 1234567890",
-                style: TextStyle(color: Colors.white70, fontSize: 18,fontWeight: FontWeight.w600),
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
 
             const SizedBox(height: 20),
+
+            Card(
+              margin: const EdgeInsets.symmetric(horizontal: 15,vertical: 5),
+              color: AppColors.AppBarColor(context),
+              child: SizedBox(
+                width: double.infinity,
+                child: Column(
+                  // crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          block = !block; 
+                        });
+
+                        // context.read<ChatBloc>().add(
+                        //   ChatEvent.blockButton(block: block),
+                        // );
+                      },
+                      child: Text(
+                        block ? "Unblock" : "Block",
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: block ? Colors.green : Colors.red,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            /// 🔥 About Card
           ],
         ),
       ),
     );
   }
-  Widget _glassCard(BuildContext context,{ required String title, required Widget child}) {
-  return Container(
-    margin: const EdgeInsets.symmetric(horizontal: 26, vertical: 4),
-    padding: const EdgeInsets.symmetric(horizontal: 25,vertical: 4),
-    width: double.infinity,
-    decoration: BoxDecoration(
-      color: AppColors.AppBarColor(context),
-      borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: Colors.white12),
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+
+  Widget _glassCard(
+    BuildContext context, {
+    required String title,
+    required Widget child,
+  }) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 4),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: AppColors.AppBarColor(context),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+          ),
+          const SizedBox(height: 3),
+          child,
+        ],
+      ),
+    );
+  }
+
+  Widget _modernAction(BuildContext context, IconData icon, String title) {
+    return Column(
       children: [
+        Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: AppColors.AppBarColor(context),
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white12),
+          ),
+          child: Icon(icon, color: Colors.white, size: 26),
+        ),
+        const SizedBox(height: 8),
         Text(
           title,
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
+          style: TextStyle(
+            color: AppColors.textColor(context),
+            fontSize: 12,
+            fontWeight: FontWeight.w900,
           ),
         ),
-        const SizedBox(height: 3,),
-        child,
       ],
-    ),
-  );
-}
-
-
-Widget _modernAction(BuildContext context,IconData icon, String title) {
-  return Column(
-    children: [
-      Container(
-        
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: AppColors.AppBarColor(context),
-          shape: BoxShape.circle,
-          border: Border.all(color: Colors.white12),
-        ),
-        child: Icon(icon, color: Colors.white, size: 26),
-      ),
-      const SizedBox(height: 8),
-      Text(title, style: const TextStyle(color: Colors.white70, fontSize: 12)),
-    ],
-  );
-}
-
+    );
+  }
 }

@@ -5,7 +5,7 @@ class ChatModel {
   final String message;
   final String? reply; // ✅ nullable
   final DateTime createdAt; // ✅ NOT nullable
-  final bool block; // ✅ nullable
+  // final bool block; // ✅ nullable
 
   ChatModel({
     required this.id,
@@ -14,7 +14,7 @@ class ChatModel {
     required this.message,
     this.reply,
     required this.createdAt,
-    required this.block,
+    // required this.block,
   });
 
   // 🔹 JSON → Dart
@@ -27,7 +27,7 @@ class ChatModel {
       reply: json["reply"] == null || json["reply"] == "null" || json["reply"] == ""
           ? null
           : json["reply"],
-      block: json["block"] ?? 0,
+      // block: json["block"] ?? 0,
 
 
       // ✅ auto fallback time
@@ -46,7 +46,7 @@ class ChatModel {
       "mssg": message,
       "reply": reply, // will store null if no reply
       "createdAt": createdAt.toIso8601String(),
-      "block": block,
+      // "block": block,
 
     };
   }

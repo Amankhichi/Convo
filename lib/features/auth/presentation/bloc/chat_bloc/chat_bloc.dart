@@ -6,9 +6,10 @@ import 'package:convo/core/model/chat_model.dart';
 import 'package:convo/core/model/user_model.dart';
 import 'package:convo/core/payload/chat_payload.dart';
 import 'package:convo/features/auth/domain_usecase/delet_mssg_usecase.dart';
+import 'package:convo/features/auth/domain_usecase/edit_meesage_usecase.dart';
 import 'package:convo/features/auth/domain_usecase/get_mssg_usecase.dart';
 import 'package:convo/features/home/domain_usecase/chat_usecase.dart';
-import 'package:convo/features/home/domain_usecase/contact_usecase.dart';
+import 'package:convo/features/contact/domain_usecase/contact_usecase.dart';
 import 'package:convo/features/home/presentation/bloc/singup_bloc/singup_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show ReadContext;
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -24,18 +25,22 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final ChatUsecase _chatUsecase;
   final GetMssgUseCase _getmssgusecase;
   final DeletMssgUsecase _deletMssgUsecase;
+  final EditMessageUseCase _editMessageUseCase;
 
   ChatBloc({
     required ContactUsecase contactusecase,
     required ChatUsecase chatusecase,
     required GetMssgUseCase getmssgusecase,
     required DeletMssgUsecase deletmssgusecase,
+    required EditMessageUseCase editmessageusecase,
   }) : _contactUsecase = contactusecase,
        _chatUsecase = chatusecase,
        _getmssgusecase = getmssgusecase,
        _deletMssgUsecase=deletmssgusecase,
+       _editMessageUseCase=editmessageusecase,
        super(const ChatState()) {
     on<_Init>(__Init);
+    on<_EditMssg>(__EditMssg);
     on<_SendMssg>(__SendMssg);
     on<_GetMssg>(__GetMssg);
     on<_DeletMssg>(__DeletMssg);
@@ -87,7 +92,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           receiverId: event.receiverId,
           mssg: event.mssg,
           reply: event.reply,
-          block: false,
         ),
       );
 
@@ -118,7 +122,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
       emit(state.copyWith(GetMssgStatus: Status.success, messages: messagess));
 
-
+print("test3 ${messagess}");
     } catch (e) {
       emit(state.copyWith(GetMssgStatus: Status.error));
       emit(state.copyWith(GetMssgStatus: Status.init));
@@ -140,6 +144,21 @@ Future<void> __DeletMssg(_DeletMssg event, Emitter<ChatState> emit) async {
     emit(state.copyWith(DeleteMssgStatus: Status.init));
   } else {
     emit(state.copyWith(DeleteMssgStatus: Status.error));
+  }
+}
+
+
+// Future<void> __BlockButton(_BlockButton event, Emitter<ChatState> emit) async {
+//   blockUser
+// }
+
+Future<void> __EditMssg(_EditMssg event, Emitter<ChatState> emit) async {
+  final edit = await _editMessageUseCase(msgId:  event.mssgId,newMessage:  event.newMssg);
+
+  if (edit) {
+    print("Message Edited Successfully");
+  } else {
+    print("Edit Failed");
   }
 }
 

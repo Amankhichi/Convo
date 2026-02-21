@@ -1,15 +1,31 @@
 import 'package:convo/core/const.dart/app_colors.dart';
 import 'package:convo/features/auth/presentation/pages/profile_page.dart';
-import 'package:convo/features/home/presentation/pages/contact_page.dart';
+import 'package:convo/features/contact/presentation/pages/contact_page.dart';
 import 'package:convo/features/home/presentation/pages/singup_page.dart';
 import 'package:convo/features/home/presentation/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class HomePage extends StatelessWidget {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+class HomePage extends StatefulWidget {
+
   HomePage({super.key});
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  // Future<void> initSender() async {
+  //   _id = await senderId();
+  //   updateonline(id: _id!, online: true);
+  // }
+  //   Future<int> senderId() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   final sendid = int.parse(prefs.getString("id") ?? "0");
+  //   return sendid;
+  // }
   @override
   Widget build(BuildContext context) {
     final double drawerWidth = MediaQuery.of(context).size.width * 0.5;

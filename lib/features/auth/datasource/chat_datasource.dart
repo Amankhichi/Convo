@@ -70,4 +70,53 @@ class ChatDatasource {
   }
 }
 
+Future<bool> blockUser({
+  required int blockerId,
+  required int blockedId,
+}) async {
+  final url = Uri.parse(
+    "https://ehmqgiqrfpvvznvsvfyu.supabase.co/rest/v1/blocked_users",
+  );
+
+  final response = await http.post(
+    url,
+    headers: {
+      "apikey": apikey,
+      "Authorization": "Bearer $apikey",
+      "Content-Type": "application/json",
+      "Prefer": "return=minimal",
+    },
+    body: jsonEncode({
+      "blocker_id": blockerId,
+      "blocked_id": blockedId,
+    }),
+  );
+
+  print("Status: ${response.statusCode}");
+
+  return response.statusCode == 201 || response.statusCode == 200;
+}
+
+Future<bool> editMssg({
+  required int msgId,
+  required String newMessage,
+}) async {
+  final url = Uri.parse(
+    "https://ehmqgiqrfpvvznvsvfyu.supabase.co/rest/v1/chats?id=eq.$msgId",
+  );
+
+  final res = await http.patch(
+    url,
+    headers: {
+      "apikey": apikey,
+      "Authorization": "Bearer $apikey",
+      "Content-Type": "application/json",
+      "Prefer": "return=minimal",
+    },
+    body: jsonEncode({"mssg": newMessage}),
+  );
+
+  print("Edit Status: ${res.statusCode}");
+  return res.statusCode == 200 || res.statusCode == 204;
+}
 }

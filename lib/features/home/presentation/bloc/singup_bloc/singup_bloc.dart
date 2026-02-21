@@ -35,9 +35,10 @@ class SingupBloc extends Bloc<SingupEvent, SingupState> {
     on<_Add>(__Add);
     on<_CheckNumber>(__checkNumber);
     on<_CheckUser>(__CheckUser);
-
   }
-  Future<void> __Init(_Init event, Emitter<SingupState> emit) async {}
+  Future<void> __Init(_Init event, Emitter<SingupState> emit) async {
+    
+  }
 
   Future<void> __Phone(_Phone event, Emitter<SingupState> emit) async {
     emit(state.copyWith(phone: event.value));
@@ -94,7 +95,6 @@ class SingupBloc extends Bloc<SingupEvent, SingupState> {
     await prefs.setString("id", user.id.toString());
     await prefs.setString("phone", user.phone.toString());
 
-
     emit(
       state.copyWith(
         adduserStatus: Status.success,
@@ -108,8 +108,11 @@ class SingupBloc extends Bloc<SingupEvent, SingupState> {
     );
   }
 
-  Future<void> __checkNumber(_CheckNumber event, Emitter<SingupState> emit) async {
-    emit(state.copyWith( checkNumberStatus: Status.loading));
+  Future<void> __checkNumber(
+    _CheckNumber event,
+    Emitter<SingupState> emit,
+  ) async {
+    emit(state.copyWith(checkNumberStatus: Status.loading));
     final user = await _getUserUsecase(phone: state.phone);
 
     print("test 33 $user");
@@ -129,27 +132,47 @@ class SingupBloc extends Bloc<SingupEvent, SingupState> {
           lotti: user.lotti,
         ),
       );
-    emit(state.copyWith( checkNumberStatus: Status.success));
+      emit(state.copyWith(checkNumberStatus: Status.success));
 
-
-      Navigator.pushReplacement(Injection.currentContext,MaterialPageRoute(builder: (_) => HomePage()),);
-    } else {
-    emit(state.copyWith( checkNumberStatus: Status.error));
       Navigator.pushReplacement(
         Injection.currentContext,
-        MaterialPageRoute(builder: (_) => const AddNamePage(lotti: '')),
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => HomePage(),
+          transitionsBuilder: (_, a, __, c) => SlideTransition(
+            position: Tween(
+              begin: const Offset(1, 0),
+              end: Offset.zero,
+            ).animate(a),
+            child: c,
+          ),
+        ),
+      );
+    } else {
+      emit(state.copyWith(checkNumberStatus: Status.error));
+      Navigator.pushReplacement(
+        Injection.currentContext,
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => AddNamePage(lotti: ''),
+          transitionsBuilder: (_, a, __, c) => SlideTransition(
+            position: Tween(
+              begin: const Offset(1, 0),
+              end: Offset.zero,
+            ).animate(a),
+            child: c,
+          ),
+        ),
       );
     }
   }
 
-    Future<void> __CheckUser(_CheckUser event, Emitter<SingupState> emit) async {
+  Future<void> __CheckUser(_CheckUser event, Emitter<SingupState> emit) async {
     emit(state.copyWith(checkuserStatus: Status.loading));
 
     final prefs = await SharedPreferences.getInstance();
     final phone = prefs.getString("phone");
     final user = await _getUserUsecase(phone: phone.toString());
-    if(user != null){
-          emit(
+    if (user != null) {
+      emit(
         state.copyWith(
           profile: user,
           name: user.name,
@@ -159,11 +182,17 @@ class SingupBloc extends Bloc<SingupEvent, SingupState> {
           lotti: user.lotti,
         ),
       );
-    emit(state.copyWith( checkuserStatus: Status.success));
-      Navigator.pushReplacement(Injection.currentContext,MaterialPageRoute(builder: (_) => HomePage()),);
-    }else{
-    emit(state.copyWith( checkuserStatus: Status.error));
-      Navigator.pushReplacement(Injection.currentContext,MaterialPageRoute(builder: (_) => SingupPage()),);
+      emit(state.copyWith(checkuserStatus: Status.success));
+      Navigator.pushReplacement(
+        Injection.currentContext,
+        MaterialPageRoute(builder: (_) => HomePage()),
+      );
+    } else {
+      emit(state.copyWith(checkuserStatus: Status.error));
+      Navigator.pushReplacement(
+        Injection.currentContext,
+        MaterialPageRoute(builder: (_) => SingupPage()),
+      );
     }
   }
 }

@@ -24,6 +24,8 @@ mixin _$ChatEvent {
     sendMssg,
     required TResult Function(String receiverId) getMssg,
     required TResult Function(int mssId) deletMssg,
+    required TResult Function(bool block) blockButton,
+    required TResult Function(int mssgId, String newMssg) editMssg,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
@@ -31,6 +33,8 @@ mixin _$ChatEvent {
     TResult? Function(String mssg, String receiverId, String reply)? sendMssg,
     TResult? Function(String receiverId)? getMssg,
     TResult? Function(int mssId)? deletMssg,
+    TResult? Function(bool block)? blockButton,
+    TResult? Function(int mssgId, String newMssg)? editMssg,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
@@ -38,6 +42,8 @@ mixin _$ChatEvent {
     TResult Function(String mssg, String receiverId, String reply)? sendMssg,
     TResult Function(String receiverId)? getMssg,
     TResult Function(int mssId)? deletMssg,
+    TResult Function(bool block)? blockButton,
+    TResult Function(int mssgId, String newMssg)? editMssg,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -46,6 +52,8 @@ mixin _$ChatEvent {
     required TResult Function(_SendMssg value) sendMssg,
     required TResult Function(_GetMssg value) getMssg,
     required TResult Function(_DeletMssg value) deletMssg,
+    required TResult Function(_BlockButton value) blockButton,
+    required TResult Function(_EditMssg value) editMssg,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
@@ -53,6 +61,8 @@ mixin _$ChatEvent {
     TResult? Function(_SendMssg value)? sendMssg,
     TResult? Function(_GetMssg value)? getMssg,
     TResult? Function(_DeletMssg value)? deletMssg,
+    TResult? Function(_BlockButton value)? blockButton,
+    TResult? Function(_EditMssg value)? editMssg,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
@@ -60,6 +70,8 @@ mixin _$ChatEvent {
     TResult Function(_SendMssg value)? sendMssg,
     TResult Function(_GetMssg value)? getMssg,
     TResult Function(_DeletMssg value)? deletMssg,
+    TResult Function(_BlockButton value)? blockButton,
+    TResult Function(_EditMssg value)? editMssg,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
 }
@@ -130,6 +142,8 @@ class _$InitImpl implements _Init {
     sendMssg,
     required TResult Function(String receiverId) getMssg,
     required TResult Function(int mssId) deletMssg,
+    required TResult Function(bool block) blockButton,
+    required TResult Function(int mssgId, String newMssg) editMssg,
   }) {
     return init();
   }
@@ -141,6 +155,8 @@ class _$InitImpl implements _Init {
     TResult? Function(String mssg, String receiverId, String reply)? sendMssg,
     TResult? Function(String receiverId)? getMssg,
     TResult? Function(int mssId)? deletMssg,
+    TResult? Function(bool block)? blockButton,
+    TResult? Function(int mssgId, String newMssg)? editMssg,
   }) {
     return init?.call();
   }
@@ -152,6 +168,8 @@ class _$InitImpl implements _Init {
     TResult Function(String mssg, String receiverId, String reply)? sendMssg,
     TResult Function(String receiverId)? getMssg,
     TResult Function(int mssId)? deletMssg,
+    TResult Function(bool block)? blockButton,
+    TResult Function(int mssgId, String newMssg)? editMssg,
     required TResult orElse(),
   }) {
     if (init != null) {
@@ -167,6 +185,8 @@ class _$InitImpl implements _Init {
     required TResult Function(_SendMssg value) sendMssg,
     required TResult Function(_GetMssg value) getMssg,
     required TResult Function(_DeletMssg value) deletMssg,
+    required TResult Function(_BlockButton value) blockButton,
+    required TResult Function(_EditMssg value) editMssg,
   }) {
     return init(this);
   }
@@ -178,6 +198,8 @@ class _$InitImpl implements _Init {
     TResult? Function(_SendMssg value)? sendMssg,
     TResult? Function(_GetMssg value)? getMssg,
     TResult? Function(_DeletMssg value)? deletMssg,
+    TResult? Function(_BlockButton value)? blockButton,
+    TResult? Function(_EditMssg value)? editMssg,
   }) {
     return init?.call(this);
   }
@@ -189,6 +211,8 @@ class _$InitImpl implements _Init {
     TResult Function(_SendMssg value)? sendMssg,
     TResult Function(_GetMssg value)? getMssg,
     TResult Function(_DeletMssg value)? deletMssg,
+    TResult Function(_BlockButton value)? blockButton,
+    TResult Function(_EditMssg value)? editMssg,
     required TResult orElse(),
   }) {
     if (init != null) {
@@ -300,6 +324,8 @@ class _$SendMssgImpl implements _SendMssg {
     sendMssg,
     required TResult Function(String receiverId) getMssg,
     required TResult Function(int mssId) deletMssg,
+    required TResult Function(bool block) blockButton,
+    required TResult Function(int mssgId, String newMssg) editMssg,
   }) {
     return sendMssg(mssg, receiverId, reply);
   }
@@ -311,6 +337,8 @@ class _$SendMssgImpl implements _SendMssg {
     TResult? Function(String mssg, String receiverId, String reply)? sendMssg,
     TResult? Function(String receiverId)? getMssg,
     TResult? Function(int mssId)? deletMssg,
+    TResult? Function(bool block)? blockButton,
+    TResult? Function(int mssgId, String newMssg)? editMssg,
   }) {
     return sendMssg?.call(mssg, receiverId, reply);
   }
@@ -322,6 +350,8 @@ class _$SendMssgImpl implements _SendMssg {
     TResult Function(String mssg, String receiverId, String reply)? sendMssg,
     TResult Function(String receiverId)? getMssg,
     TResult Function(int mssId)? deletMssg,
+    TResult Function(bool block)? blockButton,
+    TResult Function(int mssgId, String newMssg)? editMssg,
     required TResult orElse(),
   }) {
     if (sendMssg != null) {
@@ -337,6 +367,8 @@ class _$SendMssgImpl implements _SendMssg {
     required TResult Function(_SendMssg value) sendMssg,
     required TResult Function(_GetMssg value) getMssg,
     required TResult Function(_DeletMssg value) deletMssg,
+    required TResult Function(_BlockButton value) blockButton,
+    required TResult Function(_EditMssg value) editMssg,
   }) {
     return sendMssg(this);
   }
@@ -348,6 +380,8 @@ class _$SendMssgImpl implements _SendMssg {
     TResult? Function(_SendMssg value)? sendMssg,
     TResult? Function(_GetMssg value)? getMssg,
     TResult? Function(_DeletMssg value)? deletMssg,
+    TResult? Function(_BlockButton value)? blockButton,
+    TResult? Function(_EditMssg value)? editMssg,
   }) {
     return sendMssg?.call(this);
   }
@@ -359,6 +393,8 @@ class _$SendMssgImpl implements _SendMssg {
     TResult Function(_SendMssg value)? sendMssg,
     TResult Function(_GetMssg value)? getMssg,
     TResult Function(_DeletMssg value)? deletMssg,
+    TResult Function(_BlockButton value)? blockButton,
+    TResult Function(_EditMssg value)? editMssg,
     required TResult orElse(),
   }) {
     if (sendMssg != null) {
@@ -462,6 +498,8 @@ class _$GetMssgImpl implements _GetMssg {
     sendMssg,
     required TResult Function(String receiverId) getMssg,
     required TResult Function(int mssId) deletMssg,
+    required TResult Function(bool block) blockButton,
+    required TResult Function(int mssgId, String newMssg) editMssg,
   }) {
     return getMssg(receiverId);
   }
@@ -473,6 +511,8 @@ class _$GetMssgImpl implements _GetMssg {
     TResult? Function(String mssg, String receiverId, String reply)? sendMssg,
     TResult? Function(String receiverId)? getMssg,
     TResult? Function(int mssId)? deletMssg,
+    TResult? Function(bool block)? blockButton,
+    TResult? Function(int mssgId, String newMssg)? editMssg,
   }) {
     return getMssg?.call(receiverId);
   }
@@ -484,6 +524,8 @@ class _$GetMssgImpl implements _GetMssg {
     TResult Function(String mssg, String receiverId, String reply)? sendMssg,
     TResult Function(String receiverId)? getMssg,
     TResult Function(int mssId)? deletMssg,
+    TResult Function(bool block)? blockButton,
+    TResult Function(int mssgId, String newMssg)? editMssg,
     required TResult orElse(),
   }) {
     if (getMssg != null) {
@@ -499,6 +541,8 @@ class _$GetMssgImpl implements _GetMssg {
     required TResult Function(_SendMssg value) sendMssg,
     required TResult Function(_GetMssg value) getMssg,
     required TResult Function(_DeletMssg value) deletMssg,
+    required TResult Function(_BlockButton value) blockButton,
+    required TResult Function(_EditMssg value) editMssg,
   }) {
     return getMssg(this);
   }
@@ -510,6 +554,8 @@ class _$GetMssgImpl implements _GetMssg {
     TResult? Function(_SendMssg value)? sendMssg,
     TResult? Function(_GetMssg value)? getMssg,
     TResult? Function(_DeletMssg value)? deletMssg,
+    TResult? Function(_BlockButton value)? blockButton,
+    TResult? Function(_EditMssg value)? editMssg,
   }) {
     return getMssg?.call(this);
   }
@@ -521,6 +567,8 @@ class _$GetMssgImpl implements _GetMssg {
     TResult Function(_SendMssg value)? sendMssg,
     TResult Function(_GetMssg value)? getMssg,
     TResult Function(_DeletMssg value)? deletMssg,
+    TResult Function(_BlockButton value)? blockButton,
+    TResult Function(_EditMssg value)? editMssg,
     required TResult orElse(),
   }) {
     if (getMssg != null) {
@@ -617,6 +665,8 @@ class _$DeletMssgImpl implements _DeletMssg {
     sendMssg,
     required TResult Function(String receiverId) getMssg,
     required TResult Function(int mssId) deletMssg,
+    required TResult Function(bool block) blockButton,
+    required TResult Function(int mssgId, String newMssg) editMssg,
   }) {
     return deletMssg(mssId);
   }
@@ -628,6 +678,8 @@ class _$DeletMssgImpl implements _DeletMssg {
     TResult? Function(String mssg, String receiverId, String reply)? sendMssg,
     TResult? Function(String receiverId)? getMssg,
     TResult? Function(int mssId)? deletMssg,
+    TResult? Function(bool block)? blockButton,
+    TResult? Function(int mssgId, String newMssg)? editMssg,
   }) {
     return deletMssg?.call(mssId);
   }
@@ -639,6 +691,8 @@ class _$DeletMssgImpl implements _DeletMssg {
     TResult Function(String mssg, String receiverId, String reply)? sendMssg,
     TResult Function(String receiverId)? getMssg,
     TResult Function(int mssId)? deletMssg,
+    TResult Function(bool block)? blockButton,
+    TResult Function(int mssgId, String newMssg)? editMssg,
     required TResult orElse(),
   }) {
     if (deletMssg != null) {
@@ -654,6 +708,8 @@ class _$DeletMssgImpl implements _DeletMssg {
     required TResult Function(_SendMssg value) sendMssg,
     required TResult Function(_GetMssg value) getMssg,
     required TResult Function(_DeletMssg value) deletMssg,
+    required TResult Function(_BlockButton value) blockButton,
+    required TResult Function(_EditMssg value) editMssg,
   }) {
     return deletMssg(this);
   }
@@ -665,6 +721,8 @@ class _$DeletMssgImpl implements _DeletMssg {
     TResult? Function(_SendMssg value)? sendMssg,
     TResult? Function(_GetMssg value)? getMssg,
     TResult? Function(_DeletMssg value)? deletMssg,
+    TResult? Function(_BlockButton value)? blockButton,
+    TResult? Function(_EditMssg value)? editMssg,
   }) {
     return deletMssg?.call(this);
   }
@@ -676,6 +734,8 @@ class _$DeletMssgImpl implements _DeletMssg {
     TResult Function(_SendMssg value)? sendMssg,
     TResult Function(_GetMssg value)? getMssg,
     TResult Function(_DeletMssg value)? deletMssg,
+    TResult Function(_BlockButton value)? blockButton,
+    TResult Function(_EditMssg value)? editMssg,
     required TResult orElse(),
   }) {
     if (deletMssg != null) {
@@ -694,6 +754,351 @@ abstract class _DeletMssg implements ChatEvent {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$DeletMssgImplCopyWith<_$DeletMssgImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$BlockButtonImplCopyWith<$Res> {
+  factory _$$BlockButtonImplCopyWith(
+    _$BlockButtonImpl value,
+    $Res Function(_$BlockButtonImpl) then,
+  ) = __$$BlockButtonImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({bool block});
+}
+
+/// @nodoc
+class __$$BlockButtonImplCopyWithImpl<$Res>
+    extends _$ChatEventCopyWithImpl<$Res, _$BlockButtonImpl>
+    implements _$$BlockButtonImplCopyWith<$Res> {
+  __$$BlockButtonImplCopyWithImpl(
+    _$BlockButtonImpl _value,
+    $Res Function(_$BlockButtonImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of ChatEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? block = null}) {
+    return _then(
+      _$BlockButtonImpl(
+        block: null == block
+            ? _value.block
+            : block // ignore: cast_nullable_to_non_nullable
+                  as bool,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+
+class _$BlockButtonImpl implements _BlockButton {
+  const _$BlockButtonImpl({required this.block});
+
+  @override
+  final bool block;
+
+  @override
+  String toString() {
+    return 'ChatEvent.blockButton(block: $block)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$BlockButtonImpl &&
+            (identical(other.block, block) || other.block == block));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, block);
+
+  /// Create a copy of ChatEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$BlockButtonImplCopyWith<_$BlockButtonImpl> get copyWith =>
+      __$$BlockButtonImplCopyWithImpl<_$BlockButtonImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() init,
+    required TResult Function(String mssg, String receiverId, String reply)
+    sendMssg,
+    required TResult Function(String receiverId) getMssg,
+    required TResult Function(int mssId) deletMssg,
+    required TResult Function(bool block) blockButton,
+    required TResult Function(int mssgId, String newMssg) editMssg,
+  }) {
+    return blockButton(block);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? init,
+    TResult? Function(String mssg, String receiverId, String reply)? sendMssg,
+    TResult? Function(String receiverId)? getMssg,
+    TResult? Function(int mssId)? deletMssg,
+    TResult? Function(bool block)? blockButton,
+    TResult? Function(int mssgId, String newMssg)? editMssg,
+  }) {
+    return blockButton?.call(block);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? init,
+    TResult Function(String mssg, String receiverId, String reply)? sendMssg,
+    TResult Function(String receiverId)? getMssg,
+    TResult Function(int mssId)? deletMssg,
+    TResult Function(bool block)? blockButton,
+    TResult Function(int mssgId, String newMssg)? editMssg,
+    required TResult orElse(),
+  }) {
+    if (blockButton != null) {
+      return blockButton(block);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Init value) init,
+    required TResult Function(_SendMssg value) sendMssg,
+    required TResult Function(_GetMssg value) getMssg,
+    required TResult Function(_DeletMssg value) deletMssg,
+    required TResult Function(_BlockButton value) blockButton,
+    required TResult Function(_EditMssg value) editMssg,
+  }) {
+    return blockButton(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Init value)? init,
+    TResult? Function(_SendMssg value)? sendMssg,
+    TResult? Function(_GetMssg value)? getMssg,
+    TResult? Function(_DeletMssg value)? deletMssg,
+    TResult? Function(_BlockButton value)? blockButton,
+    TResult? Function(_EditMssg value)? editMssg,
+  }) {
+    return blockButton?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Init value)? init,
+    TResult Function(_SendMssg value)? sendMssg,
+    TResult Function(_GetMssg value)? getMssg,
+    TResult Function(_DeletMssg value)? deletMssg,
+    TResult Function(_BlockButton value)? blockButton,
+    TResult Function(_EditMssg value)? editMssg,
+    required TResult orElse(),
+  }) {
+    if (blockButton != null) {
+      return blockButton(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _BlockButton implements ChatEvent {
+  const factory _BlockButton({required final bool block}) = _$BlockButtonImpl;
+
+  bool get block;
+
+  /// Create a copy of ChatEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$BlockButtonImplCopyWith<_$BlockButtonImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$EditMssgImplCopyWith<$Res> {
+  factory _$$EditMssgImplCopyWith(
+    _$EditMssgImpl value,
+    $Res Function(_$EditMssgImpl) then,
+  ) = __$$EditMssgImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({int mssgId, String newMssg});
+}
+
+/// @nodoc
+class __$$EditMssgImplCopyWithImpl<$Res>
+    extends _$ChatEventCopyWithImpl<$Res, _$EditMssgImpl>
+    implements _$$EditMssgImplCopyWith<$Res> {
+  __$$EditMssgImplCopyWithImpl(
+    _$EditMssgImpl _value,
+    $Res Function(_$EditMssgImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of ChatEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? mssgId = null, Object? newMssg = null}) {
+    return _then(
+      _$EditMssgImpl(
+        mssgId: null == mssgId
+            ? _value.mssgId
+            : mssgId // ignore: cast_nullable_to_non_nullable
+                  as int,
+        newMssg: null == newMssg
+            ? _value.newMssg
+            : newMssg // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+
+class _$EditMssgImpl implements _EditMssg {
+  const _$EditMssgImpl({required this.mssgId, required this.newMssg});
+
+  @override
+  final int mssgId;
+  @override
+  final String newMssg;
+
+  @override
+  String toString() {
+    return 'ChatEvent.editMssg(mssgId: $mssgId, newMssg: $newMssg)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$EditMssgImpl &&
+            (identical(other.mssgId, mssgId) || other.mssgId == mssgId) &&
+            (identical(other.newMssg, newMssg) || other.newMssg == newMssg));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, mssgId, newMssg);
+
+  /// Create a copy of ChatEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$EditMssgImplCopyWith<_$EditMssgImpl> get copyWith =>
+      __$$EditMssgImplCopyWithImpl<_$EditMssgImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() init,
+    required TResult Function(String mssg, String receiverId, String reply)
+    sendMssg,
+    required TResult Function(String receiverId) getMssg,
+    required TResult Function(int mssId) deletMssg,
+    required TResult Function(bool block) blockButton,
+    required TResult Function(int mssgId, String newMssg) editMssg,
+  }) {
+    return editMssg(mssgId, newMssg);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? init,
+    TResult? Function(String mssg, String receiverId, String reply)? sendMssg,
+    TResult? Function(String receiverId)? getMssg,
+    TResult? Function(int mssId)? deletMssg,
+    TResult? Function(bool block)? blockButton,
+    TResult? Function(int mssgId, String newMssg)? editMssg,
+  }) {
+    return editMssg?.call(mssgId, newMssg);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? init,
+    TResult Function(String mssg, String receiverId, String reply)? sendMssg,
+    TResult Function(String receiverId)? getMssg,
+    TResult Function(int mssId)? deletMssg,
+    TResult Function(bool block)? blockButton,
+    TResult Function(int mssgId, String newMssg)? editMssg,
+    required TResult orElse(),
+  }) {
+    if (editMssg != null) {
+      return editMssg(mssgId, newMssg);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Init value) init,
+    required TResult Function(_SendMssg value) sendMssg,
+    required TResult Function(_GetMssg value) getMssg,
+    required TResult Function(_DeletMssg value) deletMssg,
+    required TResult Function(_BlockButton value) blockButton,
+    required TResult Function(_EditMssg value) editMssg,
+  }) {
+    return editMssg(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Init value)? init,
+    TResult? Function(_SendMssg value)? sendMssg,
+    TResult? Function(_GetMssg value)? getMssg,
+    TResult? Function(_DeletMssg value)? deletMssg,
+    TResult? Function(_BlockButton value)? blockButton,
+    TResult? Function(_EditMssg value)? editMssg,
+  }) {
+    return editMssg?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Init value)? init,
+    TResult Function(_SendMssg value)? sendMssg,
+    TResult Function(_GetMssg value)? getMssg,
+    TResult Function(_DeletMssg value)? deletMssg,
+    TResult Function(_BlockButton value)? blockButton,
+    TResult Function(_EditMssg value)? editMssg,
+    required TResult orElse(),
+  }) {
+    if (editMssg != null) {
+      return editMssg(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _EditMssg implements ChatEvent {
+  const factory _EditMssg({
+    required final int mssgId,
+    required final String newMssg,
+  }) = _$EditMssgImpl;
+
+  int get mssgId;
+  String get newMssg;
+
+  /// Create a copy of ChatEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$EditMssgImplCopyWith<_$EditMssgImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 

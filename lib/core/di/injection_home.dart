@@ -12,9 +12,9 @@ Future<void> __homeDependency() async {
     () => GetUserUsecase(datasource: getIt<UserDatasource>()),
   );
 
-  getIt.registerLazySingleton<ContactUsecase>(
-    () => ContactUsecase(datasource: getIt<UserDatasource>()),
-  );
+  // getIt.registerLazySingleton<ContactUsecase>(
+  //   () => ContactUsecase(datasource: getIt<UserDatasource>()),
+  // );
   
     getIt.registerLazySingleton<ChatUsecase>(
     () => ChatUsecase(datasource: getIt<UserDatasource>()),
@@ -29,6 +29,10 @@ Future<void> __homeDependency() async {
 
     getIt.registerLazySingleton<DeletMssgUsecase>(
     () => DeletMssgUsecase(datasource: getIt<ChatDatasource>()),
+  );
+
+  getIt.registerLazySingleton<EditMessageUseCase>(
+    () => EditMessageUseCase(datasource: getIt<ChatDatasource>()),
   );
   
   
