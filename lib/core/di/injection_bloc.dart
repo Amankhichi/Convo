@@ -8,7 +8,6 @@ class InjectionBloc {
   );
 
   static ChatBloc get chatbloc => ChatBloc(
-    // contactusecase: getIt<ContactUsecase>(),
     chatusecase: getIt<ChatUsecase>(),
     getmssgusecase: getIt<GetMssgUseCase>(),
     deletmssgusecase: getIt<DeletMssgUsecase>(),
