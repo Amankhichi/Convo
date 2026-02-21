@@ -1,4 +1,5 @@
 import 'package:convo/features/auth/presentation/pages/chat_page.dart';
+import 'package:convo/features/contact/presentation/bloc/bloc/contact_bloc.dart';
 import 'package:convo/features/home/presentation/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,9 +16,9 @@ class ContactsPage extends StatefulWidget {
 
 class _ContactsPageState extends State<ContactsPage> {
   @override
-  void initState() {
+   void initState() {
     super.initState();
-    context.read<ChatBloc>().add(ChatEvent.init());
+    context.read<ContactBloc>().add(ContactEvent.init());
   }
 
   @override

@@ -24,6 +24,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => InjectionBloc.singupbloc),
         BlocProvider(create: (context) => InjectionBloc.chatbloc),
+        BlocProvider(create: (context) => InjectionBloc.contactbloc),
       ],
 child: MaterialApp(
           navigatorKey: Injection.navigatorState,

@@ -1,8 +1,6 @@
 import 'package:convo/core/const.dart/app_colors.dart';
 import 'package:convo/core/model/user_model.dart';
-import 'package:convo/features/auth/presentation/bloc/chat_bloc/chat_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 
 class ContactUserProfilePage extends StatefulWidget {
