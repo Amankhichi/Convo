@@ -1,7 +1,7 @@
 import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
 import 'package:convo/features/auth/presentation/pages/add_name_page.dart';
-import 'package:convo/features/home/presentation/widgets/custom_text.dart';
-import 'package:convo/features/home/presentation/widgets/custom_textfield.dart';
+import 'package:convo/core/custom/custom_text.dart';
+import 'package:convo/core/custom/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';

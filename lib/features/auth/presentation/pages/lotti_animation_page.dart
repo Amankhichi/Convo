@@ -1,7 +1,7 @@
 import 'package:convo/features/auth/presentation/widgets/lotti_animation_widget.dart';
-import 'package:convo/features/home/presentation/widgets/custom_icon.dart';
+import 'package:convo/core/custom/custom_icon.dart';
 import 'package:flutter/material.dart';
-import 'package:convo/features/home/presentation/widgets/custom_text.dart';
+import 'package:convo/core/custom/custom_text.dart';
 
 class LottiAnimationPage extends StatelessWidget {
   const LottiAnimationPage({super.key, });

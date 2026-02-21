@@ -2,12 +2,11 @@ import 'package:convo/core/const.dart/app_colors.dart';
 import 'package:convo/features/auth/presentation/pages/profile_page.dart';
 import 'package:convo/features/contact/presentation/pages/contact_page.dart';
 import 'package:convo/features/auth/presentation/pages/login_page.dart';
-import 'package:convo/features/home/presentation/widgets/custom_text.dart';
+import 'package:convo/core/custom/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
-
   HomePage({super.key});
 
   @override
@@ -16,7 +15,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
 
   // Future<void> initSender() async {
   //   _id = await senderId();
@@ -32,25 +30,23 @@ class _HomePageState extends State<HomePage> {
     final double drawerWidth = MediaQuery.of(context).size.width * 0.5;
     return Scaffold(
       key: _scaffoldKey,
-       appBar: AppBar(
+      appBar: AppBar(
         backgroundColor: AppColors.backgroundColor(context),
-        leading: 
-            IconButton(
-              iconSize: 24,
-              color: AppColors.textColor(context),
-              icon: const Icon(Icons.menu,),
-              onPressed: () => _scaffoldKey.currentState!.openDrawer(),
-            ),
-            
-          
+        leading: IconButton(
+          iconSize: 24,
+          color: AppColors.textColor(context),
+          icon: const Icon(Icons.menu),
+          onPressed: () => _scaffoldKey.currentState!.openDrawer(),
+        ),
+
         title: Text(
-              " ConVO",
-              style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.w900,
-                color: AppColors.primary,
-              ),
-            ),
+          " ConVO",
+          style: TextStyle(
+            fontSize: 30,
+            fontWeight: FontWeight.w900,
+            color: AppColors.primary,
+          ),
+        ),
         actions: [
           Icon(Icons.search, size: 35, color: AppColors.iconColor(context)),
           const SizedBox(width: 10),
@@ -77,7 +73,9 @@ class _HomePageState extends State<HomePage> {
                 leading: const Icon(Icons.home),
                 title: const Text("Home"),
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ProfilePage()));
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => ProfilePage()),
+                  );
                 },
               ),
               ListTile(
@@ -89,9 +87,11 @@ class _HomePageState extends State<HomePage> {
                 leading: const Icon(Icons.logout),
                 title: const Text("Logout"),
                 onTap: () async {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=> LoginPage()));
+                  Navigator.of(
+                    context,
+                  ).push(MaterialPageRoute(builder: (context) => LoginPage()));
                   final prefs = await SharedPreferences.getInstance();
-                  await prefs.remove("id"); 
+                  await prefs.remove("id");
                 },
               ),
             ],
@@ -213,28 +213,31 @@ class _HomePageState extends State<HomePage> {
       ),
 
       floatingActionButton: Padding(
-        padding: const EdgeInsets.only(right: 20,bottom: 20),
+        padding: const EdgeInsets.only(right: 20, bottom: 20),
         child: FloatingActionButton(
           backgroundColor: Colors.green,
           onPressed: () {
-Navigator.push(
-  context,
-  PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => ContactsPage(),
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      const begin = Offset(1.0, 0.0); // 👉 from right
-      const end = Offset.zero;
-      final tween = Tween(begin: begin, end: end)
-          .chain(CurveTween(curve: Curves.easeInOut));
+            Navigator.push(
+              context,
+              PageRouteBuilder(
+                pageBuilder: (context, animation, secondaryAnimation) =>
+                    ContactsPage(),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                      const begin = Offset(1.0, 0.0); // 👉 from right
+                      const end = Offset.zero;
+                      final tween = Tween(
+                        begin: begin,
+                        end: end,
+                      ).chain(CurveTween(curve: Curves.easeInOut));
 
-      return SlideTransition(
-        position: animation.drive(tween),
-        child: child,
-      );
-    },
-  ),
-);
-
+                      return SlideTransition(
+                        position: animation.drive(tween),
+                        child: child,
+                      );
+                    },
+              ),
+            );
           },
           child: Icon(Icons.add, color: Colors.white, size: 30),
         ),

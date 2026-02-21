@@ -3,13 +3,13 @@ import 'package:convo/core/enum/status.dart';
 import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
 import 'package:convo/features/auth/presentation/pages/welcome_page.dart';
 import 'package:convo/features/auth/presentation/pages/login_page.dart';
-import 'package:convo/features/home/presentation/widgets/custom_icon.dart';
+import 'package:convo/core/custom/custom_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:convo/features/auth/presentation/pages/lotti_animation_page.dart';
-import 'package:convo/features/home/presentation/widgets/custom_textfield.dart';
-import 'package:convo/features/home/presentation/widgets/custom_text.dart';
+import 'package:convo/core/custom/custom_textfield.dart';
+import 'package:convo/core/custom/custom_text.dart';
 
 class AddNamePage extends StatefulWidget {
   const AddNamePage({super.key, required this.lotti});

@@ -13,14 +13,13 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   @override
   @override
-void initState() {
-  super.initState();
+  void initState() {
+    super.initState();
 
-  Future.delayed(const Duration(seconds: 2), () async {
-  context.read<LoginBloc>().add(LoginEvent.checkUser());
-  });
-}
-
+    Future.delayed(const Duration(seconds: 2), () async {
+      context.read<LoginBloc>().add(LoginEvent.checkUser());
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

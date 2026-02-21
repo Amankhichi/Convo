@@ -9,7 +9,7 @@ import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
 import 'package:convo/features/chat/domain_usecase/delet_mssg_usecase.dart';
 import 'package:convo/features/chat/domain_usecase/edit_meesage_usecase.dart';
 import 'package:convo/features/chat/domain_usecase/get_mssg_usecase.dart';
-import 'package:convo/features/home/domain_usecase/chat_usecase.dart';
+import 'package:convo/features/chat/domain_usecase/chat_usecase.dart';
 // import 'package:convo/features/contact/domain_usecase/contact_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show ReadContext;
 import 'package:freezed_annotation/freezed_annotation.dart';
