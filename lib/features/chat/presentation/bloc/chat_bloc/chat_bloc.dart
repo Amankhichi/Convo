@@ -9,7 +9,7 @@ import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
 import 'package:convo/features/chat/domain_usecase/delet_mssg_usecase.dart';
 import 'package:convo/features/chat/domain_usecase/edit_meesage_usecase.dart';
 import 'package:convo/features/chat/domain_usecase/get_mssg_usecase.dart';
-import 'package:convo/features/chat/domain_usecase/chat_usecase.dart';
+import 'package:convo/features/chat/domain_usecase/send_mssg_usecase.dart';
 // import 'package:convo/features/contact/domain_usecase/contact_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show ReadContext;
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -22,19 +22,19 @@ part 'chat_bloc.freezed.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   // final ContactUsecase _contactUsecase;
-  final ChatUsecase _chatUsecase;
+  final SendMssgUsecase _sendMssgUsecase;
   final GetMssgUseCase _getmssgusecase;
   final DeletMssgUsecase _deletMssgUsecase;
   final EditMessageUseCase _editMessageUseCase;
 
   ChatBloc({
     // required ContactUsecase contactusecase,
-    required ChatUsecase chatusecase,
+    required SendMssgUsecase sendmssgusecase,
     required GetMssgUseCase getmssgusecase,
     required DeletMssgUsecase deletmssgusecase,
     required EditMessageUseCase editmessageusecase,
   }) : // _contactUsecase = contactusecase,
-       _chatUsecase = chatusecase,
+       _sendMssgUsecase = sendmssgusecase,
        _getmssgusecase = getmssgusecase,
        _deletMssgUsecase = deletmssgusecase,
        _editMessageUseCase = editmessageusecase,
@@ -46,32 +46,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<_DeletMssg>(__DeletMssg);
   }
   Future<void> __Init(_Init event, Emitter<ChatState> emit) async {
-    // emit(state.copyWith(contactStatus: Status.loading));
-
-    // final permission = await Permission.contacts.request();
-
-    // if (permission.isPermanentlyDenied) {
-    //   emit(state.copyWith(contactStatus: Status.error));
-    //   return;
-    // }
-
-    // if (!permission.isGranted) {
-    //   emit(state.copyWith(contactStatus: Status.error));
-    //   return;
-    // }
-
-    // try {
-    //   final matchedContacts = await _contactUsecase();
-
-    //   emit(
-    //     state.copyWith(
-    //       contacts: matchedContacts,
-    //       contactStatus: Status.success,
-    //     ),
-    //   );
-    // } catch (e) {
-    //   emit(state.copyWith(contactStatus: Status.error));
-    // }
   }
 
   Future<void> __SendMssg(_SendMssg event, Emitter<ChatState> emit) async {
@@ -86,7 +60,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         return;
       }
 
-      final result = await _chatUsecase(
+      final result = await _sendMssgUsecase(
         ChatPayload(
           senderId: int.tryParse(id.toString()) ?? 0,
           receiverId: int.tryParse(event.receiverId) ?? 0,

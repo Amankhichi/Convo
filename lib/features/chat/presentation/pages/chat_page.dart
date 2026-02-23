@@ -14,6 +14,7 @@ import 'package:convo/features/chat/presentation/bloc/chat_bloc/chat_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:page_transition/page_transition.dart';
 
 class ChatPage extends StatefulWidget {
   final UserModel user;
@@ -258,12 +259,14 @@ class _ChatPageState extends State<ChatPage> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                              builder: (_) => VideoCallPage(user: widget.user),
+                            PageTransition(
+                              type: PageTransitionType.scale,
+                              alignment: Alignment.bottomCenter,
+                              child: VideoCallPage(user: widget.user),
                             ),
                           );
                         },
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.videocam,
                           color: Colors.white,
                           size: 28,

@@ -25,6 +25,8 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => InjectionBloc.loginbloc),
         BlocProvider(create: (context) => InjectionBloc.chatbloc),
         BlocProvider(create: (context) => InjectionBloc.contactbloc),
+        BlocProvider(create: (context) => InjectionBloc.homebloc),
+
       ],
 child: MaterialApp(
           navigatorKey: Injection.navigatorState,

@@ -3,7 +3,9 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  app_links
   emoji_picker_flutter
+  flutter_webrtc
   geolocator_windows
   permission_handler_windows
   url_launcher_windows

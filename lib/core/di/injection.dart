@@ -3,15 +3,17 @@ import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
 import 'package:convo/features/chat/datasource/chat_datasource.dart';
 import 'package:convo/features/chat/domain_usecase/delet_mssg_usecase.dart';
 import 'package:convo/features/chat/domain_usecase/edit_meesage_usecase.dart';
+import 'package:convo/features/chat/domain_usecase/get_chats_usecase.dart';
 import 'package:convo/features/chat/domain_usecase/get_mssg_usecase.dart';
 import 'package:convo/features/contact/datasource/contact_datasource.dart';
 import 'package:convo/features/contact/presentation/bloc/bloc/contact_bloc.dart';
 import 'package:convo/features/home/datasource/user_datasource.dart';
 import 'package:convo/features/auth/domain_usecase/add_user_usecase.dart';
-import 'package:convo/features/chat/domain_usecase/chat_usecase.dart';
+import 'package:convo/features/chat/domain_usecase/send_mssg_usecase.dart';
 import 'package:convo/features/contact/domain_usecase/contact_usecase.dart';
 import 'package:convo/features/auth/domain_usecase/get_user_usecase.dart';
 import 'package:convo/features/chat/presentation/bloc/chat_bloc/chat_bloc.dart';
+import 'package:convo/features/home/presentation/bloc/bloc/home_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 

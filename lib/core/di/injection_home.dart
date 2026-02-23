@@ -16,8 +16,8 @@ Future<void> __homeDependency() async {
   //   () => ContactUsecase(datasource: getIt<UserDatasource>()),
   // );
   
-    getIt.registerLazySingleton<ChatUsecase>(
-    () => ChatUsecase(datasource: getIt<ChatDatasource>()),
+    getIt.registerLazySingleton<SendMssgUsecase>(
+    () => SendMssgUsecase(datasource: getIt<ChatDatasource>()),
   );
 
     final chatDatasource = ChatDatasource();
@@ -33,6 +33,10 @@ Future<void> __homeDependency() async {
 
   getIt.registerLazySingleton<EditMessageUseCase>(
     () => EditMessageUseCase(datasource: getIt<ChatDatasource>()),
+  );
+
+    getIt.registerLazySingleton<GetMssgUseCase>(
+    () => GetMssgUseCase(datasource: getIt<ChatDatasource>()),
   );
   
   

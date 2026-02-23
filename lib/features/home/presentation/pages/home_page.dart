@@ -3,8 +3,11 @@ import 'package:convo/features/auth/presentation/pages/profile_page.dart';
 import 'package:convo/features/contact/presentation/pages/contact_page.dart';
 import 'package:convo/features/auth/presentation/pages/login_page.dart';
 import 'package:convo/core/custom/custom_text.dart';
+import 'package:convo/features/home/presentation/bloc/bloc/home_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
@@ -145,63 +148,72 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
-            Expanded(
-              child: ListView.builder(
-                itemCount: 1,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    child: SizedBox(
-                      height: 80,
-                      child: Row(
-                        children: [
-                          const CircleAvatar(
-                            radius: 25,
-                            child: Icon(Icons.person),
-                          ),
+            BlocBuilder<HomeBloc, HomeState>(
+              builder: (context, state) {
+                return Expanded(
+                  child: ListView.builder(
+                    itemCount: state.homePageChats.length,
+                    itemBuilder: (context, index) {
+                      final chat =state.homePageChats[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        child: SizedBox(
+                          height: 80,
+                          child: Row(
+                            children: [
+                               CircleAvatar(
+                  radius: 25,
+                  backgroundColor: AppColors.primary,
+                  child: ClipOval(
+                    child: Lottie.asset(chat.sender.lotti, fit: BoxFit.cover),
+                  ),
+                ),
 
-                          const SizedBox(width: 12),
+                              const SizedBox(width: 12),
 
-                          Expanded(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "User $index",
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                              Expanded(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      chat.sender.name.toString(),
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      "Last message here...",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey.shade600,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  "Last message here...",
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey.shade600,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                            ),
-                          ),
+                              ),
 
-                          CustomText(
-                            text: "10:26",
-                            bold: FontWeight.w800,
-                            size: 15,
+                              CustomText(
+                                text: "10:26",
+                                bold: FontWeight.w800,
+                                size: 15,
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
             ),
+          
           ],
         ),
       ),
