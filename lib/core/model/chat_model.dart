@@ -1,39 +1,34 @@
 class ChatModel {
   final int id;
-  final String senderId;
-  final String receiverId;
+  final int senderId;
+  final int receiverId;
   final String message;
-  final String? reply; // ✅ nullable
-  final DateTime createdAt; // ✅ NOT nullable
-  // final bool block; // ✅ nullable
+  final int? replyTo;
+  final ChatModel? reply; 
+  final DateTime createdAt;
 
   ChatModel({
     required this.id,
     required this.senderId,
     required this.receiverId,
     required this.message,
+    this.replyTo,
     this.reply,
     required this.createdAt,
-    // required this.block,
   });
 
   // 🔹 JSON → Dart
   factory ChatModel.fromJson(Map<String, dynamic> json) {
     return ChatModel(
-      id: json["id"] ?? 0,
-      senderId: json["senderId"] ?? "",
-      receiverId: json["receiverId"] ?? "",
+      id: json["id"],
+      senderId: json["senderId"],
+      receiverId: json["receiverId"],
       message: json["mssg"] ?? "",
-      reply: json["reply"] == null || json["reply"] == "null" || json["reply"] == ""
-          ? null
-          : json["reply"],
-      // block: json["block"] ?? 0,
-
-
-      // ✅ auto fallback time
-      createdAt: json["createdAt"] != null
-          ? DateTime.parse(json["createdAt"])
-          : DateTime.now(),
+      replyTo: json["reply_to"],
+      reply: json["reply"] != null
+          ? ChatModel.fromJson(json["reply"])
+          : null,
+      createdAt: DateTime.parse(json["created_at"]),
     );
   }
 
@@ -44,10 +39,8 @@ class ChatModel {
       "senderId": senderId,
       "receiverId": receiverId,
       "mssg": message,
-      "reply": reply, // will store null if no reply
-      "createdAt": createdAt.toIso8601String(),
-      // "block": block,
-
+      "reply_to": replyTo,
+      "created_at": createdAt.toIso8601String(),
     };
   }
 }

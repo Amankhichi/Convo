@@ -64,93 +64,100 @@ class _ContactsPageState extends State<ContactsPage> {
             ),
           ),
 
-          body: state.contactStatus == Status.loading
-              ? const Center(child: CircularProgressIndicator())
-              : state.contacts.isEmpty
-              ? const Center(child: Text("No contacts found"))
-              : ListView.builder(
-                  itemCount: state.contacts.length,
-                  padding: const EdgeInsets.all(12),
-                  itemBuilder: (context, i) {
-                    final user = state.contacts[i];
-
-                    return RefreshIndicator(
-                      onRefresh: () async {
-                        setState(() {});
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(vertical: 2),
-                        decoration: BoxDecoration(
-                          color: AppColors.matchTheme(context),
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.15),
-                              blurRadius: 6,
-                              spreadRadius: 0,
-                              offset: Offset(0, 3), // 👈 shadow only bottom
-                            ),
-                          ],
-                        ),
-                        child: ListTile(
-                          contentPadding: const EdgeInsets.symmetric(
-                            // vertical: 2,
-                            horizontal: 17,
-                          ),
-                          leading: CircleAvatar(
-                            radius: 22,
-                            backgroundColor: AppColors.primary,
-                            child: Text(
-                              user.name[0].toUpperCase(),
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
+          body: Column(
+            children: [
+              CustomText(text: "text"),
+              Expanded(
+                child: state.contactStatus == Status.loading
+                    ? const Center(child: CircularProgressIndicator())
+                    : state.contacts.isEmpty
+                    ? const Center(child: Text("No contacts found"))
+                    : ListView.builder(
+                        itemCount: state.contacts.length,
+                        padding: const EdgeInsets.all(12),
+                        itemBuilder: (context, i) {
+                          final user = state.contacts[i];
+                
+                          return RefreshIndicator(
+                            onRefresh: () async {
+                              setState(() {});
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(vertical: 2),
+                              decoration: BoxDecoration(
+                                color: AppColors.matchTheme(context),
+                                borderRadius: BorderRadius.all(Radius.circular(20)),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.15),
+                                    blurRadius: 6,
+                                    spreadRadius: 0,
+                                    offset: Offset(0, 3), // 👈 shadow only bottom
+                                  ),
+                                ],
                               ),
-                            ),
-                          ),
-                          title: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CustomText(
-                                text: user.name,
-                                bold: FontWeight.w600,
-                                size: 20,
-                              ),
-                              Text(
-                                user.about,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15,
-                                  color: AppColors.iconColor(context),
+                              child: ListTile(
+                                contentPadding: const EdgeInsets.symmetric(
+                                  // vertical: 2,
+                                  horizontal: 17,
                                 ),
-                              ),
-                            ],
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              PageRouteBuilder(
-                                pageBuilder: (_, __, ___) =>
-                                    ChatPage(user: user),
-                                transitionsBuilder: (_, a, __, c) =>
-                                    SlideTransition(
-                                      position: Tween(
-                                        begin: const Offset(1, 0),
-                                        end: Offset.zero,
-                                      ).animate(a),
-                                      child: c,
+                                leading: CircleAvatar(
+                                  radius: 22,
+                                  backgroundColor: AppColors.primary,
+                                  child: Text(
+                                    user.name[0].toUpperCase(),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w600,
                                     ),
+                                  ),
+                                ),
+                                title: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    CustomText(
+                                      text: user.name,
+                                      bold: FontWeight.w600,
+                                      size: 20,
+                                    ),
+                                    Text(
+                                      user.about,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 15,
+                                        color: AppColors.iconColor(context),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    PageRouteBuilder(
+                                      pageBuilder: (_, __, ___) =>
+                                          ChatPage(user: user),
+                                      transitionsBuilder: (_, a, __, c) =>
+                                          SlideTransition(
+                                            position: Tween(
+                                              begin: const Offset(1, 0),
+                                              end: Offset.zero,
+                                            ).animate(a),
+                                            child: c,
+                                          ),
+                                    ),
+                                  );
+                
+                                  Divider(thickness: 0.5, color: Colors.black26);
+                                },
                               ),
-                            );
-
-                            Divider(thickness: 0.5, color: Colors.black26);
-                          },
-                        ),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
+              ),
+            ],
+          ),
         );
       },
     );

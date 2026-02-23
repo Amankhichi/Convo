@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 
+enum ChatStatus { sending, send, seen, received }
+
 class MssgWidgets extends StatelessWidget {
   const MssgWidgets({
     super.key,
     required this.message,
     required this.isMe,
     required this.time,
+    required this.chatStatus,
     this.replyMessage,
   });
 
   final String message;
   final bool isMe;
+  final ChatStatus chatStatus;
   final String? replyMessage;
   final DateTime time;
 
@@ -130,20 +134,24 @@ class MssgWidgets extends StatelessWidget {
                       const SizedBox(width: 4),
                       if (isMe)
                         Row(
-                          children: const [
-                            Icon(
-                              Icons.done_all,
-                              size: 14,
-                              color: Colors.white70,
-                            ),
-                            SizedBox(width: 2),
-                            Text(
-                              "seen",
-                              style: TextStyle(
-                                fontSize: 9,
-                                color: Colors.white70,
-                              ),
-                            ),
+                          children: [
+                            chatStatus == ChatStatus.seen
+                                ? Text(
+                                    "seen",
+                                    style: TextStyle(
+                                      fontSize: 9,
+                                      color: Colors.white70,
+                                    ),
+                                  )
+                                : Icon(
+                                    chatStatus == ChatStatus.sending
+                                        ? Icons.timer
+                                        : chatStatus == ChatStatus.received
+                                        ? Icons.done_all
+                                        : Icons.done,
+                                    size: 14,
+                                    color: Colors.white70,
+                                  ),
                           ],
                         ),
                     ],

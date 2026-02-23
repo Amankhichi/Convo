@@ -33,12 +33,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     required GetMssgUseCase getmssgusecase,
     required DeletMssgUsecase deletmssgusecase,
     required EditMessageUseCase editmessageusecase,
-  }) : 
-  // _contactUsecase = contactusecase,
+  }) : // _contactUsecase = contactusecase,
        _chatUsecase = chatusecase,
        _getmssgusecase = getmssgusecase,
-       _deletMssgUsecase=deletmssgusecase,
-       _editMessageUseCase=editmessageusecase,
+       _deletMssgUsecase = deletmssgusecase,
+       _editMessageUseCase = editmessageusecase,
        super(const ChatState()) {
     on<_Init>(__Init);
     on<_EditMssg>(__EditMssg);
@@ -89,17 +88,30 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
       final result = await _chatUsecase(
         ChatPayload(
-          senderId: id.toString(),
-          receiverId: event.receiverId,
+          senderId: int.tryParse(id.toString()) ?? 0,
+          receiverId: int.tryParse(event.receiverId) ?? 0,
           mssg: event.mssg,
-          reply: event.reply,
+          replyTo: event.replyTo,
         ),
       );
-
       emit(
         state.copyWith(SendMssgStatus: result ? Status.success : Status.error),
       );
-      add(_Init());
+      emit(
+        state.copyWith(
+          messages: [
+            ...state.messages,
+            ChatModel(
+              id: 0,
+              senderId: int.tryParse(id.toString()) ?? 0,
+              receiverId: int.tryParse(event.receiverId) ?? 0,
+              message: event.mssg,
+              createdAt: DateTime.now(),
+            ),
+          ],
+        ),
+      );
+      add(_GetMssg(receiverId: event.receiverId));
     } catch (e) {
       emit(state.copyWith(SendMssgStatus: Status.error));
     }
@@ -123,45 +135,44 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
       emit(state.copyWith(GetMssgStatus: Status.success, messages: messagess));
 
-print("test3 ${messagess}");
+      print("test3 ${messagess}");
     } catch (e) {
       emit(state.copyWith(GetMssgStatus: Status.error));
       emit(state.copyWith(GetMssgStatus: Status.init));
     }
   }
 
-Future<void> __DeletMssg(_DeletMssg event, Emitter<ChatState> emit) async {
-  emit(state.copyWith(DeleteMssgStatus: Status.loading));
+  Future<void> __DeletMssg(_DeletMssg event, Emitter<ChatState> emit) async {
+    emit(state.copyWith(DeleteMssgStatus: Status.loading));
 
-  final success = await _deletMssgUsecase(mssgId: event.mssId);
+    final success = await _deletMssgUsecase(mssgId: event.mssId);
 
-  if (success) {
-    add(_Init());
-    emit(state.copyWith(DeleteMssgStatus: Status.success));
-    
+    if (success) {
+      add(_Init());
+      emit(state.copyWith(DeleteMssgStatus: Status.success));
 
-    // reset after UI update
-    await Future.delayed(const Duration(milliseconds: 300));
-    emit(state.copyWith(DeleteMssgStatus: Status.init));
-  } else {
-    emit(state.copyWith(DeleteMssgStatus: Status.error));
+      // reset after UI update
+      await Future.delayed(const Duration(milliseconds: 300));
+      emit(state.copyWith(DeleteMssgStatus: Status.init));
+    } else {
+      emit(state.copyWith(DeleteMssgStatus: Status.error));
+    }
   }
-}
 
+  // Future<void> __BlockButton(_BlockButton event, Emitter<ChatState> emit) async {
+  //   blockUser
+  // }
 
-// Future<void> __BlockButton(_BlockButton event, Emitter<ChatState> emit) async {
-//   blockUser
-// }
+  Future<void> __EditMssg(_EditMssg event, Emitter<ChatState> emit) async {
+    final edit = await _editMessageUseCase(
+      msgId: event.mssgId,
+      newMessage: event.newMssg,
+    );
 
-Future<void> __EditMssg(_EditMssg event, Emitter<ChatState> emit) async {
-  final edit = await _editMessageUseCase(msgId:  event.mssgId,newMessage:  event.newMssg);
-
-  if (edit) {
-    print("Message Edited Successfully");
-  } else {
-    print("Edit Failed");
+    if (edit) {
+      print("Message Edited Successfully");
+    } else {
+      print("Edit Failed");
+    }
   }
-}
-
-
 }

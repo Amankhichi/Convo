@@ -1,7 +1,8 @@
 import 'package:convo/core/const.dart/constant.dart';
-import 'package:convo/core/enum/status.dart';
 import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
 import 'package:convo/features/chat/presentation/pages/contact_user_profile_page.dart';
+import 'package:convo/features/chat/presentation/pages/video_call_page.dart';
+import 'package:convo/features/chat/presentation/pages/voice_call_page.dart';
 import 'package:convo/features/chat/presentation/widgets/mssg_widgets.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import 'package:convo/core/const.dart/app_colors.dart';
 import 'package:convo/features/chat/presentation/bloc/chat_bloc/chat_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ChatPage extends StatefulWidget {
   final UserModel user;
@@ -36,7 +38,17 @@ class _ChatPageState extends State<ChatPage> {
 
   bool isReplying = false;
   String? replyMessage;
-  String? replyMessageId;
+  int? replyMessageId;
+
+  Future<void> makeCall(String phone) async {
+    final Uri callUri = Uri(scheme: 'tel', path: phone);
+
+    if (await canLaunchUrl(callUri)) {
+      await launchUrl(callUri);
+    } else {
+      throw 'Could not launch $callUri';
+    }
+  }
 
   @override
   void initState() {
@@ -45,7 +57,6 @@ class _ChatPageState extends State<ChatPage> {
     context.read<ChatBloc>().add(
       ChatEvent.getMssg(receiverId: widget.user.id.toString()),
     );
-
 
     Future.delayed(Duration(milliseconds: 300), () {
       _focusNode.requestFocus();
@@ -56,6 +67,22 @@ class _ChatPageState extends State<ChatPage> {
   void dispose() {
     _messageController.dispose();
     super.dispose();
+  }
+
+  void _handleReply(msg) {
+    setState(() {
+      isReplying = true;
+      replyMessage = msg.message;
+      replyMessageId = msg.id;
+    });
+
+    FocusScope.of(context).unfocus();
+
+    Future.delayed(const Duration(milliseconds: 50), () {
+      if (mounted) {
+        FocusScope.of(context).requestFocus(_focusNode);
+      }
+    });
   }
 
   @override
@@ -104,11 +131,11 @@ class _ChatPageState extends State<ChatPage> {
                       ),
                     ),
                   );
-    //                   if(state.GetMssgStatus==Status.error){
-    //   showError(context, "mssg not get");
-    // }else{
-    //   showSuccess(context, "mssg is get it");
-    // }
+                  //                   if(state.GetMssgStatus==Status.error){
+                  //   showError(context, "mssg not get");
+                  // }else{
+                  //   showSuccess(context, "mssg is get it");
+                  // }
                 },
 
                 contentPadding: EdgeInsets.zero,
@@ -141,24 +168,40 @@ class _ChatPageState extends State<ChatPage> {
               actions: mssgSelected
                   ? [
                       if (mssgIdSelected.length == 1)
-                        IconButton(
-                          icon: const Icon(Icons.edit, color: Colors.white),
-                          onPressed: () {
-                            final id = mssgIdSelected.first;
-                            final msg = state.messages.firstWhere(
-                              (e) => e.id.toString() == id,
-                            );
+                        if (mssgIdSelected.length == 1)
+                          Builder(
+                            builder: (_) {
+                              final profile = context
+                                  .read<LoginBloc>()
+                                  .state
+                                  .profile;
+                              final selectedMsg = state.messages.firstWhere(
+                                (e) => e.id.toString() == mssgIdSelected.first,
+                              );
 
-                            _messageController.text = msg.message;
+                              if (selectedMsg.senderId.toString() !=
+                                  profile?.id.toString()) {
+                                return const SizedBox();
+                              }
 
-                            setState(() {
-                              mssgEdit = true;
-                              editingMessageId = id;
-                              mssgSelected = false;
-                              mssgIdSelected.clear();
-                            });
-                          },
-                        ),
+                              return IconButton(
+                                icon: const Icon(
+                                  Icons.edit,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () {
+                                  _messageController.text = selectedMsg.message;
+
+                                  setState(() {
+                                    mssgEdit = true;
+                                    editingMessageId = mssgIdSelected.first;
+                                    mssgSelected = false;
+                                    mssgIdSelected.clear();
+                                  });
+                                },
+                              );
+                            },
+                          ),
 
                       IconButton(
                         icon: Icon(Icons.copy, color: Colors.white),
@@ -201,11 +244,25 @@ class _ChatPageState extends State<ChatPage> {
                     ]
                   : [
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => VoiceCallPage(user: widget.user),
+                            ),
+                          );
+                        },
                         icon: Icon(Icons.call, color: Colors.white, size: 28),
                       ),
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => VideoCallPage(user: widget.user),
+                            ),
+                          );
+                        },
                         icon: Icon(
                           Icons.videocam,
                           color: Colors.white,
@@ -245,35 +302,27 @@ class _ChatPageState extends State<ChatPage> {
                   Expanded(
                     child: BlocBuilder<LoginBloc, LoginState>(
                       builder: (context, sstate) {
-                        final profile = context
-                            .read<LoginBloc>()
-                            .state
-                            .profile;
-                        return state.GetMssgStatus == Status.loading
-                            ? Center(child: CircularProgressIndicator())
+                        final profile = context.read<LoginBloc>().state.profile;
+                        return state.messages.isEmpty
+                            ? SizedBox()
                             : ListView.builder(
                                 reverse: true,
                                 itemCount: state.messages.length,
                                 itemBuilder: (context, index) {
-                                  final msg = state.messages[state.messages.length -index -1];
+                                  final msg =
+                                      state.messages[state.messages.length -
+                                          index -
+                                          1];
 
                                   final bool isMe =
-                                      msg.senderId == profile?.id.toString();
+                                      msg.senderId.toString() ==
+                                      profile?.id.toString();
 
                                   return Dismissible(
                                     key: Key(msg.id.toString()),
                                     direction: DismissDirection.startToEnd,
                                     confirmDismiss: (_) async {
-                                      setState(() {
-                                        isReplying = true;
-                                        replyMessage = msg.message;
-                                        replyMessageId = msg.id.toString();
-                                        _focusNode.requestFocus();
-                                      });
-                                      // WidgetsBinding.instance
-                                      //     .addPostFrameCallback((_) {
-                                            _focusNode.requestFocus();
-                                          // });
+                                      _handleReply(msg);
                                       return false;
                                     },
 
@@ -333,9 +382,12 @@ class _ChatPageState extends State<ChatPage> {
                                             ),
                                           Expanded(
                                             child: MssgWidgets(
+                                              chatStatus: msg.id == 0
+                                                  ? ChatStatus.sending
+                                                  : ChatStatus.send,
                                               isMe: isMe,
                                               message: msg.message,
-                                              replyMessage: msg.reply,
+                                              replyMessage: msg.reply?.message,
                                               time: msg.createdAt,
                                             ),
                                           ),
@@ -343,7 +395,6 @@ class _ChatPageState extends State<ChatPage> {
                                       ),
                                     ),
                                   );
-                                
                                 },
                               );
                       },
@@ -388,6 +439,10 @@ class _ChatPageState extends State<ChatPage> {
                                 isReplying = false;
                                 replyMessage = null;
                                 replyMessageId = null;
+                              });
+                              FocusScope.of(context).unfocus();
+                              Future.delayed(Duration(milliseconds: 50), () {
+                                FocusScope.of(context).requestFocus(_focusNode);
                               });
                             },
                           ),
@@ -512,10 +567,10 @@ class _ChatPageState extends State<ChatPage> {
                                       ChatEvent.sendMssg(
                                         mssg: _messageController.text.trim(),
                                         receiverId: widget.user.id.toString(),
-                                        reply: replyMessage.toString(),
+                                        replyTo: replyMessageId,
                                       ),
                                     );
-                                        isReplying=false;
+                                    isReplying = false;
                                     _messageController.clear();
                                   },
                                   icon: const Icon(Icons.send, size: 28),

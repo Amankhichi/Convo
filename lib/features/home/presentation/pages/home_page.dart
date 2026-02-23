@@ -4,6 +4,7 @@ import 'package:convo/features/contact/presentation/pages/contact_page.dart';
 import 'package:convo/features/auth/presentation/pages/login_page.dart';
 import 'package:convo/core/custom/custom_text.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
@@ -16,21 +17,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  // Future<void> initSender() async {
-  //   _id = await senderId();
-  //   updateonline(id: _id!, online: true);
-  // }
-  //   Future<int> senderId() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   final sendid = int.parse(prefs.getString("id") ?? "0");
-  //   return sendid;
-  // }
   @override
   Widget build(BuildContext context) {
     final double drawerWidth = MediaQuery.of(context).size.width * 0.5;
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
+        titleSpacing: 0,
         backgroundColor: AppColors.backgroundColor(context),
         leading: IconButton(
           iconSize: 24,
@@ -41,10 +34,11 @@ class _HomePageState extends State<HomePage> {
 
         title: Text(
           " ConVO",
-          style: TextStyle(
-            fontSize: 30,
-            fontWeight: FontWeight.w900,
+          style: GoogleFonts.courgette(
+            fontSize: 35,
+            fontWeight: FontWeight.w600,
             color: AppColors.primary,
+            shadows: [],
           ),
         ),
         actions: [

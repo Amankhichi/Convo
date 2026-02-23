@@ -1,34 +1,20 @@
 class ChatPayload {
-  final String senderId;
-  final String receiverId;
+  final int senderId;
+  final int receiverId;
   final String mssg;
-  final String reply;
-
+  final int? replyTo;
 
   ChatPayload({
     required this.senderId,
     required this.receiverId,
     required this.mssg,
-    required this.reply,
-
+    required this.replyTo,
   });
 
   Map<String, dynamic> toJson() => {
-        "senderId": senderId,
-        "receiverId": receiverId,
-        "mssg": mssg,
-        "reply": reply,
-      };
-
-  // ✅ Convert JSON → Dart object
-  factory ChatPayload.fromJson(Map<String, dynamic> json) => ChatPayload(
-        senderId: json["senderId"],
-        receiverId: json["receiverId"],
-        mssg: json["mssg"],
-        reply: json["reply"],
-
-      );
+    "senderId": senderId,
+    "receiverId": receiverId,
+    "mssg": mssg,
+    "reply_to": replyTo,
+  };
 }
-
-
-
