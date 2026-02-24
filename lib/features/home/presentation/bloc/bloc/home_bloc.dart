@@ -21,11 +21,18 @@ Future<void> __Init(_Init event, Emitter<HomeState> emit) async {
     emit(state.copyWith(homeChatsStatus: Status.loading));
   final chats = await _getChatsUseCase();
 
-      final prefs = await SharedPreferences.getInstance();
-    final id = prefs.getString("id");
+  final prefs = await SharedPreferences.getInstance();
+  final idString = prefs.getString("id");
+
+  if (idString == null) {
+    emit(state.copyWith(homeChatsStatus: Status.error));
+    return;
+  }
+
+  final myId = int.parse(idString);
 
   if (chats.isNotEmpty) {
-    final users = buildConversationList(chats,int.parse(id.toString()));
+    final users = buildConversationList(chats,myId);
     emit(state.copyWith(
       homeChatsStatus: Status.success,
       homePageChats: users,
@@ -41,11 +48,9 @@ List<HomeChatModel> buildConversationList(
   final Map<int, HomeChatModel> conversationMap = {};
 
   for (var chat in chats) {
-    // Identify the other user
     final otherUserId =
         chat.senderId == myId ? chat.receiverId : chat.senderId;
 
-    // Keep only latest message per user
     if (!conversationMap.containsKey(otherUserId) ||
         chat.createdAt.isAfter(
             conversationMap[otherUserId]!.createdAt)) {
@@ -53,10 +58,8 @@ List<HomeChatModel> buildConversationList(
     }
   }
 
-  // Convert to list
   final conversations = conversationMap.values.toList();
 
-  // Sort by latest message
   conversations.sort(
     (a, b) => b.createdAt.compareTo(a.createdAt),
   );

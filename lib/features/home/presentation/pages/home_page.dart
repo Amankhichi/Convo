@@ -1,5 +1,7 @@
 import 'package:convo/core/const.dart/app_colors.dart';
+import 'package:convo/core/enum/status.dart';
 import 'package:convo/features/auth/presentation/pages/profile_page.dart';
+import 'package:convo/features/chat/presentation/pages/chat_page.dart';
 import 'package:convo/features/contact/presentation/pages/contact_page.dart';
 import 'package:convo/features/auth/presentation/pages/login_page.dart';
 import 'package:convo/core/custom/custom_text.dart';
@@ -9,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key});
@@ -19,6 +22,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  void initState() {
+    super.initState();
+    context.read<HomeBloc>().add(HomeEvent.init());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -148,72 +156,36 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
-            BlocBuilder<HomeBloc, HomeState>(
-              builder: (context, state) {
-                return Expanded(
-                  child: ListView.builder(
-                    itemCount: state.homePageChats.length,
-                    itemBuilder: (context, index) {
-                      final chat =state.homePageChats[index];
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        child: SizedBox(
-                          height: 80,
-                          child: Row(
-                            children: [
-                               CircleAvatar(
-                  radius: 25,
-                  backgroundColor: AppColors.primary,
-                  child: ClipOval(
-                    child: Lottie.asset(chat.sender.lotti, fit: BoxFit.cover),
-                  ),
-                ),
-
-                              const SizedBox(width: 12),
-
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      chat.sender.name.toString(),
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      "Last message here...",
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.grey.shade600,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ],
-                                ),
+            Expanded(
+              child: BlocBuilder<HomeBloc, HomeState>(
+                builder: (context, state) {
+                  return state.homeChatsStatus == Status.loading
+                      ? Center(child: CircularProgressIndicator())
+                      : ListView.builder(
+                          itemCount: state.homePageChats.length,
+                          itemBuilder: (context, index) {
+                            final chat = state.homePageChats[index];
+                            return ListTile(
+                              onTap: (){
+                                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ChatPage(user: chat.receiver)));
+                              },
+                              leading: CircleAvatar(
+                                backgroundColor: AppColors.primary,
+                                child: Lottie.asset(chat.sender.lotti),
                               ),
-
-                              CustomText(
-                                text: "10:26",
+                              title: Text(chat.sender.name),
+                              subtitle: Text(chat.message),
+                              trailing: CustomText(
+                                text: DateFormat('hh:mm a').format(chat.createdAt),
                                 bold: FontWeight.w800,
                                 size: 15,
                               ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                );
-              },
+                            );
+                          },
+                        );
+                },
+              ),
             ),
-          
           ],
         ),
       ),

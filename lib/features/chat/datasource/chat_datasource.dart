@@ -116,29 +116,44 @@ class ChatDatasource {
     return res.statusCode == 200 || res.statusCode == 204;
   }
 
-Future<List<HomeChatModel>> getChats() async {
-  final prefs = await SharedPreferences.getInstance();
-  final id = int.parse(prefs.getString("id")!);
+  Future<List<HomeChatModel>> getChats() async {
+    print("getChats function called");
 
-  final url = Uri.parse(
-"https://ehmqgiqrfpvvznvsvfyu.supabase.co/rest/v1/chats?select=*,reply:reply_to(*)&or=(senderId.eq.$id,receiverId.eq.$id)&order=created_at.asc"
-  );
+    final prefs = await SharedPreferences.getInstance();
+    final idString = prefs.getString("id");
 
-  final response = await http.get(
-    url,
-    headers: {
-      "apikey": apikey,
-      "Authorization": "Bearer $apikey",
-      "Content-Type": "application/json",
-      "Accept": "application/json",
-    },
-  );
+    print("User ID = $idString");
 
-  if (response.statusCode == 200) {
-    final List data = jsonDecode(response.body);
-    return data.map((e) => HomeChatModel.fromJson(e)).toList();
-  } else {
-    return [];
+    if (idString == null) {
+      print("❌ ID not found in SharedPreferences");
+      return [];
+    }
+
+    final id = int.parse(idString);
+
+    final url = Uri.parse(
+      'https://ehmqgiqrfpvvznvsvfyu.supabase.co/rest/v1/chats?select=*,sender:senderId(*),receiver:receiverId(*)&or=("senderId".eq.$id,"receiverId".eq.$id)&order=created_at.asc',
+    );
+
+    final response = await http.get(
+      url,
+      headers: {
+        "apikey": apikey,
+        "Authorization": "Bearer $apikey",
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      },
+    );
+    print("Status Code = ${response.statusCode}");
+    print("Response Body = ${response.body}");
+
+    if (response.statusCode == 200) {
+      print("✅ getChats success");
+      final List data = jsonDecode(response.body);
+      return data.map((e) => HomeChatModel.fromJson(e)).toList();
+    } else {
+      print("❌ getChats fail");
+      return [];
+    }
   }
-}
 }
