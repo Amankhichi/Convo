@@ -3,7 +3,7 @@ import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
 import 'package:convo/features/chat/datasource/chat_datasource.dart';
 import 'package:convo/features/chat/domain_usecase/delet_mssg_usecase.dart';
 import 'package:convo/features/chat/domain_usecase/edit_meesage_usecase.dart';
-import 'package:convo/features/chat/domain_usecase/get_chats_usecase.dart';
+import 'package:convo/features/home/domain_usecase/get_home_chats_list_usecase.dart';
 import 'package:convo/features/chat/domain_usecase/get_mssg_usecase.dart';
 import 'package:convo/features/contact/datasource/contact_datasource.dart';
 import 'package:convo/features/contact/presentation/bloc/bloc/contact_bloc.dart';

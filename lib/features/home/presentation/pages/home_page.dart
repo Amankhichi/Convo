@@ -1,17 +1,14 @@
+import 'dart:async';
 import 'package:convo/core/const.dart/app_colors.dart';
-import 'package:convo/core/enum/status.dart';
 import 'package:convo/features/auth/presentation/pages/profile_page.dart';
-import 'package:convo/features/chat/presentation/pages/chat_page.dart';
 import 'package:convo/features/contact/presentation/pages/contact_page.dart';
 import 'package:convo/features/auth/presentation/pages/login_page.dart';
-import 'package:convo/core/custom/custom_text.dart';
 import 'package:convo/features/home/presentation/bloc/bloc/home_bloc.dart';
+import 'package:convo/features/home/presentation/widgets/home_chat_list_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key});
@@ -23,9 +20,16 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  @override
   void initState() {
     super.initState();
+
     context.read<HomeBloc>().add(HomeEvent.init());
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -107,85 +111,60 @@ class _HomePageState extends State<HomePage> {
         color: AppColors.backgroundColor(context),
         child: Column(
           children: [
-            SizedBox(
-              height: 100,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 5,
-                ),
-                itemCount: 6,
-                itemBuilder: (context, index) {
-                  final isAddStory = index == 0;
 
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 14),
-                    child: Column(
-                      children: [
-                        Container(
-                          height: 60,
-                          width: 60,
-                          padding: const EdgeInsets.all(2),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: isAddStory ? Colors.grey : Colors.green,
-                              width: 2,
-                            ),
-                          ),
-                          child: CircleAvatar(
-                            backgroundColor: Colors.grey.shade300,
-                            child: isAddStory
-                                ? const Icon(Icons.add, size: 30)
-                                : const Icon(Icons.person),
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          isAddStory ? "Your Story" : "User $index",
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: AppColors.textColor(context),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
+            // SizedBox(
+            //   height: 100,
+            //   child: ListView.builder(
+            //     scrollDirection: Axis.horizontal,
+            //     padding: const EdgeInsets.symmetric(
+            //       horizontal: 12,
+            //       vertical: 5,
+            //     ),
+            //     itemCount: 6,
+            //     itemBuilder: (context, index) {
+            //       final isAddStory = index == 0;
+
+            //       return Padding(
+            //         padding: const EdgeInsets.only(right: 14),
+            //         child: Column(
+            //           children: [
+            //             Container(
+            //               height: 60,
+            //               width: 60,
+            //               padding: const EdgeInsets.all(2),
+            //               decoration: BoxDecoration(
+            //                 shape: BoxShape.circle,
+            //                 border: Border.all(
+            //                   color: isAddStory ? Colors.grey : Colors.green,
+            //                   width: 2,
+            //                 ),
+            //               ),
+            //               child: CircleAvatar(
+            //                 backgroundColor: Colors.grey.shade300,
+            //                 child: isAddStory
+            //                     ? const Icon(Icons.add, size: 30)
+            //                     : const Icon(Icons.person),
+            //               ),
+            //             ),
+            //             const SizedBox(height: 6),
+            //             Text(
+            //               isAddStory ? "Your Story" : "User $index",
+            //               style: TextStyle(
+            //                 fontSize: 13,
+            //                 color: AppColors.textColor(context),
+            //               ),
+            //             ),
+            //           ],
+            //         ),
+            //       );
+            //     },
+            //   ),
+            // ),
 
             Expanded(
-              child: BlocBuilder<HomeBloc, HomeState>(
-                builder: (context, state) {
-                  return state.homeChatsStatus == Status.loading
-                      ? Center(child: CircularProgressIndicator())
-                      : ListView.builder(
-                          itemCount: state.homePageChats.length,
-                          itemBuilder: (context, index) {
-                            final chat = state.homePageChats[index];
-                            return ListTile(
-                              onTap: (){
-                                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ChatPage(user: chat.receiver)));
-                              },
-                              leading: CircleAvatar(
-                                backgroundColor: AppColors.primary,
-                                child: Lottie.asset(chat.sender.lotti),
-                              ),
-                              title: Text(chat.sender.name),
-                              subtitle: Text(chat.message),
-                              trailing: CustomText(
-                                text: DateFormat('hh:mm a').format(chat.createdAt),
-                                bold: FontWeight.w800,
-                                size: 15,
-                              ),
-                            );
-                          },
-                        );
-                },
-              ),
+              child: HomeChatListWidget(),
             ),
+          
           ],
         ),
       ),
@@ -220,6 +199,7 @@ class _HomePageState extends State<HomePage> {
           child: Icon(Icons.add, color: Colors.white, size: 30),
         ),
       ),
+    
     );
   }
 }

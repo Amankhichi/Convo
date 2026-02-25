@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:convo/core/enum/status.dart';
 import 'package:convo/core/model/home_chat_model.dart';
-import 'package:convo/features/chat/domain_usecase/get_chats_usecase.dart';
+import 'package:convo/features/home/domain_usecase/get_home_chats_list_usecase.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -10,16 +10,16 @@ part 'home_state.dart';
 part 'home_bloc.freezed.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  final GetChatsUseCase _getChatsUseCase;
+  final GetHomeChatsListUsecase _getHomeChatsListUseCase;
   HomeBloc({
-    required GetChatsUseCase getchatsusecase,
-  }) : _getChatsUseCase=getchatsusecase,
+    required GetHomeChatsListUsecase gethomechatslistusecase,
+  }) : _getHomeChatsListUseCase=gethomechatslistusecase,
   super(const HomeState()) {
        on<_Init>(__Init);
   }
 Future<void> __Init(_Init event, Emitter<HomeState> emit) async {
     emit(state.copyWith(homeChatsStatus: Status.loading));
-  final chats = await _getChatsUseCase();
+  final chats = await _getHomeChatsListUseCase();
 
   final prefs = await SharedPreferences.getInstance();
   final idString = prefs.getString("id");
@@ -37,8 +37,12 @@ Future<void> __Init(_Init event, Emitter<HomeState> emit) async {
       homeChatsStatus: Status.success,
       homePageChats: users,
     ));
+    emit(state.copyWith(homeChatsStatus: Status.init));
+
   } else {
     emit(state.copyWith(homeChatsStatus: Status.error));
+    emit(state.copyWith(homeChatsStatus: Status.init));
+
   }
 }
 List<HomeChatModel> buildConversationList(

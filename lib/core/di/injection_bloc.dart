@@ -19,7 +19,7 @@ class InjectionBloc {
     contactusecase: getIt<ContactUsecase>(),
   );
 
-  static HomeBloc get homebloc => HomeBloc(getchatsusecase: getIt<GetChatsUseCase>(),
+  static HomeBloc get homebloc => HomeBloc(gethomechatslistusecase: getIt<GetHomeChatsListUsecase>(),
   );
 
 }

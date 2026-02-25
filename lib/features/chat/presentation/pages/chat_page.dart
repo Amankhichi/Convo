@@ -114,7 +114,10 @@ class _ChatPageState extends State<ChatPage> {
                         mssgSelected = false;
                         mssgIdSelected.clear();
                       })
-                    : Navigator.popUntil(context, (route) => route.isFirst),
+                    : 
+                    setState(() {
+                    Navigator.popUntil(context, (route) => route.isFirst);
+                      })
               ),
               title: ListTile(
                 onTap: () {
