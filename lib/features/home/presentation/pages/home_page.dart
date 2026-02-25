@@ -2,7 +2,7 @@ import 'package:convo/core/const.dart/app_colors.dart';
 import 'package:convo/features/auth/presentation/pages/profile_page.dart';
 import 'package:convo/features/contact/presentation/pages/contact_page.dart';
 import 'package:convo/features/auth/presentation/pages/login_page.dart';
-import 'package:convo/features/home/presentation/bloc/bloc/home_bloc.dart';
+import 'package:convo/features/home/presentation/bloc/home/home_bloc.dart';
 import 'package:convo/features/home/presentation/widgets/home_chat_list_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

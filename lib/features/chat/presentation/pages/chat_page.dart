@@ -41,6 +41,7 @@ class _ChatPageState extends State<ChatPage> {
   String? replyMessage;
   int? replyMessageId;
 
+
   Future<void> makeCall(String phone) async {
     final Uri callUri = Uri(scheme: 'tel', path: phone);
 
@@ -85,6 +86,12 @@ class _ChatPageState extends State<ChatPage> {
       }
     });
   }
+
+//   @override
+// void dispose() {
+//   super.dispose();
+ 
+// }
 
   @override
   Widget build(BuildContext context) {

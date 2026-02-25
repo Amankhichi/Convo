@@ -3,7 +3,7 @@ import 'package:convo/core/custom/custom_text.dart';
 import 'package:convo/core/enum/status.dart';
 import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
 import 'package:convo/features/chat/presentation/pages/chat_page.dart';
-import 'package:convo/features/home/presentation/bloc/bloc/home_bloc.dart';
+import 'package:convo/features/home/presentation/bloc/home/home_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
