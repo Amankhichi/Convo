@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:convo/core/const.dart/app_colors.dart';
 import 'package:convo/features/auth/presentation/pages/profile_page.dart';
 import 'package:convo/features/contact/presentation/pages/contact_page.dart';
@@ -11,7 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({super.key});
+const  HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -112,54 +111,54 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
 
-            // SizedBox(
-            //   height: 100,
-            //   child: ListView.builder(
-            //     scrollDirection: Axis.horizontal,
-            //     padding: const EdgeInsets.symmetric(
-            //       horizontal: 12,
-            //       vertical: 5,
-            //     ),
-            //     itemCount: 6,
-            //     itemBuilder: (context, index) {
-            //       final isAddStory = index == 0;
+            SizedBox(
+              height: 100,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 5,
+                ),
+                itemCount: 6,
+                itemBuilder: (context, index) {
+                  final isAddStory = index == 0;
 
-            //       return Padding(
-            //         padding: const EdgeInsets.only(right: 14),
-            //         child: Column(
-            //           children: [
-            //             Container(
-            //               height: 60,
-            //               width: 60,
-            //               padding: const EdgeInsets.all(2),
-            //               decoration: BoxDecoration(
-            //                 shape: BoxShape.circle,
-            //                 border: Border.all(
-            //                   color: isAddStory ? Colors.grey : Colors.green,
-            //                   width: 2,
-            //                 ),
-            //               ),
-            //               child: CircleAvatar(
-            //                 backgroundColor: Colors.grey.shade300,
-            //                 child: isAddStory
-            //                     ? const Icon(Icons.add, size: 30)
-            //                     : const Icon(Icons.person),
-            //               ),
-            //             ),
-            //             const SizedBox(height: 6),
-            //             Text(
-            //               isAddStory ? "Your Story" : "User $index",
-            //               style: TextStyle(
-            //                 fontSize: 13,
-            //                 color: AppColors.textColor(context),
-            //               ),
-            //             ),
-            //           ],
-            //         ),
-            //       );
-            //     },
-            //   ),
-            // ),
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 14),
+                    child: Column(
+                      children: [
+                        Container(
+                          height: 60,
+                          width: 60,
+                          padding: const EdgeInsets.all(2),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: isAddStory ? Colors.grey : Colors.green,
+                              width: 2,
+                            ),
+                          ),
+                          child: CircleAvatar(
+                            backgroundColor: Colors.grey.shade300,
+                            child: isAddStory
+                                ? const Icon(Icons.add, size: 30)
+                                : const Icon(Icons.person),
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          isAddStory ? "Your Story" : "User $index",
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: AppColors.textColor(context),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
 
             Expanded(
               child: HomeChatListWidget(),
