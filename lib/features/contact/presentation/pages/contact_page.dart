@@ -1,9 +1,10 @@
 import 'package:convo/features/chat/presentation/pages/chat_page.dart';
+import 'package:convo/features/chat/presentation/pages/voice_call_page.dart';
 import 'package:convo/features/contact/presentation/bloc/bloc/contact_bloc.dart';
-import 'package:convo/core/custom/custom_text.dart';
+import 'package:convo/features/contact/presentation/pages/create_group_page.dart';
+import 'package:convo/features/contact/presentation/widgets/build_Action_title_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:convo/core/enum/status.dart';
 import 'package:convo/core/const.dart/app_colors.dart';
 
 class ContactsPage extends StatefulWidget {
@@ -14,8 +15,12 @@ class ContactsPage extends StatefulWidget {
 }
 
 class _ContactsPageState extends State<ContactsPage> {
+  bool isSearching = false;
+  String searchQuery = "";
+  TextEditingController searchController = TextEditingController();
+
   @override
-   void initState() {
+  void initState() {
     super.initState();
     context.read<ContactBloc>().add(ContactEvent.init());
   }
@@ -24,133 +29,155 @@ class _ContactsPageState extends State<ContactsPage> {
   Widget build(BuildContext context) {
     return BlocBuilder<ContactBloc, ContactState>(
       builder: (context, state) {
+        final filteredContacts = state.contacts.where((user) {
+          return user.name.toLowerCase().contains(searchQuery.toLowerCase());
+        }).toList();
+
         return Scaffold(
           backgroundColor: AppColors.backgroundColor(context),
-          appBar: AppBar(
-            toolbarHeight: 80,
-            backgroundColor: AppColors.matchTheme(context),
-            elevation: 8, // 👈 Shadow strength
-            shadowColor: Colors.black54,
 
+          appBar: AppBar(
+            backgroundColor: AppColors.matchTheme(context),
+            elevation: 6,
             leading: IconButton(
               onPressed: () => Navigator.pop(context),
-              icon: Icon(
-                Icons.arrow_back,
-                size: 30,
-                color: AppColors.textColor(context),
-              ),
+              icon: Icon(Icons.arrow_back, color: AppColors.textColor(context)),
             ),
-
-            title: RichText(
-              text: TextSpan(
-                children: [
-                  TextSpan(
-                    text: "Select Contact\n",
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textColor(context),
+            title: isSearching
+                ? TextField(
+                    controller: searchController,
+                    autofocus: true,
+                    decoration: const InputDecoration(
+                      hintText: "Search contact...",
+                      border: InputBorder.none,
                     ),
+                    onChanged: (value) {
+                      setState(() {
+                        searchQuery = value;
+                      });
+                    },
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Select Contact",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textColor(context),
+                        ),
+                      ),
+                      Text(
+                        "${state.contacts.length} contacts",
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: AppColors.textColor(context),
+                        ),
+                      ),
+                    ],
                   ),
-                  TextSpan(
-                    text: "${state.contacts.length} contacts",
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: AppColors.textColor(context),
-                    ),
-                  ),
-                ],
+            actions: [
+              IconButton(
+                icon: Icon(
+                  isSearching ? Icons.close : Icons.search,
+                  color: AppColors.textColor(context),
+                ),
+                onPressed: () {
+                  setState(() {
+                    if (isSearching) {
+                      searchQuery = "";
+                      searchController.clear();
+                    }
+                    isSearching = !isSearching;
+                  });
+                },
               ),
-            ),
+            ],
           ),
 
           body: Column(
             children: [
-              CustomText(text: "text"),
+              if (!isSearching)
+                Container(
+                  margin: const EdgeInsets.all(14),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  decoration: BoxDecoration(
+                    color: AppColors.matchTheme(context),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Column(
+                    children: [
+                      BuildActionTitleWidget(
+                        icon: Icons.group,
+                        title: "Create Group",
+                        onTap: (){
+                          Navigator.of(context).push(MaterialPageRoute(builder: (contect)=> CreateGroupPage()));
+                        },
+                      ),
+                      BuildActionTitleWidget(
+                        icon: Icons.person_add,
+                        title: "New Contact",
+                      ),
+                      BuildActionTitleWidget(
+                        icon: Icons.campaign,
+                        title: "New Channel",
+                      ),
+                    ],
+                  ),
+                ),
               Expanded(
-                child: state.contactStatus == Status.loading
-                    ? const Center(child: CircularProgressIndicator())
-                    : state.contacts.isEmpty
+                child: filteredContacts.isEmpty
                     ? const Center(child: Text("No contacts found"))
                     : ListView.builder(
-                        itemCount: state.contacts.length,
-                        padding: const EdgeInsets.all(12),
-                        itemBuilder: (context, i) {
-                          final user = state.contacts[i];
-                
-                          return RefreshIndicator(
-                            onRefresh: () async {
-                              setState(() {});
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.symmetric(vertical: 2),
-                              decoration: BoxDecoration(
-                                color: AppColors.matchTheme(context),
-                                borderRadius: BorderRadius.all(Radius.circular(20)),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.15),
-                                    blurRadius: 6,
-                                    spreadRadius: 0,
-                                    offset: Offset(0, 3), // 👈 shadow only bottom
-                                  ),
-                                ],
+                        padding: const EdgeInsets.symmetric(horizontal: 14),
+                        itemCount: filteredContacts.length,
+                        itemBuilder: (context, index) {
+                          final user = filteredContacts[index];
+
+                          return Container(
+                            margin: const EdgeInsets.symmetric(vertical: 5),
+                            decoration: BoxDecoration(
+                              color: AppColors.matchTheme(context),
+                              borderRadius: BorderRadius.circular(18),
+                            ),
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                backgroundColor: AppColors.primary,
+                                child: Text(
+                                  user.name[0].toUpperCase(),
+                                  style: const TextStyle(color: Colors.white),
+                                ),
                               ),
-                              child: ListTile(
-                                contentPadding: const EdgeInsets.symmetric(
-                                  // vertical: 2,
-                                  horizontal: 17,
+                              title: Text(
+                                user.name,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.iconColor(context),
                                 ),
-                                leading: CircleAvatar(
-                                  radius: 22,
-                                  backgroundColor: AppColors.primary,
-                                  child: Text(
-                                    user.name[0].toUpperCase(),
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
+                              ),
+                              subtitle: Text(user.about),
+                              trailing: IconButton(
+                                icon: Icon(
+                                  Icons.call,
+                                  color: AppColors.iconColor(context),
                                 ),
-                                title: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    CustomText(
-                                      text: user.name,
-                                      bold: FontWeight.w600,
-                                      size: 20,
-                                    ),
-                                    Text(
-                                      user.about,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 15,
-                                        color: AppColors.iconColor(context),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                onTap: () {
+                                onPressed: () {
                                   Navigator.push(
                                     context,
-                                    PageRouteBuilder(
-                                      pageBuilder: (_, __, ___) =>
-                                          ChatPage(user: user),
-                                      transitionsBuilder: (_, a, __, c) =>
-                                          SlideTransition(
-                                            position: Tween(
-                                              begin: const Offset(1, 0),
-                                              end: Offset.zero,
-                                            ).animate(a),
-                                            child: c,
-                                          ),
+                                    MaterialPageRoute(
+                                      builder: (_) => VoiceCallPage(user: user),
                                     ),
                                   );
-                
-                                  Divider(thickness: 0.5, color: Colors.black26);
                                 },
                               ),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => ChatPage(user: user),
+                                  ),
+                                );
+                              },
                             ),
                           );
                         },

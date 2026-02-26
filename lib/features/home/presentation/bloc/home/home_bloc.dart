@@ -52,6 +52,7 @@ List<HomeChatModel> buildConversationList(
   final Map<int, HomeChatModel> conversationMap = {};
 
   for (var chat in chats) {
+    if (chat.message.isEmpty) continue;
     final otherUserId =
         chat.senderId == myId ? chat.receiverId : chat.senderId;
 
@@ -70,4 +71,5 @@ List<HomeChatModel> buildConversationList(
 
   return conversations;
 }
+
 }

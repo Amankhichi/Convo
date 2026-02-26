@@ -1,7 +1,6 @@
 part of "injection.dart";
 
 class InjectionBloc {
-
   static LoginBloc get loginbloc => LoginBloc(
     adduserusecase: getIt<AddUserUsecase>(),
     getuserusecase: getIt<GetUserUsecase>(),
@@ -14,12 +13,10 @@ class InjectionBloc {
     editmessageusecase: getIt<EditMessageUseCase>(),
   );
 
+  static ContactBloc get contactbloc =>
+      ContactBloc(contactusecase: getIt<ContactUsecase>());
 
-    static ContactBloc get contactbloc => ContactBloc(
-    contactusecase: getIt<ContactUsecase>(),
-  );
-
-  static HomeBloc get homebloc => HomeBloc(gethomechatslistusecase: getIt<GetHomeChatsListUsecase>(),
-  );
-
+  static HomeBloc get homebloc =>HomeBloc(
+    gethomechatslistusecase: getIt<GetHomeChatsListUsecase>(),
+    );
 }

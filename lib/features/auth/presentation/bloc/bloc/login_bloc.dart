@@ -113,7 +113,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     Emitter<LoginState> emit,
   ) async {
     emit(state.copyWith(checkNumberStatus: Status.loading));
+    print("TEST1");
     final user = await _getUserUsecase(phone: state.phone);
+    print("TEST2");
 
     print("test 33 $user");
 
@@ -167,9 +169,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   Future<void> __CheckUser(_CheckUser event, Emitter<LoginState> emit) async {
     emit(state.copyWith(checkuserStatus: Status.loading));
-
     final prefs = await SharedPreferences.getInstance();
     final phone = prefs.getString("phone");
+    if(phone == null || phone.isEmpty){
+      emit(state.copyWith(checkuserStatus: Status.error));
+      Navigator.pushReplacement(
+        Injection.currentContext,
+        MaterialPageRoute(builder: (_) => LoginPage()),
+      );
+      return;
+    }
     final user = await _getUserUsecase(phone: phone.toString());
     if (user != null) {
       emit(

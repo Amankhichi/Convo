@@ -1,16 +1,18 @@
 import 'package:convo/core/const.dart/app_colors.dart';
+import 'package:convo/core/model/stroy_model.dart';
 import 'package:convo/features/auth/presentation/pages/profile_page.dart';
 import 'package:convo/features/contact/presentation/pages/contact_page.dart';
 import 'package:convo/features/auth/presentation/pages/login_page.dart';
 import 'package:convo/features/home/presentation/bloc/home/home_bloc.dart';
 import 'package:convo/features/home/presentation/widgets/home_chat_list_widget.dart';
+import 'package:convo/features/home/presentation/widgets/my_story_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
-const  HomePage({super.key});
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -19,6 +21,21 @@ const  HomePage({super.key});
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  final List<StoryModel> stories = [
+    StoryModel(
+      username: "You",
+      imageUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2",
+      isMyStory: true,
+    ),
+    StoryModel(
+      username: "Aman",
+      imageUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e",
+    ),
+    StoryModel(
+      username: "Rahul",
+      imageUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2",
+    ),
+  ];
   @override
   void initState() {
     super.initState();
@@ -110,60 +127,21 @@ class _HomePageState extends State<HomePage> {
         color: AppColors.backgroundColor(context),
         child: Column(
           children: [
-
             SizedBox(
-              height: 100,
+              height: 110,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 5,
-                ),
-                itemCount: 6,
+                itemCount: stories.length,
                 itemBuilder: (context, index) {
-                  final isAddStory = index == 0;
-
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 14),
-                    child: Column(
-                      children: [
-                        Container(
-                          height: 60,
-                          width: 60,
-                          padding: const EdgeInsets.all(2),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: isAddStory ? Colors.grey : Colors.green,
-                              width: 2,
-                            ),
-                          ),
-                          child: CircleAvatar(
-                            backgroundColor: Colors.grey.shade300,
-                            child: isAddStory
-                                ? const Icon(Icons.add, size: 30)
-                                : const Icon(Icons.person),
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          isAddStory ? "Your Story" : "User $index",
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: AppColors.textColor(context),
-                          ),
-                        ),
-                      ],
-                    ),
+                  return MyStoryWidget(
+                    story: stories[index],
+                    stories: stories,
+                    index: index,
                   );
                 },
               ),
             ),
-
-            Expanded(
-              child: HomeChatListWidget(),
-            ),
-          
+            Expanded(child: HomeChatListWidget()),
           ],
         ),
       ),
@@ -198,7 +176,6 @@ class _HomePageState extends State<HomePage> {
           child: Icon(Icons.add, color: Colors.white, size: 30),
         ),
       ),
-    
     );
   }
 }
