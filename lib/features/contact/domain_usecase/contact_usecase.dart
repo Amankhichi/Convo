@@ -32,16 +32,17 @@ class ContactUsecase {
         _normalizeNumber(user.phone): user,
     };
 
-    final Set<String> phoneNumbers = phoneContacts
+    final Set<Contact> phoneNumbers = phoneContacts
         .where((c) => c.phones.isNotEmpty)
-        .map((c) => _normalizeNumber(c.phones.first.number))
         .toSet();
 
     final List<UserModel> matchedContacts = [];
 
-    for (final number in phoneNumbers) {
-      final user = apiUsersByPhone[number];
-      if (number == myNumber) continue;
+    for (final c in phoneNumbers) {
+
+      final user = apiUsersByPhone[ _normalizeNumber(c.phones.first.number)];
+      user?.copyWith(name: c.displayName);
+      if (c.phones.first.number == myNumber) continue;
       if (user != null) {
         matchedContacts.add(user);
       }

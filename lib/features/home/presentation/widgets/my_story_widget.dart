@@ -78,6 +78,7 @@ class _MyStoryWidgetState extends State<MyStoryWidget> {
                   : widget.story.username,
               style: TextStyle(
                 fontSize: 13,
+                fontWeight: FontWeight.w500,
                 color: AppColors.textColor(context),
               ),
             ),

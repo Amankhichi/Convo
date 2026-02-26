@@ -1,7 +1,7 @@
+import 'package:convo/core/const.dart/app_colors.dart';
 import 'package:convo/features/contact/presentation/bloc/bloc/contact_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:convo/core/const.dart/app_colors.dart';
 
 class CreateGroupPage extends StatefulWidget {
   const CreateGroupPage({super.key});
@@ -11,26 +11,40 @@ class CreateGroupPage extends StatefulWidget {
 }
 
 class _CreateGroupPageState extends State<CreateGroupPage> {
-
   final TextEditingController groupNameController = TextEditingController();
   final List<dynamic> selectedUsers = [];
+
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ContactBloc, ContactState>(
       builder: (context, state) {
-
         return Scaffold(
           backgroundColor: AppColors.backgroundColor(context),
 
           appBar: AppBar(
-            title: const Text("Create Group"),
+            leading: IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: Icon(Icons.arrow_back, color: AppColors.textColor(context)),
+            ),
+            centerTitle: true,
+            title: Text(
+              "Create Group",
+              style: TextStyle(
+                color: AppColors.textColor(context),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             backgroundColor: AppColors.matchTheme(context),
             actions: [
               IconButton(
-                icon: const Icon(Icons.check),
+                icon: Icon(
+                  Icons.check,
+                  size: 29,
+                  color: AppColors.iconColor(context)
+                ),
                 onPressed: () {
-                  if (groupNameController.text.isEmpty ||
+                  if (groupNameController.text.trim().isEmpty ||
                       selectedUsers.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -45,26 +59,27 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
 
                   Navigator.pop(context);
                 },
-              )
+              ),
             ],
           ),
 
           body: Column(
             children: [
-
               Container(
                 padding: const EdgeInsets.all(16),
                 color: AppColors.matchTheme(context),
                 child: Row(
                   children: [
-
                     Stack(
                       children: [
                         const CircleAvatar(
                           radius: 35,
                           backgroundColor: Colors.grey,
-                          child: Icon(Icons.group,
-                              color: Colors.white, size: 30),
+                          child: Icon(
+                            Icons.group,
+                            color: Colors.white,
+                            size: 30,
+                          ),
                         ),
                         Positioned(
                           bottom: 0,
@@ -72,8 +87,11 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                           child: CircleAvatar(
                             radius: 12,
                             backgroundColor: AppColors.primary,
-                            child: const Icon(Icons.camera_alt,
-                                size: 14, color: Colors.white),
+                            child: const Icon(
+                              Icons.camera_alt,
+                              size: 14,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ],
@@ -84,8 +102,10 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                     Expanded(
                       child: TextField(
                         controller: groupNameController,
+                        style: TextStyle(color: AppColors.iconColor(context),fontWeight: FontWeight.w600),
                         decoration: const InputDecoration(
                           hintText: "Group Name",
+                          
                           border: UnderlineInputBorder(),
                         ),
                       ),
@@ -118,24 +138,21 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                   itemCount: state.contacts.length,
                   itemBuilder: (context, index) {
                     final user = state.contacts[index];
-                    final isSelected =
-                        selectedUsers.contains(user);
+                    final isSelected = selectedUsers.contains(user);
 
                     return ListTile(
                       leading: CircleAvatar(
                         backgroundColor: AppColors.primary,
                         child: Text(
                           user.name[0].toUpperCase(),
-                          style: const TextStyle(
-                              color: Colors.white),
+                          style: const TextStyle(color: Colors.white),
                         ),
                       ),
-                      title: Text(user.name),
-                      subtitle: Text(user.about),
+                      title: Text(user.name,style: TextStyle(color: AppColors.iconColor(context)),),
+                      subtitle: Text(user.about,style: TextStyle(color: AppColors.iconColor(context)),),
                       trailing: isSelected
-                          ? const Icon(Icons.check_circle,
-                              color: Colors.green)
-                          : const Icon(Icons.circle_outlined),
+                          ? const Icon(Icons.check_circle, color: Colors.green)
+                          :  Icon(Icons.circle_outlined,color:AppColors.iconColor(context),),
                       onTap: () {
                         setState(() {
                           if (isSelected) {

@@ -5,6 +5,7 @@ import 'package:convo/features/contact/presentation/pages/contact_page.dart';
 import 'package:convo/features/auth/presentation/pages/login_page.dart';
 import 'package:convo/features/home/presentation/bloc/home/home_bloc.dart';
 import 'package:convo/features/home/presentation/widgets/home_chat_list_widget.dart';
+import 'package:convo/features/home/presentation/widgets/home_navbar_widget.dart';
 import 'package:convo/features/home/presentation/widgets/my_story_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -36,12 +37,14 @@ class _HomePageState extends State<HomePage> {
       imageUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2",
     ),
   ];
-  @override
-  void initState() {
-    super.initState();
+  // @override
+  // void initState() {
+  //   super.initState();
 
-    context.read<HomeBloc>().add(HomeEvent.init());
-  }
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     context.read<HomeBloc>().add(HomeEvent.init());
+  //   });
+  // }
 
   @override
   void dispose() {
@@ -73,7 +76,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         actions: [
-          Icon(Icons.search, size: 35, color: AppColors.iconColor(context)),
+          IconButton(icon: Icon(Icons.search, size: 28), onPressed: () {}),
           const SizedBox(width: 10),
         ],
       ),
@@ -98,6 +101,7 @@ class _HomePageState extends State<HomePage> {
                 leading: const Icon(Icons.home),
                 title: const Text("Home"),
                 onTap: () {
+                  Navigator.pop(context);
                   Navigator.of(context).push(
                     MaterialPageRoute(builder: (context) => ProfilePage()),
                   );
@@ -112,9 +116,10 @@ class _HomePageState extends State<HomePage> {
                 leading: const Icon(Icons.logout),
                 title: const Text("Logout"),
                 onTap: () async {
-                  Navigator.of(
-                    context,
-                  ).push(MaterialPageRoute(builder: (context) => LoginPage()));
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                    (route) => false,
+                  );
                   final prefs = await SharedPreferences.getInstance();
                   await prefs.remove("id");
                 },
@@ -123,26 +128,29 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      body: Container(
-        color: AppColors.backgroundColor(context),
-        child: Column(
-          children: [
-            SizedBox(
-              height: 110,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: stories.length,
-                itemBuilder: (context, index) {
-                  return MyStoryWidget(
-                    story: stories[index],
-                    stories: stories,
-                    index: index,
-                  );
-                },
+      body: SafeArea(
+        child: Container(
+          color: AppColors.backgroundColor(context),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 100,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: stories.length,
+                  itemBuilder: (context, index) {
+                    return MyStoryWidget(
+                      story: stories[index],
+                      stories: stories,
+                      index: index,
+                    );
+                  },
+                ),
               ),
-            ),
-            Expanded(child: HomeChatListWidget()),
-          ],
+              HomeNavbar(),
+              Expanded(child: HomeChatListWidget()),
+            ],
+          ),
         ),
       ),
 

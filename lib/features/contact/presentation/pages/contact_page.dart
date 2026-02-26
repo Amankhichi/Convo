@@ -155,13 +155,14 @@ class _ContactsPageState extends State<ContactsPage> {
                                   color: AppColors.iconColor(context),
                                 ),
                               ),
-                              subtitle: Text(user.about),
+                              subtitle: Text(user.about,style: TextStyle(color: AppColors.iconColor(context)),),
                               trailing: IconButton(
                                 icon: Icon(
                                   Icons.call,
                                   color: AppColors.iconColor(context),
                                 ),
                                 onPressed: () {
+                                  Navigator.pop(context);
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -171,6 +172,7 @@ class _ContactsPageState extends State<ContactsPage> {
                                 },
                               ),
                               onTap: () {
+                                Navigator.pop(context);
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
