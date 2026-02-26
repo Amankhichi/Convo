@@ -1,6 +1,5 @@
 import 'package:convo/core/const.dart/app_colors.dart';
 import 'package:convo/core/custom/custom_text.dart';
-import 'package:convo/core/enum/status.dart';
 import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
 import 'package:convo/features/chat/presentation/pages/chat_page.dart';
 import 'package:convo/features/chat/presentation/pages/contact_user_profile_page.dart';

@@ -3,12 +3,10 @@ import 'package:convo/core/model/stroy_model.dart';
 import 'package:convo/features/auth/presentation/pages/profile_page.dart';
 import 'package:convo/features/contact/presentation/pages/contact_page.dart';
 import 'package:convo/features/auth/presentation/pages/login_page.dart';
-import 'package:convo/features/home/presentation/bloc/home/home_bloc.dart';
 import 'package:convo/features/home/presentation/widgets/home_chat_list_widget.dart';
 import 'package:convo/features/home/presentation/widgets/home_navbar_widget.dart';
 import 'package:convo/features/home/presentation/widgets/my_story_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
