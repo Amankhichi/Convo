@@ -1,11 +1,19 @@
 class StoryModel {
-  final String username;
   final String imageUrl;
+  final String username;
   final bool isMyStory;
 
   StoryModel({
-    required this.username,
     required this.imageUrl,
-    this.isMyStory = false,
+    required this.username,
+    required this.isMyStory,
   });
+
+  factory StoryModel.empty() {
+    return StoryModel(
+      imageUrl: '',
+      username: '',
+      isMyStory: true,
+    );
+  }
 }

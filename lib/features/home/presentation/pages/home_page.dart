@@ -3,9 +3,12 @@ import 'package:convo/core/model/stroy_model.dart';
 import 'package:convo/features/auth/presentation/pages/profile_page.dart';
 import 'package:convo/features/contact/presentation/pages/contact_page.dart';
 import 'package:convo/features/auth/presentation/pages/login_page.dart';
+import 'package:convo/features/home/presentation/pages/add_stroy_page.dart';
+import 'package:convo/features/home/presentation/pages/call_history_page.dart';
 import 'package:convo/features/home/presentation/widgets/home_chat_list_widget.dart';
 import 'package:convo/features/home/presentation/widgets/home_navbar_widget.dart';
 import 'package:convo/features/home/presentation/widgets/my_story_widget.dart';
+import 'package:convo/features/home/presentation/widgets/unread_chat_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,33 +22,31 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  int selectedTab = 0;
+  late PageController _pageController;
 
   final List<StoryModel> stories = [
     StoryModel(
-      username: "You",
-      imageUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2",
-      isMyStory: true,
-    ),
-    StoryModel(
-      username: "Aman",
+      username: "Sumurk sir",
       imageUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e",
+      isMyStory: false,
     ),
     StoryModel(
       username: "Rahul",
       imageUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2",
+      isMyStory: false,
     ),
   ];
-  // @override
-  // void initState() {
-  //   super.initState();
 
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     context.read<HomeBloc>().add(HomeEvent.init());
-  //   });
-  // }
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
 
   @override
   void dispose() {
+    _pageController.dispose();
     super.dispose();
   }
 
@@ -74,7 +75,11 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         actions: [
-          IconButton(icon: Icon(Icons.search, size: 28), onPressed: () {}),
+          IconButton(
+            color: AppColors.secondaryColor(context),
+            icon: Icon(Icons.search, size: 28),
+            onPressed: () {},
+          ),
           const SizedBox(width: 10),
         ],
       ),
@@ -135,27 +140,110 @@ class _HomePageState extends State<HomePage> {
                 height: 100,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: stories.length,
+                  itemCount: stories.length + 1,
                   itemBuilder: (context, index) {
+                    /// 🔥 Add Story always at index 0
+                    if (index == 0) {
+                      return GestureDetector(
+                        onTap: () async {
+                          final newStory = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const AddStoryPage(),
+                            ),
+                          );
+
+                          if (newStory != null && newStory is StoryModel) {
+                            setState(() {
+                              stories.insert(0, newStory); // Insert FIRST
+                            });
+                          }
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 14),
+                          child: Column(
+                            children: [
+                              Container(
+                                height: 65,
+                                width: 65,
+                                padding: const EdgeInsets.all(3),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Colors.grey,
+                                    width: 2,
+                                  ),
+                                ),
+                                child: const CircleAvatar(
+                                  child: Icon(Icons.add),
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              const Text(
+                                "Your Story",
+                                style: TextStyle(fontSize: 13),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+
+                    /// 🔥 Real Stories
+                    final story = stories[index - 1];
+
                     return MyStoryWidget(
-                      story: stories[index],
+                      story: story,
                       stories: stories,
-                      index: index,
+                      index: index - 1,
                     );
                   },
                 ),
               ),
-              HomeNavbar(),
-              Expanded(child: HomeChatListWidget()),
+
+              HomeNavbar(
+                selectedIndex: selectedTab,
+                onTabChanged: (index) {
+                  setState(() {
+                    selectedTab = index;
+                  });
+
+                  _pageController.animateToPage(
+                    index,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                },
+              ),
+
+              const SizedBox(height: 10),
+              Expanded(
+                child: PageView(
+                  controller: _pageController,
+                  physics: const BouncingScrollPhysics(),
+                  onPageChanged: (index) {
+                    setState(() {
+                      selectedTab = index;
+                    });
+                  },
+                  children: const [
+                    HomeChatListWidget(),
+                    UnreadChatWidget(),
+                    CallHistoryPage(),
+                    // GroupListPage(),
+                    // ChannelListPage(),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
       ),
 
       floatingActionButton: Padding(
-        padding: const EdgeInsets.only(right: 20, bottom: 20),
+        padding: EdgeInsets.only(right: 20, bottom: 20),
         child: FloatingActionButton(
-          backgroundColor: Colors.green,
+          backgroundColor: AppColors.primary,
           onPressed: () {
             Navigator.push(
               context,
@@ -164,7 +252,7 @@ class _HomePageState extends State<HomePage> {
                     ContactsPage(),
                 transitionsBuilder:
                     (context, animation, secondaryAnimation, child) {
-                      const begin = Offset(1.0, 0.0); // 👉 from right
+                      const begin = Offset(1.0, 0.0); 
                       const end = Offset.zero;
                       final tween = Tween(
                         begin: begin,

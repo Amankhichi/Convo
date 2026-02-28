@@ -1,3 +1,4 @@
+import 'package:convo/core/const.dart/slide_page_route.dart';
 import 'package:convo/features/chat/presentation/pages/chat_page.dart';
 import 'package:convo/features/chat/presentation/pages/voice_call_page.dart';
 import 'package:convo/features/contact/presentation/bloc/bloc/contact_bloc.dart';
@@ -37,7 +38,7 @@ class _ContactsPageState extends State<ContactsPage> {
           backgroundColor: AppColors.backgroundColor(context),
 
           appBar: AppBar(
-            backgroundColor: AppColors.matchTheme(context),
+            backgroundColor: AppColors.invertTextColor(context),
             elevation: 6,
             leading: IconButton(
               onPressed: () => Navigator.pop(context),
@@ -102,7 +103,7 @@ class _ContactsPageState extends State<ContactsPage> {
                   margin: const EdgeInsets.all(14),
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   decoration: BoxDecoration(
-                    color: AppColors.matchTheme(context),
+                    color: AppColors.invertTextColor(context),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Column(
@@ -110,8 +111,12 @@ class _ContactsPageState extends State<ContactsPage> {
                       BuildActionTitleWidget(
                         icon: Icons.group,
                         title: "Create Group",
-                        onTap: (){
-                          Navigator.of(context).push(MaterialPageRoute(builder: (contect)=> CreateGroupPage()));
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (contect) => CreateGroupPage(),
+                            ),
+                          );
                         },
                       ),
                       BuildActionTitleWidget(
@@ -137,7 +142,7 @@ class _ContactsPageState extends State<ContactsPage> {
                           return Container(
                             margin: const EdgeInsets.symmetric(vertical: 5),
                             decoration: BoxDecoration(
-                              color: AppColors.matchTheme(context),
+                              color: AppColors.invertTextColor(context),
                               borderRadius: BorderRadius.circular(18),
                             ),
                             child: ListTile(
@@ -155,7 +160,12 @@ class _ContactsPageState extends State<ContactsPage> {
                                   color: AppColors.iconColor(context),
                                 ),
                               ),
-                              subtitle: Text(user.about,style: TextStyle(color: AppColors.iconColor(context)),),
+                              subtitle: Text(
+                                user.about,
+                                style: TextStyle(
+                                  color: AppColors.iconColor(context),
+                                ),
+                              ),
                               trailing: IconButton(
                                 icon: Icon(
                                   Icons.call,
@@ -164,19 +174,27 @@ class _ContactsPageState extends State<ContactsPage> {
                                 onPressed: () {
                                   Navigator.pop(context);
                                   Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => VoiceCallPage(user: user),
-                                    ),
-                                  );
+                                  context,
+                                  SlidePageRoute(
+                                    page: VoiceCallPage(user: user),
+                                    beginOffset: const Offset(
+                                      1,
+                                      0,
+                                    ), 
+                                  ),
+                                );
                                 },
                               ),
                               onTap: () {
-                                Navigator.pop(context);
+                                Navigator.of(context).pop();
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(
-                                    builder: (_) => ChatPage(user: user),
+                                  SlidePageRoute(
+                                    page: ChatPage(user: user),
+                                    beginOffset: const Offset(
+                                      -1,
+                                      0,
+                                    ), 
                                   ),
                                 );
                               },

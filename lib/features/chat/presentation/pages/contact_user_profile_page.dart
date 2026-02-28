@@ -20,7 +20,7 @@ class _ContactUserProfilePageState extends State<ContactUserProfilePage> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor(context),
       appBar: AppBar(
-        backgroundColor: AppColors.AppBarColor(context),
+        backgroundColor: AppColors.appBarColor(context),
         elevation: 0,
         leading: BackButton(color: Colors.white),
         title: Text(
@@ -129,7 +129,7 @@ class _ContactUserProfilePageState extends State<ContactUserProfilePage> {
 
             Card(
               margin: const EdgeInsets.symmetric(horizontal: 15,vertical: 5),
-              color: AppColors.AppBarColor(context),
+              color: AppColors.appBarColor(context),
               child: SizedBox(
                 width: double.infinity,
                 child: Column(
@@ -175,7 +175,7 @@ class _ContactUserProfilePageState extends State<ContactUserProfilePage> {
       padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 4),
       width: double.infinity,
       decoration: BoxDecoration(
-        color: AppColors.AppBarColor(context),
+        color: AppColors.appBarColor(context),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.white12),
       ),
@@ -203,7 +203,7 @@ class _ContactUserProfilePageState extends State<ContactUserProfilePage> {
         Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: AppColors.AppBarColor(context),
+            color: AppColors.appBarColor(context),
             shape: BoxShape.circle,
             border: Border.all(color: Colors.white12),
           ),

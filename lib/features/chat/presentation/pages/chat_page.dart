@@ -1,4 +1,283 @@
+// import 'package:convo/core/const.dart/constant.dart';
+// import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
+// import 'package:convo/features/chat/presentation/pages/video_call_page.dart';
+// import 'package:convo/features/chat/presentation/pages/voice_call_page.dart';
+// import 'package:convo/features/chat/presentation/widgets/chat_appbar_widget.dart';
+// import 'package:convo/features/chat/presentation/widgets/chat_input_field_widget.dart';
+// import 'package:convo/features/chat/presentation/widgets/chat_message_list.dart';
+// import 'package:convo/features/chat/presentation/widgets/emoji_picker_widget.dart';
+// import 'package:convo/features/chat/presentation/widgets/reply_preview_widget.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:convo/core/model/user_model.dart';
+// import 'package:convo/core/const.dart/app_colors.dart';
+// import 'package:convo/features/chat/presentation/bloc/chat_bloc/chat_bloc.dart';
+
+// class ChatPage extends StatefulWidget {
+//   final UserModel user;
+//   const ChatPage({super.key, required this.user});
+
+//   @override
+//   State<ChatPage> createState() => _ChatPageState();
+// }
+
+// class _ChatPageState extends State<ChatPage> {
+//   late final TextEditingController _messageController;
+
+//   final FocusNode _focusNode = FocusNode();
+//   bool emoji = false;
+//   bool mssgSelected = false;
+//   Set<String> mssgIdSelected = {};
+//   Set<String> mssgCopySelected = {};
+//   bool mssgEdit = false;
+//   String? editingMessageId;
+//   bool isReplying = false;
+//   String? replyMessage;
+//   int? replyMessageId;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _messageController = TextEditingController();
+//     context.read<ChatBloc>().add(
+//       ChatEvent.getMssg(receiverId: widget.user.id.toString()),
+//     );
+
+//     Future.delayed(Duration(milliseconds: 300), () {
+//       _focusNode.requestFocus();
+//     });
+//   }
+
+//   @override
+//   void dispose() {
+//     _messageController.dispose();
+//     super.dispose();
+//   }
+
+//   void _handleReply(msg) {
+//     setState(() {
+//       isReplying = true;
+//       replyMessage = msg.message;
+//       replyMessageId = msg.id;
+//     });
+
+//     FocusScope.of(context).unfocus();
+
+//     Future.delayed(const Duration(milliseconds: 50), () {
+//       if (mounted) {
+//         FocusScope.of(context).requestFocus(_focusNode);
+//       }
+//     });
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return BlocBuilder<ChatBloc, ChatState>(
+//       builder: (context, state) {
+//         return WillPopScope(
+//           onWillPop: () async {
+//             Navigator.popUntil(context, (route) => route.isFirst);
+//             return false; // prevent default back
+//           },
+//           child: Scaffold(
+//             backgroundColor: AppColors.backgroundColor(context),
+
+//             /// APP BAR
+//             appBar: ChatAppbarWidget(
+//               mssgSelected: mssgSelected,
+//               mssgIdSelected: mssgIdSelected,
+//               mssgCopySelected: mssgCopySelected,
+//               user: widget.user,
+//               state: state,
+
+//               onBack: () {
+//                 if (mssgSelected) {
+//                   setState(() {
+//                     mssgSelected = false;
+//                     mssgIdSelected.clear();
+//                   });
+//                 } else {
+//                   Navigator.pop(context);
+//                 }
+//               },
+
+//               onClearSelection: () {
+//                 setState(() {
+//                   mssgSelected = false;
+//                   mssgCopySelected.clear();
+//                   mssgIdSelected.clear();
+//                 });
+//               },
+
+// onEdit: (id, message) {
+//   setState(() {
+//     mssgEdit = true;
+//     editingMessageId = id;
+//   });
+
+//   // Pass the message to input field automatically via the controller
+//   _messageController.text = message;
+
+//   // Focus text field so user can edit immediately
+//   Future.delayed(const Duration(milliseconds: 50), () {
+//     _focusNode.requestFocus();
+//   });
+// },
+
+//               onDelete: () {
+//                 for (final id in mssgIdSelected) {
+//                   context.read<ChatBloc>().add(
+//                     ChatEvent.deletMssg(mssId: int.parse(id)),
+//                   );
+//                 }
+
+//                 setState(() {
+//                   mssgSelected = false;
+//                   mssgIdSelected.clear();
+//                 });
+//               },
+
+//               onVoiceCall: () {
+//                 Navigator.push(
+//                   context,
+//                   MaterialPageRoute(
+//                     builder: (_) => VoiceCallPage(user: widget.user),
+//                   ),
+//                 );
+//               },
+
+//               onVideoCall: () {
+//                 Navigator.push(
+//                   context,
+//                   MaterialPageRoute(
+//                     builder: (_) => VideoCallPage(user: widget.user),
+//                   ),
+//                 );
+//               },
+//             ),
+
+//             /// BODY
+//             body: Container(
+//               height: double.infinity,
+//               // Background Wallpaper
+//               decoration: BoxDecoration(
+//                 image: isDeviceThemeDark(context)
+//                     ? DecorationImage(
+//                         image: AssetImage("assests/wallpapers/wallpaper2.jpg"),
+//                         fit: BoxFit.cover,
+//                         alignment: Alignment.topCenter,
+//                       )
+//                     : DecorationImage(
+//                         image: AssetImage("assests/wallpapers/LightThem.png"),
+//                         fit: BoxFit.fitWidth,
+//                       ),
+//               ),
+
+//               child: Column(
+//                 children: [
+//                   // Massegs
+//                   Expanded(
+//                     child: BlocBuilder<LoginBloc, LoginState>(
+//                       builder: (context, sstate) {
+//                         final profile = context.read<LoginBloc>().state.profile;
+
+//                         return ChatMessageList(
+//                           messages: state.messages,
+//                           profileId: profile?.id.toString(),
+//                           mssgSelected: mssgSelected,
+//                           mssgIdSelected: mssgIdSelected,
+//                           mssgCopySelected: mssgCopySelected,
+
+//                           onReply: (msg) {
+//                             _handleReply(msg);
+//                           },
+
+//                           onLongPress: (msg) {
+//                             setState(() {
+//                               mssgSelected = true;
+//                               mssgIdSelected.add(msg.id.toString());
+//                               mssgCopySelected.add(msg.message.toString());
+//                             });
+//                           },
+
+//                           onTapSelect: (msg) {
+//                             if (mssgSelected) {
+//                               setState(() {
+//                                 final id = msg.id.toString();
+
+//                                 if (mssgIdSelected.contains(id)) {
+//                                   mssgIdSelected.remove(id);
+
+//                                   if (mssgIdSelected.isEmpty) {
+//                                     mssgSelected = false;
+//                                   }
+//                                 } else {
+//                                   mssgIdSelected.add(id);
+//                                   mssgCopySelected.add(id);
+//                                 }
+//                               });
+//                             }
+//                           },
+//                         );
+//                       },
+//                     ),
+//                   ),
+
+//                   ///Reply INPUT BAR
+//                   if (isReplying)
+//                     ReplyPreviewWidget(
+//                       replyMessage: replyMessage,
+//                       onCancel: () {
+//                         setState(() {
+//                           isReplying = false;
+//                           replyMessage = null;
+//                           replyMessageId = null;
+//                         });
+
+//                         FocusScope.of(context).unfocus();
+
+//                         Future.delayed(const Duration(milliseconds: 50), () {
+//                           FocusScope.of(context).requestFocus(_focusNode);
+//                         });
+//                       },
+//                     ),
+//                   // INPUT BAR
+//                   ChatInputFieldWidget(
+//                     receiverId: widget.user.id.toString(),
+//                     isEditing: mssgEdit,
+//                     editingMessageId: editingMessageId,
+//                     replyMessageId: replyMessageId,
+//                     onCancelEdit: () {
+//                       setState(() {
+//                         mssgEdit = false;
+//                         editingMessageId = null;
+//                       });
+//                     },
+//                     onSendSuccess: () {
+//                       setState(() {
+//                         isReplying = false;
+//                       });
+//                     },
+//                   ),
+//                   // Emoji picker
+//                   EmojiPickerWidget(
+//                     isVisible: emoji,
+//                     controller: _messageController,
+//                   ),
+//                 ],
+//               ),
+//             ),
+//           ),
+//         );
+//       },
+//     );
+//   }
+// }
+
+
+
 import 'package:convo/core/const.dart/constant.dart';
+import 'package:convo/core/const.dart/slide_page_route.dart';
 import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
 import 'package:convo/features/chat/presentation/pages/contact_user_profile_page.dart';
 import 'package:convo/features/chat/presentation/pages/video_call_page.dart';
@@ -40,7 +319,6 @@ class _ChatPageState extends State<ChatPage> {
   bool isReplying = false;
   String? replyMessage;
   int? replyMessageId;
-
 
   Future<void> makeCall(String phone) async {
     final Uri callUri = Uri(scheme: 'tel', path: phone);
@@ -87,11 +365,11 @@ class _ChatPageState extends State<ChatPage> {
     });
   }
 
-//   @override
-// void dispose() {
-//   super.dispose();
- 
-// }
+  //   @override
+  // void dispose() {
+  //   super.dispose();
+
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +386,7 @@ class _ChatPageState extends State<ChatPage> {
             /// APP BAR
             appBar: AppBar(
               toolbarHeight: 70,
-              backgroundColor: AppColors.ChatprofileColor(context),
+              backgroundColor: AppColors.chatProfileColor(context),
               titleSpacing: 0,
               leading: IconButton(
                 icon: Icon(
@@ -121,32 +399,17 @@ class _ChatPageState extends State<ChatPage> {
                         mssgSelected = false;
                         mssgIdSelected.clear();
                       })
-                    : 
-                    
-                    Navigator.of(context).pop()
-                    
+                    : Navigator.pop(context),
               ),
               title: ListTile(
                 onTap: () {
                   Navigator.push(
                     context,
-                    PageRouteBuilder(
-                      pageBuilder: (_, __, ___) =>
-                          ContactUserProfilePage(user: widget.user),
-                      transitionsBuilder: (_, a, __, c) => SlideTransition(
-                        position: Tween(
-                          begin: const Offset(-1, 0),
-                          end: Offset.zero,
-                        ).animate(a),
-                        child: c,
-                      ),
+                    SlidePageRoute(
+                      page: ContactUserProfilePage(user: widget.user),
+                      beginOffset: const Offset(-1, 0), // Slide from left
                     ),
                   );
-                  //                   if(state.GetMssgStatus==Status.error){
-                  //   showError(context, "mssg not get");
-                  // }else{
-                  //   showSuccess(context, "mssg is get it");
-                  // }
                 },
 
                 contentPadding: EdgeInsets.zero,
@@ -469,7 +732,7 @@ class _ChatPageState extends State<ChatPage> {
                       horizontal: 10,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.ChatprofileColor(context),
+                      color: AppColors.chatProfileColor(context),
                       boxShadow: const [
                         BoxShadow(color: Colors.black12, blurRadius: 4),
                       ],
@@ -479,7 +742,7 @@ class _ChatPageState extends State<ChatPage> {
                         /// Emoji Button
                         IconButton(
                           iconSize: 30,
-                          color: AppColors.background(context),
+                          color: AppColors.sendBT(context),
                           icon: Icon(
                             emoji
                                 ? Icons.keyboard
@@ -545,14 +808,14 @@ class _ChatPageState extends State<ChatPage> {
                           child: _messageController.text.isEmpty
                               ? IconButton(
                                   iconSize: 30,
-                                  color: AppColors.background(context),
+                                  color: AppColors.sendBT(context),
                                   onPressed: () {},
                                   icon: const Icon(Icons.mic, size: 28),
                                 )
                               : mssgEdit
                               ? IconButton(
                                   iconSize: 30,
-                                  color: AppColors.background(context),
+                                  color: AppColors.sendBT(context),
                                   onPressed: () {
                                     if (editingMessageId == null) return;
 
@@ -574,7 +837,7 @@ class _ChatPageState extends State<ChatPage> {
                                 )
                               : IconButton(
                                   iconSize: 30,
-                                  color: AppColors.background(context),
+                                  color: AppColors.sendBT(context),
                                   onPressed: () {
                                     context.read<ChatBloc>().add(
                                       ChatEvent.sendMssg(

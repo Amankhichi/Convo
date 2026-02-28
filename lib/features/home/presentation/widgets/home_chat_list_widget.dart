@@ -110,7 +110,7 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
                                 ),
                               ),
 
-                              const SizedBox(height: 15),
+                              // const SizedBox(height: 15),
 
                               Row(
                                 mainAxisAlignment:
@@ -175,7 +175,7 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
                                 ],
                               ),
 
-                              const SizedBox(height: 15),
+                              // const SizedBox(height: 15),
                             ],
                           ),
                         ),
@@ -195,7 +195,7 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
                 user.name,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textColor(context),
+                  color: AppColors.iconColor(context),
                 ),
               ),
 

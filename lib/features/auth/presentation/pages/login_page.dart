@@ -1,5 +1,6 @@
 import 'package:convo/core/const.dart/app_colors.dart';
 import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
+import 'package:convo/features/auth/presentation/pages/otp_page.dart';
 import 'package:convo/features/home/presentation/widgets/country.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -147,9 +148,8 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       onPressed: phoneController.text.length == 10
                           ? () {
-                              context.read<LoginBloc>().add(
-                                    LoginEvent.checkNumber(),
-                                  );
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ConvoOtpPage()));
+                              
                             }
                           : null,
                       child: Text(

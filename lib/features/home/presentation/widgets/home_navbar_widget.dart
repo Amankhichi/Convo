@@ -2,16 +2,20 @@ import 'package:convo/core/const.dart/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class HomeNavbar extends StatefulWidget {
-  final Function(int index)? onTabChanged;
+  final int selectedIndex;
+  final Function(int) onTabChanged;
 
-  const HomeNavbar({super.key, this.onTabChanged});
+  const HomeNavbar({
+    super.key,
+    required this.onTabChanged,
+    required this.selectedIndex,
+  });
 
   @override
   State<HomeNavbar> createState() => _HomeNavbarState();
 }
 
 class _HomeNavbarState extends State<HomeNavbar> {
-  int selectedIndex = 0;
 
   final List<String> tabs = [
     "All",
@@ -28,7 +32,7 @@ class _HomeNavbarState extends State<HomeNavbar> {
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.only(left: 20),
-        itemCount: tabs.length, 
+        itemCount: tabs.length,
         itemBuilder: (context, index) {
           return Padding(
             padding: const EdgeInsets.only(right: 10),
@@ -40,18 +44,14 @@ class _HomeNavbarState extends State<HomeNavbar> {
   }
 
   Widget _buildTab(int index) {
-    final bool isSelected = selectedIndex == index;
+    final bool isSelected = widget.selectedIndex == index;
 
     return GestureDetector(
       onTap: () {
-        setState(() {
-          selectedIndex = index;
-        });
-
-        widget.onTabChanged?.call(index);
+        widget.onTabChanged(index); 
       },
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
+        duration: const Duration(milliseconds: 500),
         padding: const EdgeInsets.symmetric(horizontal: 10),
         alignment: Alignment.center,
         decoration: BoxDecoration(
@@ -59,7 +59,7 @@ class _HomeNavbarState extends State<HomeNavbar> {
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
             color: isSelected
-                ? Colors.green.shade400
+                ? AppColors.primary
                 : AppColors.textColor(context),
           ),
         ),
@@ -70,10 +70,11 @@ class _HomeNavbarState extends State<HomeNavbar> {
             fontWeight: FontWeight.w600,
             color: isSelected
                 ? Colors.white
-                :AppColors.textColor(context),
+                : AppColors.textColor(context),
           ),
         ),
       ),
     );
   }
 }
+

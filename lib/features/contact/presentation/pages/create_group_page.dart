@@ -35,7 +35,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            backgroundColor: AppColors.matchTheme(context),
+            backgroundColor: AppColors.invertTextColor(context),
             actions: [
               IconButton(
                 icon: Icon(
@@ -67,7 +67,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
             children: [
               Container(
                 padding: const EdgeInsets.all(16),
-                color: AppColors.matchTheme(context),
+                color: AppColors.invertTextColor(context),
                 child: Row(
                   children: [
                     Stack(

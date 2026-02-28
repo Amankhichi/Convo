@@ -16,24 +16,32 @@ class ViewStoryPage extends StatefulWidget {
 }
 
 class _ViewStoryPageState extends State<ViewStoryPage> {
-  late PageController _pageController;
+  late PageController _controller;
   late int currentIndex;
 
   @override
   void initState() {
     super.initState();
     currentIndex = widget.initialIndex;
-    _pageController = PageController(initialPage: currentIndex);
+    _controller = PageController(initialPage: currentIndex);
   }
 
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
+  void next() {
+    if (currentIndex < widget.stories.length - 1) {
+      _controller.nextPage(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut);
+    } else {
+      Navigator.pop(context);
+    }
   }
 
-  void closeStory() {
-    Navigator.pop(context);
+  void previous() {
+    if (currentIndex > 0) {
+      _controller.previousPage(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut);
+    }
   }
 
   @override
@@ -41,40 +49,57 @@ class _ViewStoryPageState extends State<ViewStoryPage> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: GestureDetector(
-        onVerticalDragUpdate: (details) {
-          if (details.primaryDelta! > 12) {
-            closeStory(); // Swipe Down
+        onTapUp: (details) {
+          final width = MediaQuery.of(context).size.width;
+
+          if (details.globalPosition.dx < width / 2) {
+            previous();
+          } else {
+            next();
           }
         },
-        child: PageView.builder(
-          controller: _pageController,
-          itemCount: widget.stories.length,
-          onPageChanged: (index) {
-            setState(() {
-              currentIndex = index;
-            });
-          },
-          itemBuilder: (context, index) {
-            final story = widget.stories[index];
+        onVerticalDragUpdate: (details) {
+          if (details.primaryDelta! > 10) {
+            Navigator.pop(context);
+          }
+        },
+        child: Stack(
+          children: [
+            PageView.builder(
+              controller: _controller,
+              itemCount: widget.stories.length,
+              onPageChanged: (index) {
+                setState(() {
+                  currentIndex = index;
+                });
+              },
+              itemBuilder: (context, index) {
+                final story = widget.stories[index];
 
-            return Stack(
-              children: [
-                Positioned.fill(
-                  child: Image.network(
-                    story.imageUrl,
-                    fit: BoxFit.cover,
-                  ),
-                ),
+                return Image.network(
+                  story.imageUrl,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                );
+              },
+            ),
 
-                Positioned(
-                  top: 50,
-                  left: 20,
-                  child: Row(
+            /// 🔥 Top Overlay
+            Positioned(
+              top: 50,
+              left: 20,
+              right: 20,
+              child: Row(
+                mainAxisAlignment:
+                    MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
                     children: [
                       const CircleAvatar(radius: 18),
                       const SizedBox(width: 10),
                       Text(
-                        story.username,
+                        widget.stories[currentIndex].username,
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 18,
@@ -82,10 +107,15 @@ class _ViewStoryPageState extends State<ViewStoryPage> {
                       ),
                     ],
                   ),
-                ),
-              ],
-            );
-          },
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.close,
+                        color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
