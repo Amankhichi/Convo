@@ -782,7 +782,8 @@ class _ChatPageState extends State<ChatPage> {
                               }
                             },
                             style: TextStyle(
-                              color: AppColors.invertTextColor(context),
+                             
+                              color: AppColors.iconColor,
                               fontWeight: FontWeight.w600,
                             ),
                             decoration: InputDecoration(
@@ -802,7 +803,6 @@ class _ChatPageState extends State<ChatPage> {
 
                         const SizedBox(width: 8),
 
-                        /// Mic / Send / Edit Button
                         CircleAvatar(
                           backgroundColor: Colors.transparent,
                           child: _messageController.text.isEmpty

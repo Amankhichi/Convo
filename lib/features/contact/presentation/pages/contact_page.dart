@@ -157,19 +157,19 @@ class _ContactsPageState extends State<ContactsPage> {
                                 user.name,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
-                                  color: AppColors.iconColor(context),
+                                  color: AppColors.iconColor,
                                 ),
                               ),
                               subtitle: Text(
                                 user.about,
                                 style: TextStyle(
-                                  color: AppColors.iconColor(context),
+                                  color: AppColors.iconColor,
                                 ),
                               ),
                               trailing: IconButton(
                                 icon: Icon(
                                   Icons.call,
-                                  color: AppColors.iconColor(context),
+                                  color: AppColors.iconColor,
                                 ),
                                 onPressed: () {
                                   Navigator.pop(context);

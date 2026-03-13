@@ -7,7 +7,7 @@ class HomeChatModel {
   final int receiverId;
   final String message;
   final int? replyTo;
-
+  final bool seen;
   final UserModel sender;
   final UserModel receiver;
 
@@ -18,6 +18,7 @@ class HomeChatModel {
     required this.receiverId,
     required this.message,
     required this.replyTo,
+    required this.seen,
     required this.sender,
     required this.receiver,
   });
@@ -30,8 +31,33 @@ class HomeChatModel {
       receiverId: json['receiverId'],
       message: json['mssg'] ?? '',
       replyTo: json['reply_to'],
+      seen: json['seen'],
       sender: UserModel.fromJson(json['sender']),
       receiver: UserModel.fromJson(json['receiver']),
+    );
+  }
+
+  HomeChatModel copyWith({
+    int? id,
+    DateTime? createdAt,
+    int? senderId,
+    int? receiverId,
+    String? message,
+    int? replyTo,
+    bool? seen,
+    UserModel? sender,
+    UserModel? receiver,
+  }) {
+    return HomeChatModel(
+      id: id ?? this.id,
+      createdAt: createdAt ?? this.createdAt,
+      senderId: senderId ?? this.senderId,
+      receiverId: receiverId ?? this.receiverId,
+      message: message ?? this.message,
+      replyTo: replyTo ?? this.replyTo,
+      seen: seen ?? this.seen,
+      sender: sender ?? this.sender,
+      receiver: receiver ?? this.receiver,
     );
   }
 }

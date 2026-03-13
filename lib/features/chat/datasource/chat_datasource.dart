@@ -114,5 +114,29 @@ class ChatDatasource {
     return res.statusCode == 200 || res.statusCode == 204;
   }
 
+  Future<bool> createGroup({
+    required int msgId,
+    required String newMessage,
+  }) async {
+    final url = Uri.parse(
+      "https://ehmqgiqrfpvvznvsvfyu.supabase.co/rest/v1/group_table",
+    );
+
+    final res = await http.patch(
+      url,
+      headers: {
+        "apikey": apikey,
+        "Authorization": "Bearer $apikey",
+        "Content-Type": "application/json",
+        "Prefer": "return=minimal",
+      },
+      body: jsonEncode({"mssg": newMessage}),
+    );
+
+    print("Edit Status: ${res.statusCode}");
+    return res.statusCode == 200 || res.statusCode == 204;
+  }
+
+
 
 }

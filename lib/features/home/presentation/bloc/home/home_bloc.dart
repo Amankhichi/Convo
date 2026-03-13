@@ -17,32 +17,36 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   super(const HomeState()) {
        on<_Init>(__Init);
   }
+
 Future<void> __Init(_Init event, Emitter<HomeState> emit) async {
-    emit(state.copyWith(homeChatsStatus: Status.loading));
-  final chats = await _getHomeChatsListUseCase();
+  emit(state.copyWith(homeChatsStatus: Status.loading));
 
-  final prefs = await SharedPreferences.getInstance();
-  final idString = prefs.getString("id");
+  try {
+    final chats = await _getHomeChatsListUseCase();
 
-  if (idString == null) {
-    emit(state.copyWith(homeChatsStatus: Status.error));
-    return;
-  }
+    final prefs = await SharedPreferences.getInstance();
+    final idString = prefs.getString("id");
 
-  final myId = int.parse(idString);
+    if (idString == null) {
+      emit(state.copyWith(homeChatsStatus: Status.error));
+      return;
+    }
 
-  if (chats.isNotEmpty) {
-    final users = buildConversationList(chats,myId);
+    final myId = int.parse(idString);
+
+    if (chats.isEmpty) {
+      emit(state.copyWith(homeChatsStatus: Status.error));
+      return;
+    }
+
+    final users = buildConversationList(chats, myId);
+
     emit(state.copyWith(
       homeChatsStatus: Status.success,
       homePageChats: users,
     ));
-    emit(state.copyWith(homeChatsStatus: Status.init));
-
-  } else {
+  } catch (e) {
     emit(state.copyWith(homeChatsStatus: Status.error));
-    emit(state.copyWith(homeChatsStatus: Status.init));
-
   }
 }
 List<HomeChatModel> buildConversationList(
@@ -56,9 +60,7 @@ List<HomeChatModel> buildConversationList(
     final otherUserId =
         chat.senderId == myId ? chat.receiverId : chat.senderId;
 
-    if (!conversationMap.containsKey(otherUserId) ||
-        chat.createdAt.isAfter(
-            conversationMap[otherUserId]!.createdAt)) {
+    if (!conversationMap.containsKey(otherUserId) || chat.createdAt.isAfter( conversationMap[otherUserId]!.createdAt)) {
       conversationMap[otherUserId] = chat;
     }
   }

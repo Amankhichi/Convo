@@ -41,7 +41,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                 icon: Icon(
                   Icons.check,
                   size: 29,
-                  color: AppColors.iconColor(context)
+                  color: AppColors.iconColor
                 ),
                 onPressed: () {
                   if (groupNameController.text.trim().isEmpty ||
@@ -102,7 +102,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                     Expanded(
                       child: TextField(
                         controller: groupNameController,
-                        style: TextStyle(color: AppColors.iconColor(context),fontWeight: FontWeight.w600),
+                        style: TextStyle(color: AppColors.iconColor,fontWeight: FontWeight.w600),
                         decoration: const InputDecoration(
                           hintText: "Group Name",
                           
@@ -148,11 +148,11 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                           style: const TextStyle(color: Colors.white),
                         ),
                       ),
-                      title: Text(user.name,style: TextStyle(color: AppColors.iconColor(context)),),
-                      subtitle: Text(user.about,style: TextStyle(color: AppColors.iconColor(context)),),
+                      title: Text(user.name,style: TextStyle(color: AppColors.iconColor),),
+                      subtitle: Text(user.about,style: TextStyle(color: AppColors.iconColor),),
                       trailing: isSelected
                           ? const Icon(Icons.check_circle, color: Colors.green)
-                          :  Icon(Icons.circle_outlined,color:AppColors.iconColor(context),),
+                          :  Icon(Icons.circle_outlined,color:AppColors.iconColor,),
                       onTap: () {
                         setState(() {
                           if (isSelected) {

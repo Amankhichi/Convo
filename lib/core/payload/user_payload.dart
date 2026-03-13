@@ -1,5 +1,5 @@
 class UserPayload {
-  final String name;
+  // final String name;
   final String phone;
   final String about;
   final String nickName;
@@ -7,7 +7,7 @@ class UserPayload {
   final bool online;
 
   UserPayload({
-    required this.name,
+    // required this.name,
     required this.nickName,
     required this.phone,
     required this.about,
@@ -16,7 +16,7 @@ class UserPayload {
   });
 
   Map<String, dynamic> toJson() => {
-        "name": name,
+        // "name": name,
         "nickName": nickName,
         "phone": phone,
         "about": about,
@@ -26,7 +26,7 @@ class UserPayload {
 
   // ✅ Convert JSON → Dart object
   factory UserPayload.fromJson(Map<String, dynamic> json) => UserPayload(
-        name: json["name"],
+        // name: json["name"],
         nickName: json["nickName"],
         phone: json["phone"],
         about: json["about"],

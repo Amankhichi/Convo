@@ -70,7 +70,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
     final isAdded = await _addUserUsecase(
       UserPayload(
-        name: state.name,
+        // name: state.name,
         nickName: state.nickName,
         phone: state.phone,
         about: state.about,
@@ -136,7 +136,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       );
       emit(state.copyWith(checkNumberStatus: Status.success));
 
-      Navigator.pushReplacement(
+      Navigator.pushAndRemoveUntil(
         Injection.currentContext,
         PageRouteBuilder(
           pageBuilder: (_, __, ___) => HomePage(),
@@ -147,7 +147,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             ).animate(a),
             child: c,
           ),
-        ),
+        ),(Route)=>false
       );
     } else {
       emit(state.copyWith(checkNumberStatus: Status.error));

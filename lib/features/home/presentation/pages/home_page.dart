@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage> {
         ),
         actions: [
           IconButton(
-            color: AppColors.secondaryColor(context),
+            color: AppColors.iconColor,
             icon: Icon(Icons.search, size: 28),
             onPressed: () {},
           ),

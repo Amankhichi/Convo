@@ -19,32 +19,42 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
       super(ContactState()) {
     on<_Init>(__Init);
   }
-  Future<void> __Init(_Init event, Emitter<ContactState> emit) async {
-    emit(state.copyWith(contactStatus: Status.loading));
+Future<void> __Init(_Init event, Emitter<ContactState> emit) async {
+  emit(state.copyWith(contactStatus: Status.loading));
 
-    final permission = await Permission.contacts.request();
+  final permission = await Permission.contacts.request();
 
-    if (permission.isPermanentlyDenied) {
-      emit(state.copyWith(contactStatus: Status.error));
-      return;
-    }
+  if (permission.isPermanentlyDenied) {
+    emit(state.copyWith(contactStatus: Status.error));
+    return;
+  }
 
-    if (!permission.isGranted) {
-      emit(state.copyWith(contactStatus: Status.error));
-      return;
-    }
+  if (!permission.isGranted) {
+    emit(state.copyWith(contactStatus: Status.error));
+    return;
+  }
 
-    try {
-      final matchedContacts = await _contactUsecase();
+  try {
+    final matchedContacts = await _contactUsecase();
 
-      emit(
-        state.copyWith(
-          contacts: matchedContacts,
-          contactStatus: Status.success,
+    final List<UserModel> updatedContacts = [];
+
+    for (final user in matchedContacts) {
+      final name = await nameInPhone(user.phone);
+
+      updatedContacts.add(user.copyWith(name: name.isNotEmpty ? name : user.name,
         ),
       );
-    } catch (e) {
-      emit(state.copyWith(contactStatus: Status.error));
     }
+
+    emit(
+      state.copyWith(
+        contacts: updatedContacts,
+        contactStatus: Status.success,
+      ),
+    );
+  } catch (e) {
+    emit(state.copyWith(contactStatus: Status.error));
   }
+}
 }

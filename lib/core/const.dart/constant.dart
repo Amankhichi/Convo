@@ -6,7 +6,7 @@ bool isDeviceThemeDark(BuildContext context) {
 }
 
 class Constant {
-  static bool isDark(BuildContext context) => isDeviceThemeDark(context);
+  static bool  isDark(BuildContext context) => isDeviceThemeDark(context);
 }
 
 String getapikey() {

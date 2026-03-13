@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:convo/core/const.dart/app_colors.dart';
 import 'package:convo/core/custom/custom_text.dart';
+import 'package:convo/core/enum/status.dart';
 import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
 import 'package:convo/features/chat/presentation/pages/chat_page.dart';
 import 'package:convo/features/chat/presentation/pages/contact_user_profile_page.dart';
@@ -19,13 +22,11 @@ class HomeChatListWidget extends StatefulWidget {
 }
 
 class _HomeChatListWidgetState extends State<HomeChatListWidget> {
+
   @override
   void initState() {
     super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<HomeBloc>().add(HomeEvent.init());
-    });
+    context.read<HomeBloc>().add(const HomeEvent.init());
   }
 
   String _formatDate(DateTime dateTime) {
@@ -37,7 +38,7 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
     final difference = today.difference(messageDate).inDays;
 
     if (difference == 0) {
-      return DateFormat('hh:mm a').format(dateTime); // Today
+      return DateFormat('hh:mm a').format(dateTime);
     } else if (difference == 1) {
       return "Yesterday";
     } else {
@@ -47,17 +48,29 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
 
   @override
   Widget build(BuildContext context) {
+
+    final profile = context.watch<LoginBloc>().state.profile!;
+
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        return
-        // state.homeChatsStatus == Status.loading
-        //     ? Center(child: CircularProgressIndicator())
-        //     :
-        ListView.builder(
-          itemCount: state.homePageChats.length,
-          itemBuilder: (context, index) {
-            final chat = state.homePageChats[index];
-            final profile = context.read<LoginBloc>().state.profile!;
+
+        if (state.homeChatsStatus == Status.loading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (state.homeChatsStatus == Status.error) {
+          return Center(
+            child: Text(
+              "No Chats Yet",
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+          );
+        }
+
+        return Column(
+          children: state.homePageChats.map((chat){
             final bool isMe = profile.id == chat.senderId;
             final user = isMe ? chat.receiver : chat.sender;
             return ListTile(
@@ -66,15 +79,19 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
                   context,
                   PageRouteBuilder(
                     pageBuilder: (_, __, ___) => ChatPage(user: user),
-                    transitionsBuilder: (_, a, __, c) => SlideTransition(
-                      position: Tween(
-                        begin: const Offset(-1, 0),
-                        end: Offset.zero,
-                      ).animate(a),
-                      child: c,
-                    ),
+                    transitionsBuilder: (_, animation, __, child) {
+                      return SlideTransition(
+                        position: Tween(
+                          begin: const Offset(-1, 0),
+                          end: Offset.zero,
+                        ).animate(animation),
+                        child: child,
+                      );
+                    },
                   ),
-                );
+                ).then((_) {
+                  context.read<HomeBloc>().add(const HomeEvent.init());
+                });
               },
 
               leading: GestureDetector(
@@ -92,7 +109,8 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              /// 🔹 TOP LOTTIE (Height 150)
+
+                              /// Profile Animation
                               SizedBox(
                                 height: 250,
                                 width: double.infinity,
@@ -110,12 +128,12 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
                                 ),
                               ),
 
-                              // const SizedBox(height: 15),
-
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
+
+                                  /// Voice Call
                                   IconButton(
                                     icon: const Icon(Icons.call, size: 28),
                                     onPressed: () {
@@ -130,6 +148,7 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
                                     },
                                   ),
 
+                                  /// Video Call
                                   IconButton(
                                     icon: const Icon(Icons.videocam, size: 28),
                                     onPressed: () {
@@ -144,6 +163,7 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
                                     },
                                   ),
 
+                                  /// Chat
                                   IconButton(
                                     icon: const Icon(Icons.message, size: 28),
                                     onPressed: () {
@@ -151,12 +171,14 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (_) => ChatPage(user: user),
+                                          builder: (_) =>
+                                              ChatPage(user: user),
                                         ),
                                       );
                                     },
                                   ),
 
+                                  /// Info
                                   IconButton(
                                     icon: const Icon(Icons.info, size: 28),
                                     onPressed: () {
@@ -174,8 +196,6 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
                                   ),
                                 ],
                               ),
-
-                              // const SizedBox(height: 15),
                             ],
                           ),
                         ),
@@ -187,23 +207,206 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
                 child: CircleAvatar(
                   backgroundColor: AppColors.primary,
                   radius: 35,
-                  child: ClipOval(child: Lottie.asset(user.lotti)),
+                  child: ClipOval(
+                    child: Lottie.asset(user.lotti),
+                  ),
                 ),
               ),
 
+              /// User Name
               title: Text(
-                user.name,
+                user.name.isEmpty?user.phone:user.name,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
-                  color: AppColors.iconColor(context),
+                  color: AppColors.iconColor,
                 ),
               ),
 
+              /// Last Message
               subtitle: Text(
                 chat.message,
-                style: TextStyle(color: AppColors.iconColor(context)),
+                style: TextStyle(
+                  color:AppColors.iconColor,
+                  fontWeight: isMe?FontWeight.w400:FontWeight.w800,
+                ),
               ),
 
+              /// Time
+              trailing: CustomText(
+                text: _formatDate(chat.createdAt),
+                bold: FontWeight.w800,
+                size: 12,
+              ),
+            );
+          }).toList(),
+        );
+
+        return ListView.builder(
+          itemCount: state.homePageChats.length,
+          itemBuilder: (context, index) {
+            final chat = state.homePageChats[index];
+            final bool isMe = profile.id == chat.senderId;
+            final user = isMe ? chat.receiver : chat.sender;
+
+            return ListTile(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (_, __, ___) => ChatPage(user: user),
+                    transitionsBuilder: (_, animation, __, child) {
+                      return SlideTransition(
+                        position: Tween(
+                          begin: const Offset(-1, 0),
+                          end: Offset.zero,
+                        ).animate(animation),
+                        child: child,
+                      );
+                    },
+                  ),
+                ).then((_) {
+                  context.read<HomeBloc>().add(const HomeEvent.init());
+                });
+              },
+
+              leading: GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (_) {
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 50),
+                        child: Dialog(
+                          alignment: Alignment.topCenter,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+
+                              /// Profile Animation
+                              SizedBox(
+                                height: 250,
+                                width: double.infinity,
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.vertical(
+                                    top: Radius.circular(15),
+                                  ),
+                                  child: Container(
+                                    color: AppColors.primary,
+                                    child: Lottie.asset(
+                                      user.lotti,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+
+                                  /// Voice Call
+                                  IconButton(
+                                    icon: const Icon(Icons.call, size: 28),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              VoiceCallPage(user: user),
+                                        ),
+                                      );
+                                    },
+                                  ),
+
+                                  /// Video Call
+                                  IconButton(
+                                    icon: const Icon(Icons.videocam, size: 28),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              VideoCallPage(user: user),
+                                        ),
+                                      );
+                                    },
+                                  ),
+
+                                  /// Chat
+                                  IconButton(
+                                    icon: const Icon(Icons.message, size: 28),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              ChatPage(user: user),
+                                        ),
+                                      );
+                                    },
+                                  ),
+
+                                  /// Info
+                                  IconButton(
+                                    icon: const Icon(Icons.info, size: 28),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              ContactUserProfilePage(
+                                                user: user,
+                                              ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+
+                child: CircleAvatar(
+                  backgroundColor: AppColors.primary,
+                  radius: 35,
+                  child: ClipOval(
+                    child: Lottie.asset(user.lotti),
+                  ),
+                ),
+              ),
+
+              /// User Name
+              title: Text(
+                user.name.isEmpty?user.phone:user.name,
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.iconColor,
+                ),
+              ),
+
+              /// Last Message
+              subtitle: Text(
+                chat.message,
+                style: TextStyle(
+                  color:AppColors.iconColor,
+                  fontWeight: isMe?FontWeight.w400:FontWeight.w800,
+                ),
+              ),
+
+              /// Time
               trailing: CustomText(
                 text: _formatDate(chat.createdAt),
                 bold: FontWeight.w800,

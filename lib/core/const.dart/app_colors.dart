@@ -21,6 +21,7 @@
 // }
 
 
+import 'package:convo/core/di/injection.dart';
 import 'package:flutter/material.dart';
 import 'package:convo/core/const.dart/constant.dart';
 
@@ -34,7 +35,7 @@ class AppColors {
   static Color chatProfileColor(BuildContext context) =>Constant.isDark(context) ? const Color(0xFF121212) : const Color(0xFF0088CC);
   static Color backgroundColor(BuildContext context) =>Constant.isDark(context) ? const Color(0xFF1F1D1D) : const Color(0xFFF5F5F5);
   static Color inputBackground(BuildContext context) =>Constant.isDark(context) ? const Color(0xFF2A2A2A) : Colors.white;
-  static Color iconColor(BuildContext context) =>Constant.isDark(context) ? Colors.white : Colors.black;
+  static Color get iconColor =>Constant.isDark(Injection.currentContext) ? Colors.white : Colors.black;
   static Color secondaryColor(BuildContext context) =>Constant.isDark(context) ? const Color(0xFF3A3A3A) : const Color(0xFFD6D6D6);
 
 

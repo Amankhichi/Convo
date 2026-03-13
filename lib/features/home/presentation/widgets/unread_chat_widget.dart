@@ -1,3 +1,4 @@
+import 'package:convo/core/const.dart/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class UnreadChatWidget extends StatelessWidget {
@@ -5,7 +6,7 @@ class UnreadChatWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text("unread is emoty"),);
+    return Center(child: Text("unread is emoty",style: TextStyle(color:AppColors.iconColor),),);
     // return BlocBuilder<HomeBloc, HomeState>(
     //   builder: (context, state) {
     //     final unreadChats = state.homePageChats
