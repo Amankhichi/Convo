@@ -51,7 +51,7 @@ class _HomeNavbarState extends State<HomeNavbar> {
         widget.onTabChanged(index); 
       },
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 500),
+        duration: const Duration(milliseconds: 250),
         padding: const EdgeInsets.symmetric(horizontal: 10),
         alignment: Alignment.center,
         decoration: BoxDecoration(

@@ -11,6 +11,7 @@ class ChatEvent with _$ChatEvent {
   const factory ChatEvent.getMssg({
     required String receiverId,
   }) = _GetMssg;
+  const factory ChatEvent.seen({required int sender}) = _Seen;
   const factory ChatEvent.deletMssg({required int mssId}) = _DeletMssg;
   const factory ChatEvent.blockButton({required bool block}) = _BlockButton;
   const factory ChatEvent.editMssg({required int mssgId,required String newMssg}) = _EditMssg;

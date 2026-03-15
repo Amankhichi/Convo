@@ -274,8 +274,6 @@
 //   }
 // }
 
-
-
 import 'package:convo/core/const.dart/constant.dart';
 import 'package:convo/core/const.dart/slide_page_route.dart';
 import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
@@ -312,6 +310,7 @@ class _ChatPageState extends State<ChatPage> {
   bool mssgSelected = false;
   Set<String> mssgIdSelected = {};
   Set<String> mssgCopySelected = {};
+  // bool seen = false;
 
   bool mssgEdit = false;
   String? editingMessageId;
@@ -341,6 +340,8 @@ class _ChatPageState extends State<ChatPage> {
     Future.delayed(Duration(milliseconds: 300), () {
       _focusNode.requestFocus();
     });
+
+    
   }
 
   @override
@@ -660,6 +661,8 @@ class _ChatPageState extends State<ChatPage> {
                                             child: MssgWidgets(
                                               chatStatus: msg.id == 0
                                                   ? ChatStatus.sending
+                                                  : msg.seen
+                                                  ? ChatStatus.seen
                                                   : ChatStatus.send,
                                               isMe: isMe,
                                               message: msg.message,
@@ -782,7 +785,6 @@ class _ChatPageState extends State<ChatPage> {
                               }
                             },
                             style: TextStyle(
-                             
                               color: AppColors.iconColor,
                               fontWeight: FontWeight.w600,
                             ),

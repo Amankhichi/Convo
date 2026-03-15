@@ -6,8 +6,9 @@ class HomeChatModel {
   final int senderId;
   final int receiverId;
   final String message;
-  final int? replyTo;
   final bool seen;
+  final int unSeencount;
+  final int? replyTo;
   final UserModel sender;
   final UserModel receiver;
 
@@ -18,9 +19,10 @@ class HomeChatModel {
     required this.receiverId,
     required this.message,
     required this.replyTo,
-    required this.seen,
     required this.sender,
     required this.receiver,
+    required this.seen,
+    required this.unSeencount
   });
 
   factory HomeChatModel.fromJson(Map<String, dynamic> json) {
@@ -31,9 +33,10 @@ class HomeChatModel {
       receiverId: json['receiverId'],
       message: json['mssg'] ?? '',
       replyTo: json['reply_to'],
-      seen: json['seen'],
+      seen: json['seen'] ?? false,
       sender: UserModel.fromJson(json['sender']),
       receiver: UserModel.fromJson(json['receiver']),
+      unSeencount: 0
     );
   }
 
@@ -44,6 +47,7 @@ class HomeChatModel {
     int? receiverId,
     String? message,
     int? replyTo,
+    int? unSeencount,
     bool? seen,
     UserModel? sender,
     UserModel? receiver,
@@ -58,6 +62,7 @@ class HomeChatModel {
       seen: seen ?? this.seen,
       sender: sender ?? this.sender,
       receiver: receiver ?? this.receiver,
+      unSeencount: unSeencount ??this.unSeencount
     );
   }
 }

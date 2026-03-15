@@ -10,7 +10,8 @@ class InjectionBloc {
     sendmssgusecase: getIt<SendMssgUsecase>(),
     getmssgusecase: getIt<GetMssgUseCase>(),
     deletmssgusecase: getIt<DeletMssgUsecase>(),
-    editmessageusecase: getIt<EditMessageUseCase>(),
+    editmessageusecase: getIt<EditMessageUseCase>(), 
+    seenmssgusecase: getIt<SeenMssgUsecase>(),
   );
 
   static ContactBloc get contactbloc =>

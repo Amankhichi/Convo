@@ -9,6 +9,7 @@ class ChatState with _$ChatState {
 @Default(Status.init) Status GetMssgStatus,
 @Default([]) List<ChatModel> messages,
 @Default(Status.init) Status DeleteMssgStatus,
+@Default(false) bool seen,
 
   }) = _ChatState;
 }

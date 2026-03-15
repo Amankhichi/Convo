@@ -21,9 +21,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  int selectedTab = 0;
   late PageController _pageController;
+
+  int selectedTab = 0;
+  Set<int> selectedChats = {};
+  bool selectionMode = false;
 
   final List<StoryModel> stories = [
     StoryModel(
@@ -50,188 +54,82 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
+  void toggleChat(int id) {
+    setState(() {
+      selectedChats.contains(id)
+          ? selectedChats.remove(id)
+          : selectedChats.add(id);
+      selectionMode = selectedChats.isNotEmpty;
+    });
+  }
+
+  void clearSelection() {
+    setState(() {
+      selectedChats.clear();
+      selectionMode = false;
+    });
+  }
+
+  void changeTab(int index) {
+    setState(() => selectedTab = index);
+
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  void logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove("id");
+
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (_) => LoginPage()),
+      (route) => false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final double drawerWidth = MediaQuery.of(context).size.width * 0.5;
+
+    final drawerWidth = MediaQuery.of(context).size.width * .5;
+
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        titleSpacing: 0,
-        backgroundColor: AppColors.backgroundColor(context),
-        leading: IconButton(
-          iconSize: 24,
-          color: AppColors.textColor(context),
-          icon: const Icon(Icons.menu),
-          onPressed: () => _scaffoldKey.currentState!.openDrawer(),
-        ),
 
-        title: Text(
-          " ConVO",
-          style: GoogleFonts.courgette(
-            fontSize: 35,
-            fontWeight: FontWeight.w600,
-            color: AppColors.primary,
-            shadows: [],
-          ),
-        ),
-        actions: [
-          IconButton(
-            color: AppColors.iconColor,
-            icon: Icon(Icons.search, size: 28),
-            onPressed: () {},
-          ),
-          const SizedBox(width: 10),
-        ],
-      ),
-      drawer: SizedBox(
-        width: drawerWidth,
-        child: Drawer(
-          child: Column(
-            children: [
-              SizedBox(
-                height: 100,
-                child: DrawerHeader(
-                  decoration: const BoxDecoration(color: Colors.blueGrey),
-                  child: const Center(
-                    child: Text(
-                      "Menu",
-                      style: TextStyle(fontSize: 18, color: Colors.white),
-                    ),
-                  ),
-                ),
-              ),
-              ListTile(
-                leading: const Icon(Icons.home),
-                title: const Text("Home"),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => ProfilePage()),
-                  );
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.settings),
-                title: const Text("Settings"),
-                onTap: () {},
-              ),
-              ListTile(
-                leading: const Icon(Icons.logout),
-                title: const Text("Logout"),
-                onTap: () async {
-                  Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (context) => LoginPage()),
-                    (route) => false,
-                  );
-                  final prefs = await SharedPreferences.getInstance();
-                  await prefs.remove("id");
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
+      appBar: _buildAppBar(),
+
+      drawer: _buildDrawer(drawerWidth),
+
       body: SafeArea(
         child: Container(
           color: AppColors.backgroundColor(context),
           child: Column(
             children: [
-              SizedBox(
-                height: 100,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: stories.length + 1,
-                  itemBuilder: (context, index) {
-                    /// 🔥 Add Story always at index 0
-                    if (index == 0) {
-                      return GestureDetector(
-                        onTap: () async {
-                          final newStory = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const AddStoryPage(),
-                            ),
-                          );
 
-                          if (newStory != null && newStory is StoryModel) {
-                            setState(() {
-                              stories.insert(0, newStory); // Insert FIRST
-                            });
-                          }
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 14),
-                          child: Column(
-                            children: [
-                              Container(
-                                height: 65,
-                                width: 65,
-                                padding: const EdgeInsets.all(3),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: Colors.grey,
-                                    width: 2,
-                                  ),
-                                ),
-                                child: const CircleAvatar(
-                                  child: Icon(Icons.add),
-                                ),
-                              ),
-                              const SizedBox(height: 6),
-                              const Text(
-                                "Your Story",
-                                style: TextStyle(fontSize: 13),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }
-
-                    /// 🔥 Real Stories
-                    final story = stories[index - 1];
-
-                    return MyStoryWidget(
-                      story: story,
-                      stories: stories,
-                      index: index - 1,
-                    );
-                  },
-                ),
-              ),
+              _buildStories(),
 
               HomeNavbar(
                 selectedIndex: selectedTab,
-                onTabChanged: (index) {
-                  setState(() {
-                    selectedTab = index;
-                  });
-
-                  _pageController.animateToPage(
-                    index,
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                  );
-                },
+                onTabChanged: changeTab,
               ),
 
               const SizedBox(height: 10),
+
               Expanded(
                 child: PageView(
                   controller: _pageController,
                   physics: const BouncingScrollPhysics(),
-                  onPageChanged: (index) {
-                    setState(() {
-                      selectedTab = index;
-                    });
-                  },
-                  children: const [
-                    HomeChatListWidget(),
-                    UnreadChatWidget(),
-                    CallHistoryPage(),
-                    // GroupListPage(),
-                    // ChannelListPage(),
+                  onPageChanged: (i) => setState(() => selectedTab = i),
+                  children: [
+                    HomeChatListWidget(
+                      selectedChats: selectedChats,
+                      selectionMode: selectionMode,
+                      onSelect: toggleChat,
+                    ),
+                    const UnreadChatWidget(),
+                    const CallHistoryPage(),
                   ],
                 ),
               ),
@@ -240,35 +138,181 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
 
-      floatingActionButton: Padding(
-        padding: EdgeInsets.only(right: 20, bottom: 20),
-        child: FloatingActionButton(
-          backgroundColor: AppColors.primary,
-          onPressed: () {
-            Navigator.push(
-              context,
-              PageRouteBuilder(
-                pageBuilder: (context, animation, secondaryAnimation) =>
-                    ContactsPage(),
-                transitionsBuilder:
-                    (context, animation, secondaryAnimation, child) {
-                      const begin = Offset(1.0, 0.0); 
-                      const end = Offset.zero;
-                      final tween = Tween(
-                        begin: begin,
-                        end: end,
-                      ).chain(CurveTween(curve: Curves.easeInOut));
+      floatingActionButton: _buildFAB(),
+    );
+  }
 
-                      return SlideTransition(
-                        position: animation.drive(tween),
-                        child: child,
-                      );
-                    },
+  /// ---------------- APPBAR ----------------
+  AppBar _buildAppBar() {
+    return AppBar(
+      titleSpacing: 0,
+      backgroundColor: AppColors.backgroundColor(context),
+
+      leading: selectionMode
+          ? IconButton(
+            color: AppColors.iconColor,
+              icon: const Icon(Icons.arrow_back),
+              onPressed: clearSelection,
+            )
+          : IconButton(
+              icon: const Icon(Icons.menu),
+              color: AppColors.textColor(context),
+              onPressed: () => _scaffoldKey.currentState!.openDrawer(),
+            ),
+
+      title: selectionMode
+          ? Text("${selectedChats.length} selected",style: TextStyle(color: AppColors.iconColor),)
+          : Text(
+              " ConVO",
+              style: GoogleFonts.courgette(
+                fontSize: 35,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primary,
               ),
-            );
-          },
-          child: Icon(Icons.add, color: Colors.white, size: 30),
+            ),
+
+      actions: selectionMode
+          ? [
+              IconButton(color: AppColors.iconColor, icon: const Icon(Icons.star), onPressed: () {}),
+              IconButton(color: AppColors.iconColor, icon: const Icon(Icons.delete), onPressed: () {}),
+            ]
+          : [
+              IconButton(
+                icon: const Icon(Icons.search, size: 28),
+                color: AppColors.iconColor,
+                onPressed: () {},
+              ),
+              const SizedBox(width: 10),
+            ],
+    );
+  }
+
+  /// ---------------- DRAWER ----------------
+  Widget _buildDrawer(double width) {
+    return SizedBox(
+      width: width,
+      child: Drawer(
+        child: Column(
+          children: [
+
+            const DrawerHeader(
+              decoration: BoxDecoration(color: Colors.blueGrey),
+              child: Center(
+                child: Text(
+                  "Menu",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+
+            ListTile(
+              leading: const Icon(Icons.home),
+              title: const Text("Home"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => ProfilePage()),
+                );
+              },
+            ),
+
+            const ListTile(
+              leading: Icon(Icons.settings),
+              title: Text("Settings"),
+            ),
+
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text("Logout"),
+              onTap: logout,
+            ),
+          ],
         ),
+      ),
+    );
+  }
+
+  /// ---------------- STORIES ----------------
+  Widget _buildStories() {
+    return SizedBox(
+      height: 100,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: stories.length + 1,
+        itemBuilder: (context, i) {
+
+          if (i == 0) {
+            return GestureDetector(
+              onTap: () async {
+                final newStory = await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const AddStoryPage()),
+                );
+
+                if (newStory is StoryModel) {
+                  setState(() => stories.insert(0, newStory));
+                }
+              },
+              child: _myStoryWidget(),
+            );
+          }
+
+          return MyStoryWidget(
+            story: stories[i - 1],
+            stories: stories,
+            index: i - 1,
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _myStoryWidget() {
+    return Padding(
+      padding: const EdgeInsets.only(right: 14),
+      child: Column(
+        children: [
+          Container(
+            height: 65,
+            width: 65,
+            padding: const EdgeInsets.all(3),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.grey, width: 2),
+            ),
+            child: const CircleAvatar(child: Icon(Icons.add)),
+          ),
+          const SizedBox(height: 6),
+          const Text("Your Story", style: TextStyle(fontSize: 13)),
+        ],
+      ),
+    );
+  }
+
+  /// ---------------- FAB ----------------
+  Widget _buildFAB() {
+    return Padding(
+      padding: const EdgeInsets.only(right: 20, bottom: 20),
+      child: FloatingActionButton(
+        backgroundColor: AppColors.primary,
+        onPressed: () {
+          Navigator.push(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (_, __, ___) => ContactsPage(),
+              transitionsBuilder: (_, animation, __, child) =>
+                  SlideTransition(
+                position: Tween(
+                  begin: const Offset(1, 0),
+                  end: Offset.zero,
+                ).animate(animation),
+                child: child,
+              ),
+            ),
+          );
+        },
+        child: const Icon(Icons.add, color: Colors.white, size: 30),
       ),
     );
   }

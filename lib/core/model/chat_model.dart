@@ -5,6 +5,7 @@ class ChatModel {
   final String message;
   final int? replyTo;
   final ChatModel? reply; 
+    final bool seen;
   final DateTime createdAt;
 
   ChatModel({
@@ -14,6 +15,7 @@ class ChatModel {
     required this.message,
     this.replyTo,
     this.reply,
+    required this.seen,
     required this.createdAt,
   });
 
@@ -25,6 +27,7 @@ class ChatModel {
       receiverId: json["receiverId"],
       message: json["mssg"] ?? "",
       replyTo: json["reply_to"],
+      seen: json['seen'] ?? false,
       reply: json["reply"] != null
           ? ChatModel.fromJson(json["reply"])
           : null,
@@ -40,6 +43,7 @@ class ChatModel {
       "receiverId": receiverId,
       "mssg": message,
       "reply_to": replyTo,
+      "seen":seen,
       "created_at": createdAt.toIso8601String(),
     };
   }

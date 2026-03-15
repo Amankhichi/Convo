@@ -23,6 +23,7 @@ mixin _$ChatEvent {
     required TResult Function(String mssg, String receiverId, int? replyTo)
     sendMssg,
     required TResult Function(String receiverId) getMssg,
+    required TResult Function(int sender) seen,
     required TResult Function(int mssId) deletMssg,
     required TResult Function(bool block) blockButton,
     required TResult Function(int mssgId, String newMssg) editMssg,
@@ -32,6 +33,7 @@ mixin _$ChatEvent {
     TResult? Function()? init,
     TResult? Function(String mssg, String receiverId, int? replyTo)? sendMssg,
     TResult? Function(String receiverId)? getMssg,
+    TResult? Function(int sender)? seen,
     TResult? Function(int mssId)? deletMssg,
     TResult? Function(bool block)? blockButton,
     TResult? Function(int mssgId, String newMssg)? editMssg,
@@ -41,6 +43,7 @@ mixin _$ChatEvent {
     TResult Function()? init,
     TResult Function(String mssg, String receiverId, int? replyTo)? sendMssg,
     TResult Function(String receiverId)? getMssg,
+    TResult Function(int sender)? seen,
     TResult Function(int mssId)? deletMssg,
     TResult Function(bool block)? blockButton,
     TResult Function(int mssgId, String newMssg)? editMssg,
@@ -51,6 +54,7 @@ mixin _$ChatEvent {
     required TResult Function(_Init value) init,
     required TResult Function(_SendMssg value) sendMssg,
     required TResult Function(_GetMssg value) getMssg,
+    required TResult Function(_Seen value) seen,
     required TResult Function(_DeletMssg value) deletMssg,
     required TResult Function(_BlockButton value) blockButton,
     required TResult Function(_EditMssg value) editMssg,
@@ -60,6 +64,7 @@ mixin _$ChatEvent {
     TResult? Function(_Init value)? init,
     TResult? Function(_SendMssg value)? sendMssg,
     TResult? Function(_GetMssg value)? getMssg,
+    TResult? Function(_Seen value)? seen,
     TResult? Function(_DeletMssg value)? deletMssg,
     TResult? Function(_BlockButton value)? blockButton,
     TResult? Function(_EditMssg value)? editMssg,
@@ -69,6 +74,7 @@ mixin _$ChatEvent {
     TResult Function(_Init value)? init,
     TResult Function(_SendMssg value)? sendMssg,
     TResult Function(_GetMssg value)? getMssg,
+    TResult Function(_Seen value)? seen,
     TResult Function(_DeletMssg value)? deletMssg,
     TResult Function(_BlockButton value)? blockButton,
     TResult Function(_EditMssg value)? editMssg,
@@ -141,6 +147,7 @@ class _$InitImpl implements _Init {
     required TResult Function(String mssg, String receiverId, int? replyTo)
     sendMssg,
     required TResult Function(String receiverId) getMssg,
+    required TResult Function(int sender) seen,
     required TResult Function(int mssId) deletMssg,
     required TResult Function(bool block) blockButton,
     required TResult Function(int mssgId, String newMssg) editMssg,
@@ -154,6 +161,7 @@ class _$InitImpl implements _Init {
     TResult? Function()? init,
     TResult? Function(String mssg, String receiverId, int? replyTo)? sendMssg,
     TResult? Function(String receiverId)? getMssg,
+    TResult? Function(int sender)? seen,
     TResult? Function(int mssId)? deletMssg,
     TResult? Function(bool block)? blockButton,
     TResult? Function(int mssgId, String newMssg)? editMssg,
@@ -167,6 +175,7 @@ class _$InitImpl implements _Init {
     TResult Function()? init,
     TResult Function(String mssg, String receiverId, int? replyTo)? sendMssg,
     TResult Function(String receiverId)? getMssg,
+    TResult Function(int sender)? seen,
     TResult Function(int mssId)? deletMssg,
     TResult Function(bool block)? blockButton,
     TResult Function(int mssgId, String newMssg)? editMssg,
@@ -184,6 +193,7 @@ class _$InitImpl implements _Init {
     required TResult Function(_Init value) init,
     required TResult Function(_SendMssg value) sendMssg,
     required TResult Function(_GetMssg value) getMssg,
+    required TResult Function(_Seen value) seen,
     required TResult Function(_DeletMssg value) deletMssg,
     required TResult Function(_BlockButton value) blockButton,
     required TResult Function(_EditMssg value) editMssg,
@@ -197,6 +207,7 @@ class _$InitImpl implements _Init {
     TResult? Function(_Init value)? init,
     TResult? Function(_SendMssg value)? sendMssg,
     TResult? Function(_GetMssg value)? getMssg,
+    TResult? Function(_Seen value)? seen,
     TResult? Function(_DeletMssg value)? deletMssg,
     TResult? Function(_BlockButton value)? blockButton,
     TResult? Function(_EditMssg value)? editMssg,
@@ -210,6 +221,7 @@ class _$InitImpl implements _Init {
     TResult Function(_Init value)? init,
     TResult Function(_SendMssg value)? sendMssg,
     TResult Function(_GetMssg value)? getMssg,
+    TResult Function(_Seen value)? seen,
     TResult Function(_DeletMssg value)? deletMssg,
     TResult Function(_BlockButton value)? blockButton,
     TResult Function(_EditMssg value)? editMssg,
@@ -323,6 +335,7 @@ class _$SendMssgImpl implements _SendMssg {
     required TResult Function(String mssg, String receiverId, int? replyTo)
     sendMssg,
     required TResult Function(String receiverId) getMssg,
+    required TResult Function(int sender) seen,
     required TResult Function(int mssId) deletMssg,
     required TResult Function(bool block) blockButton,
     required TResult Function(int mssgId, String newMssg) editMssg,
@@ -336,6 +349,7 @@ class _$SendMssgImpl implements _SendMssg {
     TResult? Function()? init,
     TResult? Function(String mssg, String receiverId, int? replyTo)? sendMssg,
     TResult? Function(String receiverId)? getMssg,
+    TResult? Function(int sender)? seen,
     TResult? Function(int mssId)? deletMssg,
     TResult? Function(bool block)? blockButton,
     TResult? Function(int mssgId, String newMssg)? editMssg,
@@ -349,6 +363,7 @@ class _$SendMssgImpl implements _SendMssg {
     TResult Function()? init,
     TResult Function(String mssg, String receiverId, int? replyTo)? sendMssg,
     TResult Function(String receiverId)? getMssg,
+    TResult Function(int sender)? seen,
     TResult Function(int mssId)? deletMssg,
     TResult Function(bool block)? blockButton,
     TResult Function(int mssgId, String newMssg)? editMssg,
@@ -366,6 +381,7 @@ class _$SendMssgImpl implements _SendMssg {
     required TResult Function(_Init value) init,
     required TResult Function(_SendMssg value) sendMssg,
     required TResult Function(_GetMssg value) getMssg,
+    required TResult Function(_Seen value) seen,
     required TResult Function(_DeletMssg value) deletMssg,
     required TResult Function(_BlockButton value) blockButton,
     required TResult Function(_EditMssg value) editMssg,
@@ -379,6 +395,7 @@ class _$SendMssgImpl implements _SendMssg {
     TResult? Function(_Init value)? init,
     TResult? Function(_SendMssg value)? sendMssg,
     TResult? Function(_GetMssg value)? getMssg,
+    TResult? Function(_Seen value)? seen,
     TResult? Function(_DeletMssg value)? deletMssg,
     TResult? Function(_BlockButton value)? blockButton,
     TResult? Function(_EditMssg value)? editMssg,
@@ -392,6 +409,7 @@ class _$SendMssgImpl implements _SendMssg {
     TResult Function(_Init value)? init,
     TResult Function(_SendMssg value)? sendMssg,
     TResult Function(_GetMssg value)? getMssg,
+    TResult Function(_Seen value)? seen,
     TResult Function(_DeletMssg value)? deletMssg,
     TResult Function(_BlockButton value)? blockButton,
     TResult Function(_EditMssg value)? editMssg,
@@ -497,6 +515,7 @@ class _$GetMssgImpl implements _GetMssg {
     required TResult Function(String mssg, String receiverId, int? replyTo)
     sendMssg,
     required TResult Function(String receiverId) getMssg,
+    required TResult Function(int sender) seen,
     required TResult Function(int mssId) deletMssg,
     required TResult Function(bool block) blockButton,
     required TResult Function(int mssgId, String newMssg) editMssg,
@@ -510,6 +529,7 @@ class _$GetMssgImpl implements _GetMssg {
     TResult? Function()? init,
     TResult? Function(String mssg, String receiverId, int? replyTo)? sendMssg,
     TResult? Function(String receiverId)? getMssg,
+    TResult? Function(int sender)? seen,
     TResult? Function(int mssId)? deletMssg,
     TResult? Function(bool block)? blockButton,
     TResult? Function(int mssgId, String newMssg)? editMssg,
@@ -523,6 +543,7 @@ class _$GetMssgImpl implements _GetMssg {
     TResult Function()? init,
     TResult Function(String mssg, String receiverId, int? replyTo)? sendMssg,
     TResult Function(String receiverId)? getMssg,
+    TResult Function(int sender)? seen,
     TResult Function(int mssId)? deletMssg,
     TResult Function(bool block)? blockButton,
     TResult Function(int mssgId, String newMssg)? editMssg,
@@ -540,6 +561,7 @@ class _$GetMssgImpl implements _GetMssg {
     required TResult Function(_Init value) init,
     required TResult Function(_SendMssg value) sendMssg,
     required TResult Function(_GetMssg value) getMssg,
+    required TResult Function(_Seen value) seen,
     required TResult Function(_DeletMssg value) deletMssg,
     required TResult Function(_BlockButton value) blockButton,
     required TResult Function(_EditMssg value) editMssg,
@@ -553,6 +575,7 @@ class _$GetMssgImpl implements _GetMssg {
     TResult? Function(_Init value)? init,
     TResult? Function(_SendMssg value)? sendMssg,
     TResult? Function(_GetMssg value)? getMssg,
+    TResult? Function(_Seen value)? seen,
     TResult? Function(_DeletMssg value)? deletMssg,
     TResult? Function(_BlockButton value)? blockButton,
     TResult? Function(_EditMssg value)? editMssg,
@@ -566,6 +589,7 @@ class _$GetMssgImpl implements _GetMssg {
     TResult Function(_Init value)? init,
     TResult Function(_SendMssg value)? sendMssg,
     TResult Function(_GetMssg value)? getMssg,
+    TResult Function(_Seen value)? seen,
     TResult Function(_DeletMssg value)? deletMssg,
     TResult Function(_BlockButton value)? blockButton,
     TResult Function(_EditMssg value)? editMssg,
@@ -587,6 +611,177 @@ abstract class _GetMssg implements ChatEvent {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$GetMssgImplCopyWith<_$GetMssgImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$SeenImplCopyWith<$Res> {
+  factory _$$SeenImplCopyWith(
+    _$SeenImpl value,
+    $Res Function(_$SeenImpl) then,
+  ) = __$$SeenImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({int sender});
+}
+
+/// @nodoc
+class __$$SeenImplCopyWithImpl<$Res>
+    extends _$ChatEventCopyWithImpl<$Res, _$SeenImpl>
+    implements _$$SeenImplCopyWith<$Res> {
+  __$$SeenImplCopyWithImpl(_$SeenImpl _value, $Res Function(_$SeenImpl) _then)
+    : super(_value, _then);
+
+  /// Create a copy of ChatEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? sender = null}) {
+    return _then(
+      _$SeenImpl(
+        sender: null == sender
+            ? _value.sender
+            : sender // ignore: cast_nullable_to_non_nullable
+                  as int,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+
+class _$SeenImpl implements _Seen {
+  const _$SeenImpl({required this.sender});
+
+  @override
+  final int sender;
+
+  @override
+  String toString() {
+    return 'ChatEvent.seen(sender: $sender)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SeenImpl &&
+            (identical(other.sender, sender) || other.sender == sender));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, sender);
+
+  /// Create a copy of ChatEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SeenImplCopyWith<_$SeenImpl> get copyWith =>
+      __$$SeenImplCopyWithImpl<_$SeenImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() init,
+    required TResult Function(String mssg, String receiverId, int? replyTo)
+    sendMssg,
+    required TResult Function(String receiverId) getMssg,
+    required TResult Function(int sender) seen,
+    required TResult Function(int mssId) deletMssg,
+    required TResult Function(bool block) blockButton,
+    required TResult Function(int mssgId, String newMssg) editMssg,
+  }) {
+    return seen(sender);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? init,
+    TResult? Function(String mssg, String receiverId, int? replyTo)? sendMssg,
+    TResult? Function(String receiverId)? getMssg,
+    TResult? Function(int sender)? seen,
+    TResult? Function(int mssId)? deletMssg,
+    TResult? Function(bool block)? blockButton,
+    TResult? Function(int mssgId, String newMssg)? editMssg,
+  }) {
+    return seen?.call(sender);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? init,
+    TResult Function(String mssg, String receiverId, int? replyTo)? sendMssg,
+    TResult Function(String receiverId)? getMssg,
+    TResult Function(int sender)? seen,
+    TResult Function(int mssId)? deletMssg,
+    TResult Function(bool block)? blockButton,
+    TResult Function(int mssgId, String newMssg)? editMssg,
+    required TResult orElse(),
+  }) {
+    if (seen != null) {
+      return seen(sender);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Init value) init,
+    required TResult Function(_SendMssg value) sendMssg,
+    required TResult Function(_GetMssg value) getMssg,
+    required TResult Function(_Seen value) seen,
+    required TResult Function(_DeletMssg value) deletMssg,
+    required TResult Function(_BlockButton value) blockButton,
+    required TResult Function(_EditMssg value) editMssg,
+  }) {
+    return seen(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Init value)? init,
+    TResult? Function(_SendMssg value)? sendMssg,
+    TResult? Function(_GetMssg value)? getMssg,
+    TResult? Function(_Seen value)? seen,
+    TResult? Function(_DeletMssg value)? deletMssg,
+    TResult? Function(_BlockButton value)? blockButton,
+    TResult? Function(_EditMssg value)? editMssg,
+  }) {
+    return seen?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Init value)? init,
+    TResult Function(_SendMssg value)? sendMssg,
+    TResult Function(_GetMssg value)? getMssg,
+    TResult Function(_Seen value)? seen,
+    TResult Function(_DeletMssg value)? deletMssg,
+    TResult Function(_BlockButton value)? blockButton,
+    TResult Function(_EditMssg value)? editMssg,
+    required TResult orElse(),
+  }) {
+    if (seen != null) {
+      return seen(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _Seen implements ChatEvent {
+  const factory _Seen({required final int sender}) = _$SeenImpl;
+
+  int get sender;
+
+  /// Create a copy of ChatEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$SeenImplCopyWith<_$SeenImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -664,6 +859,7 @@ class _$DeletMssgImpl implements _DeletMssg {
     required TResult Function(String mssg, String receiverId, int? replyTo)
     sendMssg,
     required TResult Function(String receiverId) getMssg,
+    required TResult Function(int sender) seen,
     required TResult Function(int mssId) deletMssg,
     required TResult Function(bool block) blockButton,
     required TResult Function(int mssgId, String newMssg) editMssg,
@@ -677,6 +873,7 @@ class _$DeletMssgImpl implements _DeletMssg {
     TResult? Function()? init,
     TResult? Function(String mssg, String receiverId, int? replyTo)? sendMssg,
     TResult? Function(String receiverId)? getMssg,
+    TResult? Function(int sender)? seen,
     TResult? Function(int mssId)? deletMssg,
     TResult? Function(bool block)? blockButton,
     TResult? Function(int mssgId, String newMssg)? editMssg,
@@ -690,6 +887,7 @@ class _$DeletMssgImpl implements _DeletMssg {
     TResult Function()? init,
     TResult Function(String mssg, String receiverId, int? replyTo)? sendMssg,
     TResult Function(String receiverId)? getMssg,
+    TResult Function(int sender)? seen,
     TResult Function(int mssId)? deletMssg,
     TResult Function(bool block)? blockButton,
     TResult Function(int mssgId, String newMssg)? editMssg,
@@ -707,6 +905,7 @@ class _$DeletMssgImpl implements _DeletMssg {
     required TResult Function(_Init value) init,
     required TResult Function(_SendMssg value) sendMssg,
     required TResult Function(_GetMssg value) getMssg,
+    required TResult Function(_Seen value) seen,
     required TResult Function(_DeletMssg value) deletMssg,
     required TResult Function(_BlockButton value) blockButton,
     required TResult Function(_EditMssg value) editMssg,
@@ -720,6 +919,7 @@ class _$DeletMssgImpl implements _DeletMssg {
     TResult? Function(_Init value)? init,
     TResult? Function(_SendMssg value)? sendMssg,
     TResult? Function(_GetMssg value)? getMssg,
+    TResult? Function(_Seen value)? seen,
     TResult? Function(_DeletMssg value)? deletMssg,
     TResult? Function(_BlockButton value)? blockButton,
     TResult? Function(_EditMssg value)? editMssg,
@@ -733,6 +933,7 @@ class _$DeletMssgImpl implements _DeletMssg {
     TResult Function(_Init value)? init,
     TResult Function(_SendMssg value)? sendMssg,
     TResult Function(_GetMssg value)? getMssg,
+    TResult Function(_Seen value)? seen,
     TResult Function(_DeletMssg value)? deletMssg,
     TResult Function(_BlockButton value)? blockButton,
     TResult Function(_EditMssg value)? editMssg,
@@ -831,6 +1032,7 @@ class _$BlockButtonImpl implements _BlockButton {
     required TResult Function(String mssg, String receiverId, int? replyTo)
     sendMssg,
     required TResult Function(String receiverId) getMssg,
+    required TResult Function(int sender) seen,
     required TResult Function(int mssId) deletMssg,
     required TResult Function(bool block) blockButton,
     required TResult Function(int mssgId, String newMssg) editMssg,
@@ -844,6 +1046,7 @@ class _$BlockButtonImpl implements _BlockButton {
     TResult? Function()? init,
     TResult? Function(String mssg, String receiverId, int? replyTo)? sendMssg,
     TResult? Function(String receiverId)? getMssg,
+    TResult? Function(int sender)? seen,
     TResult? Function(int mssId)? deletMssg,
     TResult? Function(bool block)? blockButton,
     TResult? Function(int mssgId, String newMssg)? editMssg,
@@ -857,6 +1060,7 @@ class _$BlockButtonImpl implements _BlockButton {
     TResult Function()? init,
     TResult Function(String mssg, String receiverId, int? replyTo)? sendMssg,
     TResult Function(String receiverId)? getMssg,
+    TResult Function(int sender)? seen,
     TResult Function(int mssId)? deletMssg,
     TResult Function(bool block)? blockButton,
     TResult Function(int mssgId, String newMssg)? editMssg,
@@ -874,6 +1078,7 @@ class _$BlockButtonImpl implements _BlockButton {
     required TResult Function(_Init value) init,
     required TResult Function(_SendMssg value) sendMssg,
     required TResult Function(_GetMssg value) getMssg,
+    required TResult Function(_Seen value) seen,
     required TResult Function(_DeletMssg value) deletMssg,
     required TResult Function(_BlockButton value) blockButton,
     required TResult Function(_EditMssg value) editMssg,
@@ -887,6 +1092,7 @@ class _$BlockButtonImpl implements _BlockButton {
     TResult? Function(_Init value)? init,
     TResult? Function(_SendMssg value)? sendMssg,
     TResult? Function(_GetMssg value)? getMssg,
+    TResult? Function(_Seen value)? seen,
     TResult? Function(_DeletMssg value)? deletMssg,
     TResult? Function(_BlockButton value)? blockButton,
     TResult? Function(_EditMssg value)? editMssg,
@@ -900,6 +1106,7 @@ class _$BlockButtonImpl implements _BlockButton {
     TResult Function(_Init value)? init,
     TResult Function(_SendMssg value)? sendMssg,
     TResult Function(_GetMssg value)? getMssg,
+    TResult Function(_Seen value)? seen,
     TResult Function(_DeletMssg value)? deletMssg,
     TResult Function(_BlockButton value)? blockButton,
     TResult Function(_EditMssg value)? editMssg,
@@ -1005,6 +1212,7 @@ class _$EditMssgImpl implements _EditMssg {
     required TResult Function(String mssg, String receiverId, int? replyTo)
     sendMssg,
     required TResult Function(String receiverId) getMssg,
+    required TResult Function(int sender) seen,
     required TResult Function(int mssId) deletMssg,
     required TResult Function(bool block) blockButton,
     required TResult Function(int mssgId, String newMssg) editMssg,
@@ -1018,6 +1226,7 @@ class _$EditMssgImpl implements _EditMssg {
     TResult? Function()? init,
     TResult? Function(String mssg, String receiverId, int? replyTo)? sendMssg,
     TResult? Function(String receiverId)? getMssg,
+    TResult? Function(int sender)? seen,
     TResult? Function(int mssId)? deletMssg,
     TResult? Function(bool block)? blockButton,
     TResult? Function(int mssgId, String newMssg)? editMssg,
@@ -1031,6 +1240,7 @@ class _$EditMssgImpl implements _EditMssg {
     TResult Function()? init,
     TResult Function(String mssg, String receiverId, int? replyTo)? sendMssg,
     TResult Function(String receiverId)? getMssg,
+    TResult Function(int sender)? seen,
     TResult Function(int mssId)? deletMssg,
     TResult Function(bool block)? blockButton,
     TResult Function(int mssgId, String newMssg)? editMssg,
@@ -1048,6 +1258,7 @@ class _$EditMssgImpl implements _EditMssg {
     required TResult Function(_Init value) init,
     required TResult Function(_SendMssg value) sendMssg,
     required TResult Function(_GetMssg value) getMssg,
+    required TResult Function(_Seen value) seen,
     required TResult Function(_DeletMssg value) deletMssg,
     required TResult Function(_BlockButton value) blockButton,
     required TResult Function(_EditMssg value) editMssg,
@@ -1061,6 +1272,7 @@ class _$EditMssgImpl implements _EditMssg {
     TResult? Function(_Init value)? init,
     TResult? Function(_SendMssg value)? sendMssg,
     TResult? Function(_GetMssg value)? getMssg,
+    TResult? Function(_Seen value)? seen,
     TResult? Function(_DeletMssg value)? deletMssg,
     TResult? Function(_BlockButton value)? blockButton,
     TResult? Function(_EditMssg value)? editMssg,
@@ -1074,6 +1286,7 @@ class _$EditMssgImpl implements _EditMssg {
     TResult Function(_Init value)? init,
     TResult Function(_SendMssg value)? sendMssg,
     TResult Function(_GetMssg value)? getMssg,
+    TResult Function(_Seen value)? seen,
     TResult Function(_DeletMssg value)? deletMssg,
     TResult Function(_BlockButton value)? blockButton,
     TResult Function(_EditMssg value)? editMssg,
@@ -1110,6 +1323,7 @@ mixin _$ChatState {
   Status get GetMssgStatus => throw _privateConstructorUsedError;
   List<ChatModel> get messages => throw _privateConstructorUsedError;
   Status get DeleteMssgStatus => throw _privateConstructorUsedError;
+  bool get seen => throw _privateConstructorUsedError;
 
   /// Create a copy of ChatState
   /// with the given fields replaced by the non-null parameter values.
@@ -1130,6 +1344,7 @@ abstract class $ChatStateCopyWith<$Res> {
     Status GetMssgStatus,
     List<ChatModel> messages,
     Status DeleteMssgStatus,
+    bool seen,
   });
 }
 
@@ -1154,6 +1369,7 @@ class _$ChatStateCopyWithImpl<$Res, $Val extends ChatState>
     Object? GetMssgStatus = null,
     Object? messages = null,
     Object? DeleteMssgStatus = null,
+    Object? seen = null,
   }) {
     return _then(
       _value.copyWith(
@@ -1181,6 +1397,10 @@ class _$ChatStateCopyWithImpl<$Res, $Val extends ChatState>
                 ? _value.DeleteMssgStatus
                 : DeleteMssgStatus // ignore: cast_nullable_to_non_nullable
                       as Status,
+            seen: null == seen
+                ? _value.seen
+                : seen // ignore: cast_nullable_to_non_nullable
+                      as bool,
           )
           as $Val,
     );
@@ -1203,6 +1423,7 @@ abstract class _$$ChatStateImplCopyWith<$Res>
     Status GetMssgStatus,
     List<ChatModel> messages,
     Status DeleteMssgStatus,
+    bool seen,
   });
 }
 
@@ -1226,6 +1447,7 @@ class __$$ChatStateImplCopyWithImpl<$Res>
     Object? GetMssgStatus = null,
     Object? messages = null,
     Object? DeleteMssgStatus = null,
+    Object? seen = null,
   }) {
     return _then(
       _$ChatStateImpl(
@@ -1253,6 +1475,10 @@ class __$$ChatStateImplCopyWithImpl<$Res>
             ? _value.DeleteMssgStatus
             : DeleteMssgStatus // ignore: cast_nullable_to_non_nullable
                   as Status,
+        seen: null == seen
+            ? _value.seen
+            : seen // ignore: cast_nullable_to_non_nullable
+                  as bool,
       ),
     );
   }
@@ -1268,6 +1494,7 @@ class _$ChatStateImpl implements _ChatState {
     this.GetMssgStatus = Status.init,
     final List<ChatModel> messages = const [],
     this.DeleteMssgStatus = Status.init,
+    this.seen = false,
   }) : _contacts = contacts,
        _messages = messages;
 
@@ -1301,10 +1528,13 @@ class _$ChatStateImpl implements _ChatState {
   @override
   @JsonKey()
   final Status DeleteMssgStatus;
+  @override
+  @JsonKey()
+  final bool seen;
 
   @override
   String toString() {
-    return 'ChatState(contacts: $contacts, contactStatus: $contactStatus, SendMssgStatus: $SendMssgStatus, GetMssgStatus: $GetMssgStatus, messages: $messages, DeleteMssgStatus: $DeleteMssgStatus)';
+    return 'ChatState(contacts: $contacts, contactStatus: $contactStatus, SendMssgStatus: $SendMssgStatus, GetMssgStatus: $GetMssgStatus, messages: $messages, DeleteMssgStatus: $DeleteMssgStatus, seen: $seen)';
   }
 
   @override
@@ -1321,7 +1551,8 @@ class _$ChatStateImpl implements _ChatState {
                 other.GetMssgStatus == GetMssgStatus) &&
             const DeepCollectionEquality().equals(other._messages, _messages) &&
             (identical(other.DeleteMssgStatus, DeleteMssgStatus) ||
-                other.DeleteMssgStatus == DeleteMssgStatus));
+                other.DeleteMssgStatus == DeleteMssgStatus) &&
+            (identical(other.seen, seen) || other.seen == seen));
   }
 
   @override
@@ -1333,6 +1564,7 @@ class _$ChatStateImpl implements _ChatState {
     GetMssgStatus,
     const DeepCollectionEquality().hash(_messages),
     DeleteMssgStatus,
+    seen,
   );
 
   /// Create a copy of ChatState
@@ -1352,6 +1584,7 @@ abstract class _ChatState implements ChatState {
     final Status GetMssgStatus,
     final List<ChatModel> messages,
     final Status DeleteMssgStatus,
+    final bool seen,
   }) = _$ChatStateImpl;
 
   @override
@@ -1366,6 +1599,8 @@ abstract class _ChatState implements ChatState {
   List<ChatModel> get messages;
   @override
   Status get DeleteMssgStatus;
+  @override
+  bool get seen;
 
   /// Create a copy of ChatState
   /// with the given fields replaced by the non-null parameter values.
