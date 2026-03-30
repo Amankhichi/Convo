@@ -32,8 +32,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     required GetMssgUseCase getmssgusecase,
     required DeletMssgUsecase deletmssgusecase,
     required EditMessageUseCase editmessageusecase,
-  }) : 
-       _seenMssgUsecase = seenmssgusecase,
+  }) : _seenMssgUsecase = seenmssgusecase,
        _sendMssgUsecase = sendmssgusecase,
        _getmssgusecase = getmssgusecase,
        _deletMssgUsecase = deletmssgusecase,
@@ -45,10 +44,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<_GetMssg>(__GetMssg);
     on<_DeletMssg>(__DeletMssg);
     on<_Seen>(__Seen);
-
   }
-  Future<void> __Init(_Init event, Emitter<ChatState> emit) async {
-  }
+  Future<void> __Init(_Init event, Emitter<ChatState> emit) async {}
 
   Future<void> __SendMssg(_SendMssg event, Emitter<ChatState> emit) async {
     emit(state.copyWith(SendMssgStatus: Status.loading));
@@ -107,11 +104,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         senderId: profile.id.toString(),
         receiverId: event.receiverId,
       );
-      
+
       emit(state.copyWith(GetMssgStatus: Status.success, messages: messagess));
-      
-        add(ChatEvent.seen(sender: int.parse(event.receiverId)));
-    
+
+      add(ChatEvent.seen(sender: int.parse(event.receiverId)));
     } catch (e) {
       emit(state.copyWith(GetMssgStatus: Status.error));
       emit(state.copyWith(GetMssgStatus: Status.init));
@@ -153,8 +149,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
 
   Future<void> __Seen(_Seen event, Emitter<ChatState> emit) async {
-      final prefs = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
     final id = prefs.getString("id");
-    final seen=await _seenMssgUsecase(receiverId:int.parse(id.toString()),senderId: event.sender);
+    final seen = await _seenMssgUsecase(
+      receiverId: int.parse(id.toString()),
+      senderId: event.sender,
+    );
   }
 }
