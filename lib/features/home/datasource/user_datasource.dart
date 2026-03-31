@@ -111,3 +111,33 @@ Future<UserModel?> isUser({required String phone}) async {
 
 
 }
+
+
+
+
+
+
+
+// Future<bool> addUser(UserPayload user) async {
+ 
+//     var body = user.toJson();
+
+//     var response = await http.post(
+//       Uri.parse("http://$IpAddress:7000/user/add"),
+//       headers: {"Content-Type": "application/json"},
+//       body: jsonEncode(body),
+//     );
+
+//     if (response.statusCode == 200) {
+//       print("User data added successfully!");
+//       return true;
+//     } else {
+//       print("Failed: ${response.statusCode}");
+//       print("Response: ${response.body}");
+//       return false;
+//     }
+//   } catch (e) {
+//     print("Submit Error: $e");
+//     return false; // ❗ important
+//   }
+// }

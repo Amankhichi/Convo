@@ -11,6 +11,9 @@ class GetHomeChatsListUsecase {
 
   Future<List<HomeChatModel>> call() async {
     final list = await datasource.getHomeChats();
+    if (!await FlutterContacts.requestPermission()) {
+      return list; // return API data only
+    }
     final phoneContacts = await FlutterContacts.getContacts(
       withProperties: true,
     );

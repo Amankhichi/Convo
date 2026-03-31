@@ -14,4 +14,7 @@ String getapikey() {
 }
 final apikey = getapikey();
 
-
+String getIP() {
+  return "192.168.29.178";
+}
+final IpAddress = getIP();

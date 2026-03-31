@@ -155,5 +155,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       receiverId: int.parse(id.toString()),
       senderId: event.sender,
     );
+    // if(seen){
+    //   print("success");
+    // }
   }
 }

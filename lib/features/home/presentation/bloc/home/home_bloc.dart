@@ -20,69 +20,78 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Future<void> __Init(_Init event, Emitter<HomeState> emit) async {
     emit(state.copyWith(homeChatsStatus: Status.loading));
 
-    // try {
-    final chats = await _getHomeChatsListUseCase();
+    try {
+      
+      final chats = await _getHomeChatsListUseCase();
 
-    final prefs = await SharedPreferences.getInstance();
-    final idString = prefs.getString("id");
+      final prefs = await SharedPreferences.getInstance();
+      final idString = prefs.getString("id");
 
-    if (idString == null) {
+      if (idString == null || idString.isEmpty) {
+        emit(state.copyWith(homeChatsStatus: Status.error));
+        return;
+      }
+
+      final myId = int.tryParse(idString);
+      if (myId == null) {
+        emit(state.copyWith(homeChatsStatus: Status.error));
+        return;
+      }
+
+      if (chats.isEmpty) {
+        emit(state.copyWith(homeChatsStatus: Status.error));
+        return;
+      }
+
+      final users = buildConversationList(chats, myId);
+
+      emit(
+        state.copyWith(homeChatsStatus: Status.success, homePageChats: users),
+      );
+    } catch (e, stack) {
+      print("🔥 ERROR: $e");
+      print(stack);
       emit(state.copyWith(homeChatsStatus: Status.error));
-      return;
-    }
-
-    final myId = int.parse(idString);
-
-    if (chats.isEmpty) {
-      emit(state.copyWith(homeChatsStatus: Status.error));
-      return;
-    }
-
-    final users = buildConversationList(chats, myId);
-    // emit(state.copyWith(homeChatsStatus: Status.success));
-
-    emit(state.copyWith(homeChatsStatus: Status.success, homePageChats: users));
-    // } catch (e) {
-    //   emit(state.copyWith(homeChatsStatus: Status.error));
-    // }
-  }
-List<HomeChatModel> buildConversationList(
-  List<HomeChatModel> chats,
-  int myId,
-) {
-  final Map<int, HomeChatModel> conversationMap = {};
-  final Map<int, int> unreadCountMap = {};
-
-  for (var chat in chats) {
-    if (chat.message.isEmpty) continue;
-
-    final otherUserId =
-        chat.senderId == myId ? chat.receiverId : chat.senderId;
-
-    /// Count unread messages
-    if (chat.receiverId == myId && !chat.seen) {
-      unreadCountMap[otherUserId] = (unreadCountMap[otherUserId] ?? 0) + 1;
-    }
-
-    /// Keep latest message
-    if (!conversationMap.containsKey(otherUserId) ||
-        chat.createdAt.isAfter(conversationMap[otherUserId]!.createdAt)) {
-      conversationMap[otherUserId] = chat;
     }
   }
 
-  final conversations = conversationMap.values.map((chat) {
-    final otherUserId =
-        chat.senderId == myId ? chat.receiverId : chat.senderId;
+  List<HomeChatModel> buildConversationList(
+    List<HomeChatModel> chats,
+    int myId,
+  ) {
+    final Map<int, HomeChatModel> conversationMap = {};
+    final Map<int, int> unreadCountMap = {};
 
-    return chat.copyWith(
-      unSeencount: unreadCountMap[otherUserId] ?? 0,
-    );
-  }).toList();
+    for (var chat in chats) {
+      if (chat.message.isEmpty) continue;
 
-  /// Sort by latest message
-  conversations.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      final otherUserId = chat.senderId == myId
+          ? chat.receiverId
+          : chat.senderId;
 
-  return conversations;
-}
+      /// Count unread messages
+      if (chat.receiverId == myId && !chat.seen) {
+        unreadCountMap[otherUserId] = (unreadCountMap[otherUserId] ?? 0) + 1;
+      }
+
+      /// Keep latest message
+      if (!conversationMap.containsKey(otherUserId) ||
+          chat.createdAt.isAfter(conversationMap[otherUserId]!.createdAt)) {
+        conversationMap[otherUserId] = chat;
+      }
+    }
+
+    final conversations = conversationMap.values.map((chat) {
+      final otherUserId = chat.senderId == myId
+          ? chat.receiverId
+          : chat.senderId;
+
+      return chat.copyWith(unSeencount: unreadCountMap[otherUserId] ?? 0);
+    }).toList();
+
+    /// Sort by latest message
+    conversations.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+    return conversations;
+  }
 }
