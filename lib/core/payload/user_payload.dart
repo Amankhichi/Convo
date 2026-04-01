@@ -3,7 +3,7 @@ class UserPayload {
   final String phone;
   final String about;
   final String nickName;
-  final String lotti;
+  final String profile;
   final bool online;
 
   UserPayload({
@@ -11,7 +11,7 @@ class UserPayload {
     required this.nickName,
     required this.phone,
     required this.about,
-    required this.lotti,
+    required this.profile,
     required this.online,
   });
 
@@ -20,7 +20,7 @@ class UserPayload {
         "nickName": nickName,
         "phone": phone,
         "about": about,
-        "lotti": lotti,
+        "profile": profile,
         "online":online?1:0,
       };
 
@@ -30,7 +30,7 @@ class UserPayload {
         nickName: json["nickName"],
         phone: json["phone"],
         about: json["about"],
-        lotti: json["lotti"],
+        profile: json["profile"],
         online: json['online'],
       );
 }

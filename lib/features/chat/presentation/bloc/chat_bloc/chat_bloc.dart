@@ -148,15 +148,17 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     }
   }
 
-  Future<void> __Seen(_Seen event, Emitter<ChatState> emit) async {
-    final prefs = await SharedPreferences.getInstance();
-    final id = prefs.getString("id");
-    final seen = await _seenMssgUsecase(
-      receiverId: int.parse(id.toString()),
-      senderId: event.sender,
-    );
-    // if(seen){
-    //   print("success");
-    // }
-  }
+Future<void> __Seen(_Seen event, Emitter<ChatState> emit) async {
+  final prefs = await SharedPreferences.getInstance();
+  final id = prefs.getString("id");
+
+  if (id == null) return;
+
+  await _seenMssgUsecase(
+    receiverId: int.parse(id),
+    senderId: event.sender,
+  );
+
+  print("success");
+}
 }

@@ -74,7 +74,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         nickName: state.nickName,
         phone: state.phone,
         about: state.about,
-        lotti: state.lotti,
+        profile: state.lotti,
         online: true,
       ),
     );
