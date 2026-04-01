@@ -65,49 +65,46 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     emit(state.copyWith(online: event.value));
   }
 
-  Future<void> __Add(_Add event, Emitter<LoginState> emit) async {
-    emit(state.copyWith(adduserStatus: Status.loading));
+Future<void> __Add(_Add event, Emitter<LoginState> emit) async {
+  emit(state.copyWith(adduserStatus: Status.loading));
 
-    final isAdded = await _addUserUsecase(
-      UserPayload(
-        // name: state.name,
-        nickName: state.nickName,
-        phone: state.phone,
-        about: state.about,
-        profile: state.lotti,
-        online: true,
-      ),
-    );
+  final isAdded = await _addUserUsecase(
+    UserPayload(
+      nickName: state.nickName,
+      phone: state.phone,
+      about: state.about,
+      profile: state.lotti,
+      online: true,
+    ),
+  );
 
-    if (!isAdded) {
-      emit(state.copyWith(adduserStatus: Status.error));
-      return;
-    }
-
-    final user = await _getUserUsecase(phone: state.phone);
-
-    if (user == null) {
-      emit(state.copyWith(adduserStatus: Status.error));
-      return;
-    }
-
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString("id", user.id.toString());
-    await prefs.setString("phone", user.phone.toString());
-
-    emit(
-      state.copyWith(
-        adduserStatus: Status.success,
-        profile: user,
-        name: user.name,
-        nickName: user.nickName,
-        phone: user.phone,
-        about: user.about,
-        lotti: user.lotti,
-      ),
-    );
+  if (!isAdded) {
+    emit(state.copyWith(adduserStatus: Status.error));
+    return;
   }
 
+  final user = await _getUserUsecase(phone: state.phone);
+
+  if (user == null) {
+    emit(state.copyWith(adduserStatus: Status.error));
+    return;
+  }
+
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString("id", user.id.toString());
+  await prefs.setString("phone", user.phone);
+
+  emit(
+    state.copyWith(
+      adduserStatus: Status.success,
+      profile: user,
+      nickName: user.nickName,
+      phone: user.phone,
+      about: user.about,
+      lotti: user.lotti,
+    ),
+  );
+}
   Future<void> __checkNumber(
     _CheckNumber event,
     Emitter<LoginState> emit,
