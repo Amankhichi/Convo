@@ -9,32 +9,55 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class UserDatasource {
 
-  // Set user Data
-  Future<bool> addUser(UserPayload user) async {
-    final url = Uri.parse(
-      "https://ehmqgiqrfpvvznvsvfyu.supabase.co/rest/v1/user_list",
-    );
 
+ Future<bool> addUser(UserPayload user) async {
+  try {
     final response = await http.post(
-      url,
-      headers: {
-        "apikey": apikey,
-        "Authorization": "Bearer $apikey",
-        "Content-Type": "application/json",
-        "Prefer": "return=minimal",
-      },
+      Uri.parse("http://$IpAddress:7000/user/add"),
+      headers: {"Content-Type": "application/json"},
       body: jsonEncode(user.toJson()),
     );
 
-    if (response.statusCode == 201 || response.statusCode == 200) {
-      print("User data added successfully!");
+    if (response.statusCode == 200) {
       return true;
     } else {
-      print("Failed to add user data: ${response.statusCode}");
-      print("Response: ${response.body}");
+      print("Error: ${response.body}");
       return false;
     }
+
+  } catch (e) {
+    print("Catch Error: $e");
+    return false; // ✅ MUST return
   }
+}
+
+
+  // Set user Data
+  // Future<bool> addUser(UserPayload user) async {
+  //   final url = Uri.parse(
+  //     "https://ehmqgiqrfpvvznvsvfyu.supabase.co/rest/v1/user_list",
+  //   );
+
+  //   final response = await http.post(
+  //     url,
+  //     headers: {
+  //       "apikey": apikey,
+  //       "Authorization": "Bearer $apikey",
+  //       "Content-Type": "application/json",
+  //       "Prefer": "return=minimal",
+  //     },
+  //     body: jsonEncode(user.toJson()),
+  //   );
+
+  //   if (response.statusCode == 201 || response.statusCode == 200) {
+  //     print("User data added successfully!");
+  //     return true;
+  //   } else {
+  //     print("Failed to add user data: ${response.statusCode}");
+  //     print("Response: ${response.body}");
+  //     return false;
+  //   }
+  // }
 
 
 

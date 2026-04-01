@@ -11,6 +11,10 @@ Future<void> __homeDependency() async {
     () => ChatDatasource(),
   );
 
+    getIt.registerLazySingleton<LoginDatasource>(
+    () => LoginDatasource(),
+  );
+
   /// 🔹 USER USECASES
   getIt.registerLazySingleton<AddUserUsecase>(
     () => AddUserUsecase(datasource: getIt<UserDatasource>()),
