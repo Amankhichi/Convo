@@ -1,15 +1,10 @@
-import 'package:convo/core/const.dart/app_colors.dart';
-import 'package:convo/core/enum/status.dart';
+import 'dart:typed_data';
+
+import 'package:convo/core/const.dart/upload_file.dart';
 import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
-import 'package:convo/features/auth/presentation/pages/welcome_page.dart';
-import 'package:convo/features/auth/presentation/pages/login_page.dart';
-import 'package:convo/core/custom/custom_icon.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lottie/lottie.dart';
-import 'package:convo/features/auth/presentation/pages/lotti_animation_page.dart';
-import 'package:convo/core/custom/custom_textfield.dart';
-import 'package:convo/core/custom/custom_text.dart';
+import 'package:flutter_bloc/flutter_bloc.dart' show ReadContext;
+import 'package:image_picker/image_picker.dart';
 
 class AddNamePage extends StatefulWidget {
   const AddNamePage({super.key, required this.lotti});
@@ -20,151 +15,109 @@ class AddNamePage extends StatefulWidget {
 }
 
 class _AddNamePageState extends State<AddNamePage> {
-  TextEditingController nameController = TextEditingController();
+  final picker = ImagePicker();
+  Uint8List? imageBytes;
 
-  final TextEditingController controller = TextEditingController(
-    text: "I'm busy in ConVO",
-  );
+  final nameController = TextEditingController();
+  final aboutController =
+      TextEditingController(text: "I'm busy in ConVO");
 
-  final List<String> options = [
+  final options = [
     "I'm busy in ConVO",
     "I'm studying 📚",
     "Hanging with friends 😄",
-    "Travelling ✈️",
-    "At work 💼",
-    "In a meeting 🤝",
-    "Gaming 🎮",
-    "Watching movies 🎬",
-    "Listening music 🎧",
-    "Chilling 😎",
   ];
+
+  /// 🔥 PICK IMAGE
+  Future<void> pickImage() async {
+    final file = await picker.pickImage(source: ImageSource.gallery);
+    if (file == null) return;
+
+    imageBytes = await file.readAsBytes();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocListener<LoginBloc, LoginState>(
-      listener: (context, state) {
-        if (state.adduserStatus == Status.success) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (_) => const WelcomePage()),
-          );
-        }
-      },
-      child: Scaffold(
-        appBar: AppBar(
+    return Scaffold(
+      appBar: AppBar(title: const Text("Profile")),
 
-          leading: IconButton(
-            color: AppColors.textColor(context),
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const LoginPage()));
-            },
-            icon: CustomIcon(icon: Icons.arrow_back, size: 35,),
-          ),
-          title: CustomText(text: "Profile", bold: FontWeight.w800, size: 26),
-          centerTitle: true,
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+
+            /// 🔥 AVATAR
+            GestureDetector(
+              onTap: pickImage,
+              child: CircleAvatar(
+                radius: 55,
+                backgroundColor: Colors.grey[300],
+                backgroundImage:
+                    imageBytes != null ? MemoryImage(imageBytes!) : null,
+                child: imageBytes == null
+                    ? const Icon(Icons.camera_alt, size: 30)
+                    : null,
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            /// 🔥 NAME
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(labelText: "Full name"),
+              onChanged: (v) =>
+                  context.read<LoginBloc>().add(LoginEvent.name(v)),
+            ),
+
+            const SizedBox(height: 20),
+
+            /// 🔥 ABOUT
+            TextField(
+              controller: aboutController,
+              onChanged: (v) =>
+                  context.read<LoginBloc>().add(LoginEvent.about(v)),
+              decoration: InputDecoration(
+                labelText: "About",
+                suffixIcon: PopupMenuButton<String>(
+                  onSelected: (v) {
+                    aboutController.text = v;
+                    context.read<LoginBloc>().add(LoginEvent.about(v));
+                  },
+                  itemBuilder: (_) => options
+                      .map((e) => PopupMenuItem(
+                            value: e,
+                            child: Text(e),
+                          ))
+                      .toList(),
+                ),
+              ),
+            ),
+          ],
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              const SizedBox(height: 30),
+      ),
 
-              ClipOval(
-                child: SizedBox(
-                  height: 120,
-                  width: 120,
-                  child: widget.lotti.isEmpty
-                      ? const Icon(Icons.person, size: 80, color: Colors.grey)
-                      : Lottie.asset(widget.lotti, fit: BoxFit.contain),
-                ),
-              ),
+      /// 🔥 NEXT BUTTON
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(20),
+        child: ElevatedButton(
+          onPressed: () async {
+            if (imageBytes == null) {
+              print("Select image first");
+              return;
+            }
 
-              const SizedBox(height: 10),
+            final upload = await uploadFileWeb(imageBytes!);
+            final fileId = upload?['id'];
 
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const LottiAnimationPage(),
-                    ),
-                  );
-                },
-                child: const Text("Add Avatar"),
-              ),
+            context
+                .read<LoginBloc>()
+                .add(LoginEvent.lotti(fileId.toString()));
 
-              const SizedBox(height: 20),
-
-              CustomTextfield(
-                controller: nameController,
-                label: "Full name",
-                onChanged: (value) {
-                  context.read<LoginBloc>().add(LoginEvent.name(value));
-                },
-              ),
-
-              const SizedBox(height: 20),
-
-              TextField(
-                controller: controller,
-                decoration: InputDecoration(
-                  hintText: "About",
-                  filled: true,
-                  fillColor: Colors.grey.shade200,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
-                  suffixIcon: PopupMenuButton<String>(
-                    position: PopupMenuPosition.over,
-                    icon: const Icon(Icons.arrow_drop_down),
-                    onSelected: (v) =>
-                        context.read<LoginBloc>().add(LoginEvent.about(v)),
-                    itemBuilder: (_) => options
-                        .map((e) => PopupMenuItem(value: e, child: Text(e)))
-                        .toList(),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 10),
-
-              const Text(
-                "Flutter Developer passionate about building beautiful apps.",
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey),
-              ),
-            ],
-          ),
-        ),
-        bottomNavigationBar: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-          child: BlocBuilder<LoginBloc, LoginState>(
-            builder: (context, state) {
-              return SizedBox(
-                height: 52,
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: state.name.isEmpty
-                      ? null
-                      : () {
-                          context.read<LoginBloc>().add(LoginEvent.add());
-                        },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    disabledBackgroundColor: Colors.grey.shade400,
-                  ),
-                  child: Text(
-                    "Next",
-                    style: TextStyle(
-                      color: state.name.isEmpty
-                          ? Colors.grey.shade700
-                          : Colors.white,
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
+            context.read<LoginBloc>().add(LoginEvent.add());
+          },
+          child: const Text("Next"),
         ),
       ),
     );
