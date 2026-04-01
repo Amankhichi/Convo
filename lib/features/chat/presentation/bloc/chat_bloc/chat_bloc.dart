@@ -93,7 +93,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   Future<void> __GetMssg(_GetMssg event, Emitter<ChatState> emit) async {
     emit(state.copyWith(GetMssgStatus: Status.loading));
-    int l = state.messages.length;
+    // int l = state.messages.length;
     final profile = Injection.currentContext.read<LoginBloc>().state.profile;
     if (profile == null) {
       emit(state.copyWith(GetMssgStatus: Status.error));
