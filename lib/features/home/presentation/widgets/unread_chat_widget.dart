@@ -119,7 +119,7 @@ class UnreadChatWidget extends StatelessWidget {
                                         child: Container(
                                           color: AppColors.primary,
                                           child: Lottie.asset(
-                                            user.lotti,
+                                            user.profile,
                                             fit: BoxFit.cover,
                                           ),
                                         ),
@@ -209,7 +209,7 @@ class UnreadChatWidget extends StatelessWidget {
                       child: CircleAvatar(
                         backgroundColor: AppColors.primary,
                         radius: 35,
-                        child: ClipOval(child: Lottie.asset(user.lotti)),
+                        child: ClipOval(child: Lottie.asset(user.profile)),
                       ),
                     ),
 

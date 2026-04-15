@@ -1,20 +1,19 @@
+// import 'package:convo/core/model/user_model.dart';
+import 'package:convo/core/const.dart/api_config.dart';
 import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lottie/lottie.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
+  //  UserModel user;
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(
       builder: (context, state) {
         return Scaffold(
-          appBar: AppBar(
-            title: const Text("Profile"),
-            centerTitle: true,
-          ),
+          appBar: AppBar(title: const Text("Profile"), centerTitle: true),
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -29,14 +28,18 @@ class ProfilePage extends StatelessWidget {
                         width: 120,
                         color: Colors.grey.shade200,
                         child: state.lotti.isNotEmpty
-                            ? Lottie.asset(state.lotti, fit: BoxFit.contain)
+                            ? Image.network(
+                                "${ApiConfig.baseUrl}/uploads/${state.lotti}",
+                                fit: BoxFit.contain,
+                              )
                             : const Icon(Icons.person, size: 70),
                       ),
                     ),
                     CircleAvatar(
                       radius: 10,
-                      backgroundColor:
-                          state.online ? Colors.green : Colors.grey,
+                      backgroundColor: state.online
+                          ? Colors.green
+                          : Colors.grey,
                     ),
                   ],
                 ),
@@ -56,12 +59,11 @@ class ProfilePage extends StatelessWidget {
 
                 // 🔹 About
                 Text(
-                  state.about.isEmpty ? "Hey there! I’m using ConVO." : state.about,
+                  state.about.isEmpty
+                      ? "Hey there! I’m using ConVO."
+                      : state.about,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey.shade600,
-                  ),
+                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
                 ),
 
                 const SizedBox(height: 24),
@@ -83,8 +85,7 @@ class ProfilePage extends StatelessWidget {
                   icon: Icons.circle,
                   title: "Status",
                   value: state.online ? "Online" : "Offline",
-                  valueColor:
-                      state.online ? Colors.green : Colors.grey,
+                  valueColor: state.online ? Colors.green : Colors.grey,
                 ),
               ],
             ),
@@ -107,10 +108,7 @@ class ProfilePage extends StatelessWidget {
       child: ListTile(
         leading: Icon(icon),
         title: Text(title),
-        subtitle: Text(
-          value,
-          style: TextStyle(color: valueColor),
-        ),
+        subtitle: Text(value, style: TextStyle(color: valueColor)),
       ),
     );
   }

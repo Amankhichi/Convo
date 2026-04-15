@@ -121,7 +121,7 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
           backgroundColor: AppColors.primary,
           radius: 35,
           child: ClipOval(
-            child: Lottie.asset(user.lotti),
+            child: Lottie.asset(user.profile),
           ),
         ),
 

@@ -11,11 +11,12 @@ class ConvoOtpPage extends StatefulWidget {
 }
 
 class _ConvoOtpPageState extends State<ConvoOtpPage> {
-  final List<TextEditingController> controllers =
-      List.generate(6, (_) => TextEditingController());
+  final List<TextEditingController> controllers = List.generate(
+    6,
+    (_) => TextEditingController(),
+  );
 
-  final List<FocusNode> focusNodes =
-      List.generate(6, (_) => FocusNode());
+  final List<FocusNode> focusNodes = List.generate(6, (_) => FocusNode());
 
   int secondsRemaining = 30;
   Timer? timer;
@@ -53,13 +54,13 @@ class _ConvoOtpPageState extends State<ConvoOtpPage> {
 
       // TODO: Call your API here
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("OTP Verified")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("OTP Verified")));
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Enter complete OTP")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Enter complete OTP")));
     }
   }
 
@@ -73,15 +74,10 @@ class _ConvoOtpPageState extends State<ConvoOtpPage> {
         keyboardType: TextInputType.number,
         textAlign: TextAlign.center,
         maxLength: 1,
-        style: const TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-        ),
+        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         decoration: InputDecoration(
           counterText: "",
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         ),
         onChanged: (value) {
           if (value.isNotEmpty && index < 5) {
@@ -127,10 +123,7 @@ class _ConvoOtpPageState extends State<ConvoOtpPage> {
 
             const Text(
               "Enter Verification Code",
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
 
             const SizedBox(height: 10),
@@ -145,48 +138,46 @@ class _ConvoOtpPageState extends State<ConvoOtpPage> {
 
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children:
-                  List.generate(6, (index) => buildOtpBox(index, boxSize)),
+              children: List.generate(
+                6,
+                (index) => buildOtpBox(index, boxSize),
+              ),
             ),
 
             SizedBox(height: size.height * 0.05),
 
-ElevatedButton(
-  onPressed: () {
-    final otp = getOtp();
+            ElevatedButton(
+              onPressed: () {
+                final otp = getOtp();
 
-    if (otp.length != 6) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Enter complete OTP")),
-      );
-      return;
-    }
+                if (otp.length != 6) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Enter complete OTP")),
+                  );
+                  return;
+                }
 
-    if (otp == "555555") {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("OTP Verified")),
-      );
+                if (otp == "555555") {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(const SnackBar(content: Text("OTP Verified")));
 
-      // 👉 Navigate to Home Page
-                      context.read<LoginBloc>().add(LoginEvent.checkNumber());
-
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Invalid OTP")),
-      );
-    }
-  },
-  style: ElevatedButton.styleFrom(
-    minimumSize: const Size(double.infinity, 50),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(12),
-    ),
-  ),
-  child: const Text(
-    "Verify",
-    style: TextStyle(fontSize: 18),
-  ),
-),
+                  // 👉 Navigate to Home Page
+                  context.read<LoginBloc>().add(LoginEvent.checkNumber());
+                } else {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(const SnackBar(content: Text("Invalid OTP")));
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: const Text("Verify", style: TextStyle(fontSize: 18)),
+            ),
             const SizedBox(height: 20),
 
             secondsRemaining == 0

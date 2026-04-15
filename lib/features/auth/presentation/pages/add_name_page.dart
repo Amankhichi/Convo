@@ -43,15 +43,16 @@ class _AddNamePageState extends State<AddNamePage> {
   Widget build(BuildContext context) {
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
-        if (state.adduserStatus == Status.success) {
-          Navigator.pushReplacement(
+  if (state.adduserStatus == Status.success) {
+    showSuccess(context, "Saved successfully");
+    Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (_) => const WelcomePage()),
           );
-        } else if (state.adduserStatus == Status.error) {
-          showError(context, "Not saved");
-        }
-      },
+  } else if (state.adduserStatus == Status.error) {
+    showError(context, "Not saved");
+  }
+},
       child: Scaffold(
         appBar: AppBar(title: const Text("Profile")),
 

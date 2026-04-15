@@ -42,7 +42,7 @@ Future<void> __Init(_Init event, Emitter<ContactState> emit) async {
     for (final user in matchedContacts) {
       final name = await nameInPhone(user.phone);
 
-      updatedContacts.add(user.copyWith(name: name.isNotEmpty ? name : user.name,
+      updatedContacts.add(user.copyWith(name: name.isNotEmpty ? name : user.phone,
         ),
       );
     }
@@ -53,6 +53,7 @@ Future<void> __Init(_Init event, Emitter<ContactState> emit) async {
         contactStatus: Status.success,
       ),
     );
+    print("updatedContacts ${state.contacts}");
   } catch (e) {
     emit(state.copyWith(contactStatus: Status.error));
   }

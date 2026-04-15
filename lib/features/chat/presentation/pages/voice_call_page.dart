@@ -112,7 +112,7 @@ Widget build(BuildContext context) {
                 backgroundColor: Colors.white,
                 child: ClipOval(
                   child: Lottie.asset(
-                    widget.user.lotti,
+                    widget.user.profile,
                     fit: BoxFit.cover,
                   ),
                 ),

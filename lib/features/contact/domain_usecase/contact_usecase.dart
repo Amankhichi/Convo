@@ -45,10 +45,10 @@ class ContactUsecase {
           UserModel(
             id: user.id,
             name: c.displayName,
-            nickName: c.displayName,
+            nickname: c.displayName,
             phone: user.phone,
             about: user.about,
-            lotti: user.lotti,
+            profile: user.profile,
             online: user.online,
           ),
         );

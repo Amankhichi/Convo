@@ -22,3 +22,5 @@ dart run build_runner build --delete-conflicting-outputs
 git add .
 git commit -m "change main"
 git push origin main
+
+ipconfig

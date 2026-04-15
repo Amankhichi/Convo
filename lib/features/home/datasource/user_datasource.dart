@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:convo/core/const.dart/api_config.dart';
 import 'package:convo/core/const.dart/constant.dart';
 import 'package:convo/core/model/home_chat_model.dart';
 import 'package:convo/core/model/user_model.dart';
@@ -12,80 +13,51 @@ class UserDatasource {
 
  Future<bool> addUser(UserPayload user) async {
   try {
+    print("URL: ${ApiConfig.baseUrl}/user/add");
+    print("BODY: ${jsonEncode(user.toJson())}");
+
     final response = await http.post(
-      Uri.parse("http://$IpAddress:7000/user/add"),
+      Uri.parse("${ApiConfig.baseUrl}/user/add"),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode(user.toJson()),
     );
 
-    if (response.statusCode == 200) {
-      return true;
-    } else {
-      print("Error: ${response.body}");
-      return false;
-    }
+    print("STATUS: ${response.statusCode}");
+    print("RESPONSE: ${response.body}");
 
+    return response.statusCode == 200;
   } catch (e) {
     print("Catch Error: $e");
-    return false; // ✅ MUST return
+    return false;
   }
 }
 
-
-  // Set user Data
-  // Future<bool> addUser(UserPayload user) async {
-  //   final url = Uri.parse(
-  //     "https://ehmqgiqrfpvvznvsvfyu.supabase.co/rest/v1/user_list",
-  //   );
-
-  //   final response = await http.post(
-  //     url,
-  //     headers: {
-  //       "apikey": apikey,
-  //       "Authorization": "Bearer $apikey",
-  //       "Content-Type": "application/json",
-  //       "Prefer": "return=minimal",
-  //     },
-  //     body: jsonEncode(user.toJson()),
-  //   );
-
-  //   if (response.statusCode == 201 || response.statusCode == 200) {
-  //     print("User data added successfully!");
-  //     return true;
-  //   } else {
-  //     print("Failed to add user data: ${response.statusCode}");
-  //     print("Response: ${response.body}");
-  //     return false;
-  //   }
-  // }
-
-
-
-
 Future<UserModel?> isUser({required String phone}) async {
-  final url = Uri.parse(
-    "https://ehmqgiqrfpvvznvsvfyu.supabase.co/rest/v1/user_list?phone=eq.$phone",
-  );
+  try {
+    final res = await http.get(
+      Uri.parse("${ApiConfig.baseUrl}/user/all"),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    );
 
-  final res = await http.get(
-    url,
-    headers: {
-      "apikey": apikey,
-      "Authorization": "Bearer $apikey",
-      "Content-Type": "application/json",
-    },
-  );
+    if (res.statusCode == 200) {
+      final List data = jsonDecode(res.body);
 
-  if (res.statusCode == 200) {
-    final List data = jsonDecode(res.body);
-    print("Get user success: ${res.body}");
+      final userData = data.where(
+        (e) => e['phone'].toString() == phone,
+      ).toList();
 
+      if (userData.isEmpty) return null;
+      print("userData $userData");
 
-    if (data.isEmpty) return null;
-
-    return UserModel.fromJson(data.first);
-  } else {
-    print("Get user failed: ${res.body}");
+      return UserModel.fromJson(userData.first);
+    } else {
+      print("❌ Get user failed: ${res.body}");
+      return null;
+    }
+  } catch (e) {
+    print("🔥 Error: $e");
     return null;
   }
 }
@@ -134,33 +106,3 @@ Future<UserModel?> isUser({required String phone}) async {
 
 
 }
-
-
-
-
-
-
-
-// Future<bool> addUser(UserPayload user) async {
- 
-//     var body = user.toJson();
-
-//     var response = await http.post(
-//       Uri.parse("http://$IpAddress:7000/user/add"),
-//       headers: {"Content-Type": "application/json"},
-//       body: jsonEncode(body),
-//     );
-
-//     if (response.statusCode == 200) {
-//       print("User data added successfully!");
-//       return true;
-//     } else {
-//       print("Failed: ${response.statusCode}");
-//       print("Response: ${response.body}");
-//       return false;
-//     }
-//   } catch (e) {
-//     print("Submit Error: $e");
-//     return false; // ❗ important
-//   }
-// }

@@ -3,30 +3,33 @@ import 'package:equatable/equatable.dart';
 class UserModel extends Equatable {
   final int id;
   final String name;
-  final String nickName;
+  final String nickname;
   final String phone;
   final String about;
-  final String lotti;
+  final String profile;
   final bool online;
 
   const UserModel({
     required this.id,
     required this.name,
-    required this.nickName,
+    required this.nickname,
     required this.phone,
     required this.about,
-    required this.lotti,
+    required this.profile,
     required this.online,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      id: json['id'] is int ? json['id'] : 0,
+      id: json['id'] ?? 0,
       name: json['name']?.toString() ?? '',
-      nickName: json['nickName']?.toString() ?? '',
+      nickname: json['nickname']?.toString() ?? '',
       phone: json['phone']?.toString() ?? '',
       about: json['about']?.toString() ?? '',
-      lotti: json['lotti']?.toString() ?? '',
+      profile: json['profile'] != null
+          ? json['profile']['url']?.toString() ?? ''
+          : '',
+
       online: json['online'] == true || json['online'] == 1,
     );
   }
@@ -34,31 +37,31 @@ class UserModel extends Equatable {
   UserModel copyWith({
     int? id,
     String? name,
-    String? nickName,
+    String? nickname,
     String? phone,
     String? about,
-    String? lotti,
+    String? profile,
     bool? online,
   }) {
     return UserModel(
       id: id ?? this.id,
       name: name ?? this.name,
-      nickName: nickName ?? this.nickName,
+      nickname: nickname ?? this.nickname,
       phone: phone ?? this.phone,
       about: about ?? this.about,
-      lotti: lotti ?? this.lotti,
+      profile: profile ?? this.profile,
       online: online ?? this.online,
     );
   }
 
   @override
   List<Object?> get props => [
-        id,
-        name,
-        nickName,
-        phone,
-        about,
-        lotti,
-        online,
-      ];
+    id,
+    name,
+    nickname,
+    phone,
+    about,
+    profile,
+    online,
+  ];
 }

@@ -56,7 +56,7 @@ class _ContactUserProfilePageState extends State<ContactUserProfilePage> {
                   radius: 65,
                   backgroundColor: AppColors.primary,
                   child: ClipOval(
-                    child: Lottie.asset(widget.user.lotti, fit: BoxFit.cover),
+                    child: Lottie.asset(widget.user.profile, fit: BoxFit.cover),
                   ),
                 ),
             ),
@@ -65,7 +65,7 @@ class _ContactUserProfilePageState extends State<ContactUserProfilePage> {
 
             /// Name
             Text(
-              widget.user.nickName,
+              widget.user.nickname,
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,

@@ -98,13 +98,14 @@ Future<void> __Add(_Add event, Emitter<LoginState> emit) async {
     state.copyWith(
       adduserStatus: Status.success,
       profile: user,
-      nickName: user.nickName,
+      nickName: user.nickname,
       phone: user.phone,
       about: user.about,
-      lotti: user.lotti,
+      lotti: user.profile,
     ),
   );
 }
+
   Future<void> __checkNumber(
     _CheckNumber event,
     Emitter<LoginState> emit,
@@ -125,10 +126,10 @@ Future<void> __Add(_Add event, Emitter<LoginState> emit) async {
         state.copyWith(
           profile: user,
           name: user.name,
-          nickName: user.nickName,
+          nickName: user.nickname,
           phone: user.phone,
           about: user.about,
-          lotti: user.lotti,
+          lotti: user.profile,
         ),
       );
       emit(state.copyWith(checkNumberStatus: Status.success));
@@ -182,10 +183,10 @@ Future<void> __Add(_Add event, Emitter<LoginState> emit) async {
         state.copyWith(
           profile: user,
           name: user.name,
-          nickName: user.nickName,
+          nickName: user.nickname,
           phone: user.phone,
           about: user.about,
-          lotti: user.lotti,
+          lotti: user.profile,
         ),
       );
       emit(state.copyWith(checkuserStatus: Status.success));

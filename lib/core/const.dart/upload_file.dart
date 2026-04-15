@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:convo/core/const.dart/constant.dart';
+import 'package:convo/core/const.dart/api_config.dart';
 import 'package:http/http.dart' as http;
 
 Future<Map<String, dynamic>?> uploadFileWeb(Uint8List bytes) async {
   try {
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse('http://$IpAddress:7000/file/upload'),
+      Uri.parse('${ApiConfig}/file/upload'),
     );
 
     request.files.add(

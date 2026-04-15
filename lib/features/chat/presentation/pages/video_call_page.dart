@@ -70,14 +70,14 @@ class _VideoCallPageState extends State<VideoCallPage> {
                 backgroundColor: Colors.white,
                 child: ClipOval(
                   child: Lottie.asset(
-                    widget.user.lotti,
+                    widget.user.profile,
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
             )
                 : Lottie.asset(
-                    widget.user.lotti,
+                    widget.user.profile,
                     fit: BoxFit.cover,
                   ),
           ),
