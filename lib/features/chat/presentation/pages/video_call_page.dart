@@ -1,7 +1,7 @@
 import 'dart:async';
+import 'package:convo/core/const.dart/api_config.dart';
 import 'package:flutter/material.dart';
 import 'package:convo/core/model/user_model.dart';
-import 'package:lottie/lottie.dart';
 
 class VideoCallPage extends StatefulWidget {
   final UserModel user;
@@ -69,15 +69,15 @@ class _VideoCallPageState extends State<VideoCallPage> {
                 radius: 50,
                 backgroundColor: Colors.white,
                 child: ClipOval(
-                  child: Lottie.asset(
-                    widget.user.profile,
+                  child: Image.network(
+                    "${ApiConfig.baseUrl}/uploads/${widget.user.profile}",
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
             )
-                : Lottie.asset(
-                    widget.user.profile,
+                : Image.network(
+                    "${ApiConfig.baseUrl}/uploads/${widget.user.profile}",
                     fit: BoxFit.cover,
                   ),
           ),

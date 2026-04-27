@@ -30,7 +30,8 @@ class ProfilePage extends StatelessWidget {
                         child: state.lotti.isNotEmpty
                             ? Image.network(
                                 "${ApiConfig.baseUrl}/uploads/${state.lotti}",
-                                fit: BoxFit.contain,
+                                
+                                fit: BoxFit.cover,
                               )
                             : const Icon(Icons.person, size: 70),
                       ),

@@ -1,7 +1,7 @@
 import 'dart:async';
+import 'package:convo/core/const.dart/api_config.dart';
 import 'package:flutter/material.dart';
 import 'package:convo/core/model/user_model.dart';
-import 'package:lottie/lottie.dart';
 
 class VoiceCallPage extends StatefulWidget {
   final UserModel user;
@@ -111,8 +111,8 @@ Widget build(BuildContext context) {
                 radius: 90,
                 backgroundColor: Colors.white,
                 child: ClipOval(
-                  child: Lottie.asset(
-                    widget.user.profile,
+                  child: Image.network(
+                    "${ApiConfig.baseUrl}/uploads/${widget.user.profile}",
                     fit: BoxFit.cover,
                   ),
                 ),

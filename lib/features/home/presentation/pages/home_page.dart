@@ -83,6 +83,7 @@ class _HomePageState extends State<HomePage> {
   void logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove("id");
+    await prefs.remove("phone");
 
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (_) => LoginPage()),

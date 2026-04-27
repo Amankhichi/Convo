@@ -1,7 +1,7 @@
+import 'package:convo/core/const.dart/api_config.dart';
 import 'package:convo/core/const.dart/app_colors.dart';
 import 'package:convo/core/model/user_model.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 
 class ContactUserProfilePage extends StatefulWidget {
   const ContactUserProfilePage({super.key, required this.user});
@@ -53,12 +53,12 @@ class _ContactUserProfilePageState extends State<ContactUserProfilePage> {
                 ),
               ),
               child: CircleAvatar(
-                  radius: 65,
-                  backgroundColor: AppColors.primary,
-                  child: ClipOval(
-                    child: Lottie.asset(widget.user.profile, fit: BoxFit.cover),
-                  ),
+                radius: 75,
+                backgroundColor: AppColors.primary,
+                backgroundImage: NetworkImage(
+                  "${ApiConfig.baseUrl}/uploads/${widget.user.profile}",
                 ),
+              ),
             ),
 
             const SizedBox(height: 15),
@@ -128,7 +128,7 @@ class _ContactUserProfilePageState extends State<ContactUserProfilePage> {
             const SizedBox(height: 20),
 
             Card(
-              margin: const EdgeInsets.symmetric(horizontal: 15,vertical: 5),
+              margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
               color: AppColors.appBarColor(context),
               child: SizedBox(
                 width: double.infinity,
@@ -138,7 +138,7 @@ class _ContactUserProfilePageState extends State<ContactUserProfilePage> {
                     TextButton(
                       onPressed: () {
                         setState(() {
-                          block = !block; 
+                          block = !block;
                         });
 
                         // context.read<ChatBloc>().add(

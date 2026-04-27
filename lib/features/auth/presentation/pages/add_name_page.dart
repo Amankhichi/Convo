@@ -7,6 +7,7 @@ import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
 import 'package:convo/features/auth/presentation/pages/welcome_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show BlocListener, ReadContext;
+import 'package:image_editor_plus/image_editor_plus.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AddNamePage extends StatefulWidget {
@@ -19,10 +20,10 @@ class AddNamePage extends StatefulWidget {
 
 class _AddNamePageState extends State<AddNamePage> {
   final picker = ImagePicker();
-  Uint8List? imageBytes;
+  Uint8List? img;
 
-  final nameController = TextEditingController();
-  final aboutController = TextEditingController(text: "I'm busy in ConVO");
+  final name = TextEditingController();
+  final about = TextEditingController(text: "I'm busy in ConVO");
 
   final options = [
     "I'm busy in ConVO",
@@ -30,75 +31,108 @@ class _AddNamePageState extends State<AddNamePage> {
     "Hanging with friends 😄",
   ];
 
-  /// 🔥 PICK IMAGE
+  /// 🔥 Pick Image
   Future<void> pickImage() async {
     final file = await picker.pickImage(source: ImageSource.gallery);
     if (file == null) return;
 
-    imageBytes = await file.readAsBytes();
-    setState(() {});
+    final bytes = await file.readAsBytes();
+
+    /// 🔥 Open editor (WhatsApp-like)
+    final edited = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => ImageEditor(image: bytes)),
+    );
+
+    if (edited != null) {
+      img = edited; // edited Uint8List
+      setState(() {});
+    }
+  }
+
+  /// 🔥 Upload + Save
+  Future<void> save() async {
+    if (name.text.isEmpty) return showError(context, "Enter name");
+    if (img == null) return showError(context, "Select image");
+
+    final upload = await uploadFile(img!);
+    if (upload == null) return showError(context, "Upload failed");
+
+    context.read<LoginBloc>()
+      ..add(LoginEvent.nickName(name.text))
+      ..add(LoginEvent.about(about.text))
+      ..add(LoginEvent.lotti(upload['id'].toString()))
+      ..add(LoginEvent.add());
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<LoginBloc, LoginState>(
-      listener: (context, state) {
-  if (state.adduserStatus == Status.success) {
-    showSuccess(context, "Saved successfully");
-    Navigator.pushReplacement(
+      listener: (_, state) {
+        if (state.adduserStatus == Status.success) {
+          showSuccess(context, "Saved");
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (_) => const WelcomePage()),
           );
-  } else if (state.adduserStatus == Status.error) {
-    showError(context, "Not saved");
-  }
-},
+        } else if (state.adduserStatus == Status.error) {
+          showError(context, "Failed");
+        }
+      },
       child: Scaffold(
         appBar: AppBar(title: const Text("Profile")),
-
         body: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              /// 🔥 AVATAR
+              /// 🔥 Avatar
               GestureDetector(
                 onTap: pickImage,
-                child: CircleAvatar(
-                  radius: 55,
-                  backgroundColor: Colors.grey[300],
-                  backgroundImage: imageBytes != null
-                      ? MemoryImage(imageBytes!)
-                      : null,
-                  child: imageBytes == null
-                      ? const Icon(Icons.camera_alt, size: 30)
-                      : null,
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.blue, width: 3),
+                  ),
+                  child: ClipOval(
+                    child: img != null
+                        ? Image.memory(
+                            img!,
+                            width: 120, // 2 * radius
+                            height: 120,
+                            fit: BoxFit.cover,
+                          )
+                        : Container(
+                            width: 120,
+                            height: 120,
+                            color: Colors.grey[300],
+                            child: const Icon(
+                              Icons.camera_alt,
+                              size: 40,
+                              color: Colors.grey,
+                            ),
+                          ),
+                  ),
                 ),
               ),
 
               const SizedBox(height: 20),
 
-              /// 🔥 NAME
+              /// 🔥 Name
               TextField(
-                controller: nameController,
+                controller: name,
                 decoration: const InputDecoration(labelText: "Full name"),
-                onChanged: (v) =>
-                    context.read<LoginBloc>().add(LoginEvent.nickName(v)),
               ),
 
               const SizedBox(height: 20),
 
-              /// 🔥 ABOUT
+              /// 🔥 About
               TextField(
-                controller: aboutController,
-                onChanged: (v) =>
-                    context.read<LoginBloc>().add(LoginEvent.about(v)),
+                controller: about,
                 decoration: InputDecoration(
                   labelText: "About",
                   suffixIcon: PopupMenuButton<String>(
-                    onSelected: (v) {
-                      aboutController.text = v;
-                      context.read<LoginBloc>().add(LoginEvent.about(v));
-                    },
+                    onSelected: (v) => setState(() => about.text = v),
                     itemBuilder: (_) => options
                         .map((e) => PopupMenuItem(value: e, child: Text(e)))
                         .toList(),
@@ -109,37 +143,10 @@ class _AddNamePageState extends State<AddNamePage> {
           ),
         ),
 
-        /// 🔥 NEXT BUTTON
+        /// 🔥 Button
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.all(20),
-          child: ElevatedButton(
-            onPressed: () async {
-  if (nameController.text.isEmpty) {
-    showError(context, "Enter name");
-    return;
-  }
-
-  if (imageBytes == null) {
-    showError(context, "Select image");
-    return;
-  }
-
-  final upload = await uploadFileWeb(imageBytes!);
-  final fileId = upload?['id'];
-
-  if (fileId == null) {
-    showError(context, "Upload failed");
-    return;
-  }
-
-  context.read<LoginBloc>().add(
-        LoginEvent.lotti(fileId.toString()),
-      );
-
-  context.read<LoginBloc>().add(LoginEvent.add());
-},
-            child: const Text("Next"),
-          ),
+          child: ElevatedButton(onPressed: save, child: const Text("Next")),
         ),
       ),
     );

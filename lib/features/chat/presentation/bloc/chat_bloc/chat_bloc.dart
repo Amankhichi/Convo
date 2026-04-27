@@ -63,8 +63,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         ChatPayload(
           senderId: int.tryParse(id.toString()) ?? 0,
           receiverId: int.tryParse(event.receiverId) ?? 0,
-          mssg: event.mssg,
-          replyTo: event.replyTo,
+          massage: event.mssg,
+          replyTo:int.tryParse(event.replyTo.toString()) ?? 0, 
+          seen: false,
         ),
       );
       emit(
@@ -91,28 +92,42 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     }
   }
 
-  Future<void> __GetMssg(_GetMssg event, Emitter<ChatState> emit) async {
-    emit(state.copyWith(GetMssgStatus: Status.loading));
-    // int l = state.messages.length;
-    final profile = Injection.currentContext.read<LoginBloc>().state.profile;
-    if (profile == null) {
-      emit(state.copyWith(GetMssgStatus: Status.error));
-      return;
-    }
-    try {
-      final messagess = await _getmssgusecase(
-        senderId: profile.id.toString(),
-        receiverId: event.receiverId,
-      );
+Future<void> __GetMssg(_GetMssg e, Emitter<ChatState> emit) async {
+  emit(state.copyWith(GetMssgStatus: Status.loading));
 
-      emit(state.copyWith(GetMssgStatus: Status.success, messages: messagess));
+  final profile =
+      Injection.currentContext.read<LoginBloc>().state.profile;
 
-      add(ChatEvent.seen(sender: int.parse(event.receiverId)));
-    } catch (e) {
-      emit(state.copyWith(GetMssgStatus: Status.error));
-      emit(state.copyWith(GetMssgStatus: Status.init));
-    }
+  if (profile == null) {
+    emit(state.copyWith(GetMssgStatus: Status.error));
+    return;
   }
+
+  try {
+    final msgs = await _getmssgusecase(
+      senderId: profile.id.toString(),
+      receiverId: e.receiverId,
+    );
+
+    print("📥 Count: ${msgs.length}");
+
+    for (var m in msgs) {
+      print("💬 ${m.message}");
+    }
+
+    emit(state.copyWith(
+      GetMssgStatus: Status.success,
+      messages: List.from(msgs), // 🔥 important
+    ));
+
+    final r = int.tryParse(e.receiverId);
+    if (r != null) add(ChatEvent.seen(sender: r));
+
+  } catch (e) {
+    print("❌ Bloc Error: $e");
+    emit(state.copyWith(GetMssgStatus: Status.error));
+  }
+}
 
   Future<void> __DeletMssg(_DeletMssg event, Emitter<ChatState> emit) async {
     emit(state.copyWith(DeleteMssgStatus: Status.loading));
@@ -131,15 +146,13 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     }
   }
 
-  // Future<void> __BlockButton(_BlockButton event, Emitter<ChatState> emit) async {
-  //   blockUser
-  // }
-
   Future<void> __EditMssg(_EditMssg event, Emitter<ChatState> emit) async {
     final edit = await _editMessageUseCase(
       msgId: event.mssgId,
       newMessage: event.newMssg,
     );
+      print("Edit Failed${event.mssgId}");
+
 
     if (edit) {
       print("Message Edited Successfully");
@@ -148,17 +161,14 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     }
   }
 
-Future<void> __Seen(_Seen event, Emitter<ChatState> emit) async {
-  final prefs = await SharedPreferences.getInstance();
-  final id = prefs.getString("id");
+  Future<void> __Seen(_Seen event, Emitter<ChatState> emit) async {
+    final prefs = await SharedPreferences.getInstance();
+    final id = prefs.getString("id");
 
-  if (id == null) return;
+    if (id == null) return;
 
-  await _seenMssgUsecase(
-    receiverId: int.parse(id),
-    senderId: event.sender,
-  );
+    await _seenMssgUsecase(receiverId: int.parse(id), senderId: event.sender);
 
-  print("success");
-}
+    print("success");
+  }
 }

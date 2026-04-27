@@ -4,8 +4,8 @@ class ChatModel {
   final int receiverId;
   final String message;
   final int? replyTo;
-  final ChatModel? reply; 
-    final bool seen;
+  final ChatModel? reply;
+  final bool seen;
   final DateTime createdAt;
 
   ChatModel({
@@ -20,21 +20,31 @@ class ChatModel {
   });
 
   // 🔹 JSON → Dart
-  factory ChatModel.fromJson(Map<String, dynamic> json) {
-    return ChatModel(
-      id: json["id"],
-      senderId: json["senderId"],
-      receiverId: json["receiverId"],
-      message: json["mssg"] ?? "",
-      replyTo: json["reply_to"],
-      seen: json['seen'] ?? false,
-      reply: json["reply"] != null
-          ? ChatModel.fromJson(json["reply"])
-          : null,
-      createdAt: DateTime.parse(json["created_at"]),
-    );
-  }
+factory ChatModel.fromJson(Map<String, dynamic> json) {
+  return ChatModel(
+    id: json["id"] ?? 0,
 
+    /// 🔥 FIX nested object
+    senderId: json["sender_id"]?["id"] ?? 0,
+    receiverId: json["receiver_id"]?["id"] ?? 0,
+
+    /// 🔥 message key
+    message: json["massage"] ?? "",
+
+    /// 🔥 reply
+    replyTo: int.tryParse(json["replyTo"]?.toString() ?? ''),
+
+    seen: json["seen"] ?? false,
+
+    /// 🔥 no nested reply object in your API currently
+    reply: null,
+
+    /// 🔥 FIX createdAt
+    createdAt: json["createdAt"] != null
+        ? DateTime.tryParse(json["createdAt"]) ?? DateTime.now()
+        : DateTime.now(),
+  );
+}
   // 🔹 Dart → JSON
   Map<String, dynamic> toJson() {
     return {
@@ -43,7 +53,7 @@ class ChatModel {
       "receiverId": receiverId,
       "mssg": message,
       "reply_to": replyTo,
-      "seen":seen,
+      "seen": seen,
       "created_at": createdAt.toIso8601String(),
     };
   }

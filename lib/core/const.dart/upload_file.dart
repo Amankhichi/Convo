@@ -3,38 +3,32 @@ import 'dart:typed_data';
 import 'package:convo/core/const.dart/api_config.dart';
 import 'package:http/http.dart' as http;
 
-Future<Map<String, dynamic>?> uploadFileWeb(Uint8List bytes) async {
+Future<Map<String, dynamic>?> uploadFile(Uint8List bytes) async {
   try {
-    var request = http.MultipartRequest(
+    final request = http.MultipartRequest(
       'POST',
-      Uri.parse('${ApiConfig}/file/upload'),
+      Uri.parse('${ApiConfig.baseUrl}/file/upload'), // ✅ fixed
     );
 
     request.files.add(
       http.MultipartFile.fromBytes(
         'file',
         bytes,
-        filename: "image.jpg",
+        filename: 'image.jpg',
       ),
     );
 
-    var response = await request.send();
+    final res = await request.send();
 
-    if (response.statusCode == 200) {
-      var res = await response.stream.bytesToString();
-      var data = jsonDecode(res);
+    if (res.statusCode != 200) return null;
 
-      print("Image ID: ${data['id']}");
-      print("Image URL: ${data['url']}");
+    final data = jsonDecode(await res.stream.bytesToString());
 
-      return data; // return full map
-    } else {
-      print("Upload failed: ${response.statusCode}");
-      return null;
-    }
+    print("✅ Uploaded: ${data['url']}");
+
+    return data;
   } catch (e) {
-    print("Upload Error: $e");
+    print("❌ Upload Error: $e");
     return null;
   }
 }
-
