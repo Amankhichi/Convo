@@ -8,7 +8,6 @@ import 'package:convo/features/home/presentation/bloc/home/home_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart';
 
 class HomeChatListWidget extends StatefulWidget {
   final Set<int> selectedChats;
