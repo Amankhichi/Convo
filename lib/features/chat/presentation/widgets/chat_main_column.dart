@@ -7,7 +7,7 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ChatMainColumn extends StatelessWidget {
+class ChatMainColumn extends StatefulWidget {
   final List<dynamic> messages;
   final dynamic profile;
   final bool mssgSelected;
@@ -18,8 +18,8 @@ class ChatMainColumn extends StatelessWidget {
   final bool emoji;
   final bool mssgEdit;
   final String? editingMessageId;
-  final TextEditingController messageController; // ✅ Removed underscore
-  final FocusNode focusNode; // ✅ Removed underscore
+  final TextEditingController messageController;
+  final FocusNode focusNode;
   final Function(dynamic) onLongPressMessage;
   final Function(dynamic) onTapMessage;
   final VoidCallback onReplyCancel;
@@ -42,8 +42,8 @@ class ChatMainColumn extends StatelessWidget {
     required this.emoji,
     required this.mssgEdit,
     required this.editingMessageId,
-    required this.messageController, // ✅ Fixed
-    required this.focusNode, // ✅ Fixed
+    required this.messageController,
+    required this.focusNode,
     required this.onLongPressMessage,
     required this.onTapMessage,
     required this.onReplyCancel,
@@ -54,14 +54,37 @@ class ChatMainColumn extends StatelessWidget {
     required this.onHandleReply,
     required this.user,
   }) : super(key: key);
+
+  @override
+  State<ChatMainColumn> createState() => _ChatMainColumnState();
+}
+
+class _ChatMainColumnState extends State<ChatMainColumn> {
+
+  @override
+  void initState() {
+    super.initState();
+
+    /// ✅ instant icon update
+    widget.messageController.addListener(() {
+      if (mounted) {
+        setState(() {});
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Expanded(child: _buildMessagesList(context)),
-        if (isReplying) _buildReplyBar(context),
+
+        if (widget.isReplying) _buildReplyBar(context),
+
         _buildInputBar(context),
-        if (emoji && MediaQuery.of(context).viewInsets.bottom == 0)
+
+        if (widget.emoji &&
+            MediaQuery.of(context).viewInsets.bottom == 0)
           _buildEmojiPicker(context),
       ],
     );
@@ -70,49 +93,64 @@ class ChatMainColumn extends StatelessWidget {
   Widget _buildMessagesList(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(
       builder: (context, sstate) {
-        return messages.isEmpty
+        return widget.messages.isEmpty
             ? const SizedBox()
             : ListView.builder(
                 reverse: true,
-                itemCount: messages.length,
-                itemBuilder: (context, index) => _buildMessageItem(index),
+                itemCount: widget.messages.length,
+                itemBuilder: (context, index) =>
+                    _buildMessageItem(index),
               );
       },
     );
   }
 
-Widget _buildMessageItem(int index) {
-  final msg = messages[messages.length - index - 1];
-  final bool isMe = msg.senderId.toString() == profile?.id.toString();
+  Widget _buildMessageItem(int index) {
+    final msg =
+        widget.messages[widget.messages.length - index - 1];
 
-  return Dismissible(
-    key: Key(msg.id.toString()),
-    direction: DismissDirection.startToEnd,
-    confirmDismiss: (_) async { 
-      onHandleReply(msg);
-      return false; 
-    },
-    background: _buildReplyBackground(),
-    child: _buildMessageGestureDetector(msg, isMe),
-  );
-}
+    final bool isMe =
+        msg.senderId.toString() ==
+        widget.profile?.id.toString();
+
+    return Dismissible(
+      key: Key(msg.id.toString()),
+      direction: DismissDirection.startToEnd,
+      confirmDismiss: (_) async {
+        widget.onHandleReply(msg);
+        return false;
+      },
+      background: _buildReplyBackground(),
+      child: _buildMessageGestureDetector(msg, isMe),
+    );
+  }
 
   Widget _buildReplyBackground() {
     return Container(
       alignment: Alignment.centerLeft,
       padding: const EdgeInsets.only(left: 20),
-      child: const Icon(Icons.reply, color: Colors.blue),
+      child: const Icon(
+        Icons.reply,
+        color: Colors.blue,
+      ),
     );
   }
 
-  Widget _buildMessageGestureDetector(dynamic msg, bool isMe) {
+  Widget _buildMessageGestureDetector(
+      dynamic msg,
+      bool isMe,
+      ) {
     return GestureDetector(
-      onLongPress: () => onLongPressMessage(msg),
-      onTap: () => onTapMessage(msg),
+      onLongPress: () => widget.onLongPressMessage(msg),
+      onTap: () => widget.onTapMessage(msg),
       child: Row(
         children: [
-          if (mssgSelected) _buildSelectionIcon(msg),
-          Expanded(child: _buildMessageWidget(msg, isMe)),
+          if (widget.mssgSelected)
+            _buildSelectionIcon(msg),
+
+          Expanded(
+            child: _buildMessageWidget(msg, isMe),
+          ),
         ],
       ),
     );
@@ -122,7 +160,7 @@ Widget _buildMessageItem(int index) {
     return Padding(
       padding: const EdgeInsets.only(left: 8),
       child: Icon(
-        mssgIdSelected.contains(msg.id.toString())
+        widget.mssgIdSelected.contains(msg.id.toString())
             ? Icons.check_circle
             : Icons.radio_button_unchecked,
         color: Colors.blue,
@@ -135,8 +173,8 @@ Widget _buildMessageItem(int index) {
       chatStatus: msg.id == 0
           ? ChatStatus.sending
           : msg.seen
-              ? ChatStatus.seen
-              : ChatStatus.send,
+          ? ChatStatus.seen
+          : ChatStatus.send,
       isMe: isMe,
       message: msg.message,
       replyMessage: msg.reply?.message,
@@ -146,36 +184,69 @@ Widget _buildMessageItem(int index) {
 
   Widget _buildReplyBar(BuildContext context) {
     return ReplyBar(
-      replyMessage: replyMessage ?? "",
-      onCancel: onReplyCancel,
+      replyMessage: widget.replyMessage ?? "",
+      onCancel: widget.onReplyCancel,
     );
   }
 
   Widget _buildInputBar(BuildContext context) {
-  return InputBar(
-    messageController: messageController,
-    focusNode: focusNode,
-    emoji: emoji,
-    mssgEdit: mssgEdit,
-    onEmojiToggle: onEmojiToggle,
-    onMessageChanged: onMessageChanged,
-    onEditMessage: onEditMessage,
-    onSendMessage: onSendMessage,
-    sendButtonColor: AppColors.sendBT,
-    backgroundColor: AppColors.backgroundColor,
-    iconColor: AppColors.iconColor,
-    chatProfileColor: AppColors.chatProfileColor, // ✅ Still passed
-  );
-}
+    return InputBar(
+      messageController: widget.messageController,
+      focusNode: widget.focusNode,
+      emoji: widget.emoji,
+      mssgEdit: widget.mssgEdit,
+
+      /// ✅ instant update while typing
+      onMessageChanged: (value) {
+        setState(() {});
+        widget.onMessageChanged(value);
+      },
+
+      onEmojiToggle: () {
+        setState(() {});
+        widget.onEmojiToggle();
+      },
+
+      onEditMessage: () {
+        widget.onEditMessage();
+        setState(() {});
+      },
+
+      onSendMessage: () {
+        widget.onSendMessage();
+
+        /// ✅ instant mic/send icon change
+        Future.delayed(
+          const Duration(milliseconds: 10),
+              () {
+            if (mounted) {
+              setState(() {});
+            }
+          },
+        );
+      },
+
+      sendButtonColor: AppColors.sendBT,
+
+      backgroundColor:
+      (context) => AppColors.backgroundColor(context),
+
+      iconColor: AppColors.iconColor,
+
+      chatProfileColor:
+      (context) => AppColors.chatProfileColor(context),
+    );
+  }
 
   Widget _buildEmojiPicker(BuildContext context) {
     return AnimatedSlide(
       duration: const Duration(milliseconds: 50),
-      offset: emoji ? Offset.zero : const Offset(0, 1),
+      offset:
+      widget.emoji ? Offset.zero : const Offset(0, 1),
       child: SizedBox(
         height: MediaQuery.of(context).size.height * 0.35,
         child: EmojiPicker(
-          textEditingController: messageController,
+          textEditingController: widget.messageController,
           config: const Config(
             categoryViewConfig: CategoryViewConfig(
               initCategory: Category.SMILEYS,

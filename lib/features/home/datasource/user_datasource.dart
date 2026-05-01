@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:convo/core/const.dart/api_config.dart';
-import 'package:convo/core/const.dart/constant.dart';
 import 'package:convo/core/model/home_chat_model.dart';
 import 'package:convo/core/model/user_model.dart';
 import 'package:convo/core/payload/user_payload.dart';
@@ -62,47 +61,63 @@ Future<UserModel?> isUser({required String phone}) async {
   }
 }
 
-  Future<List<HomeChatModel>> getHomeChats() async {
-    print("getChats function called");
 
+Future<List<HomeChatModel>> getHomeChats() async {
+  try {
     final prefs = await SharedPreferences.getInstance();
     final idString = prefs.getString("id");
 
-    print("User ID = $idString");
-
-    if (idString == null) {
+    if (idString == null || idString.isEmpty) {
       print("❌ ID not found in SharedPreferences");
       return [];
     }
 
-    final id = int.parse(idString);
+    final id = int.tryParse(idString);
+    if (id == null) {
+      print("❌ Invalid ID format");
+      return [];
+    }
 
-    final url = Uri.parse(
-      'https://ehmqgiqrfpvvznvsvfyu.supabase.co/rest/v1/chats?select=*,sender:senderId(*),receiver:receiverId(*)&or=("senderId".eq.$id,"receiverId".eq.$id)&order=created_at.asc',
-    );
+    print("User ID = $id");
+
+    final url = Uri.parse('${ApiConfig.baseUrl}/chat/all').replace(
+  queryParameters: {
+    'select': '*,sender:senderId(*),receiver:receiverId(*)',
+
+    /// ✅ Only chats where I am sender OR receiver
+    'or': 'or(senderId.eq.$id,receiverId.eq.$id)',
+
+    'order': 'createdAt.desc', // latest first (like WhatsApp)
+  },
+);
+
+    print("Final URL = ${url.toString()}"); // 🔥 debug this
 
     final response = await http.get(
       url,
       headers: {
-        "apikey": apikey,
-        "Authorization": "Bearer $apikey",
         "Content-Type": "application/json",
         "Accept": "application/json",
       },
     );
+
     print("Status Code = ${response.statusCode}");
-    print("Response Body = ${response.body}");
 
     if (response.statusCode == 200) {
-      print("✅ getChats success");
       final List data = jsonDecode(response.body);
-      return data.map((e) => HomeChatModel.fromJson(e)).toList();
+      print("✅ getChats success: ${data.length} chats");
+
+      return data
+          .map((e) => HomeChatModel.fromJson(e))
+          .toList();
     } else {
-      print("❌ getChats fail");
+      print("❌ getChats failed: ${response.body}");
       return [];
     }
+  } catch (e) {
+    print("❌ Exception in getHomeChats: $e");
+    return [];
   }
-
-
+}
 
 }

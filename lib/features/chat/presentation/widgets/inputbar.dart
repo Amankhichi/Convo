@@ -4,12 +4,17 @@ import 'package:flutter/material.dart';
 class InputBar extends StatelessWidget {
   final TextEditingController messageController;
   final FocusNode focusNode;
+
   final bool emoji;
   final bool mssgEdit;
+
+  final bool hasText; // ✅ ADD
+
   final VoidCallback onEmojiToggle;
   final Function(String) onMessageChanged;
   final VoidCallback onEditMessage;
   final VoidCallback onSendMessage;
+
   final Color? sendButtonColor;
   final Color Function(BuildContext)? backgroundColorFn;
   final Color iconColor;
@@ -21,6 +26,7 @@ class InputBar extends StatelessWidget {
     required this.focusNode,
     required this.emoji,
     required this.mssgEdit,
+    required this.hasText, // ✅ ADD
     required this.onEmojiToggle,
     required this.onMessageChanged,
     required this.onEditMessage,
@@ -100,29 +106,32 @@ Widget _buildTextField(BuildContext context) {
   );
 }
 
-  Widget _buildSendButton(BuildContext context) {
-    return CircleAvatar(
-      backgroundColor: Colors.transparent,
-      child: messageController.text.isEmpty
-          ? IconButton(
-              iconSize: 30,
-              color: _getSendButtonColor(context),
-              onPressed: () {},
-              icon: const Icon(Icons.mic, size: 28),
-            )
-          : mssgEdit
-              ? IconButton(
-                  iconSize: 30,
-                  color: _getSendButtonColor(context),
-                  onPressed: onEditMessage,
-                  icon: const Icon(Icons.check, size: 28),
-                )
-              : IconButton(
-                  iconSize: 30,
-                  color: _getSendButtonColor(context),
-                  onPressed: onSendMessage,
-                  icon: const Icon(Icons.send, size: 28),
-                ),
-    );
-  }
+Widget _buildSendButton(BuildContext context) {
+  return CircleAvatar(
+    backgroundColor: Colors.transparent,
+
+    child: !hasText
+        ? IconButton(
+            iconSize: 30,
+            color: _getSendButtonColor(context),
+            onPressed: () {},
+            icon: const Icon(Icons.mic, size: 28),
+          )
+
+        : mssgEdit
+            ? IconButton(
+                iconSize: 30,
+                color: _getSendButtonColor(context),
+                onPressed: onEditMessage,
+                icon: const Icon(Icons.check, size: 28),
+              )
+
+            : IconButton(
+                iconSize: 30,
+                color: _getSendButtonColor(context),
+                onPressed: onSendMessage,
+                icon: const Icon(Icons.send, size: 28),
+              ),
+  );
+}
 }

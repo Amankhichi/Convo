@@ -52,11 +52,16 @@ class _ChatPageState extends State<ChatPage> {
       throw 'Could not launch $callUri';
     }
   }
-
+ bool hasText = false;
   @override
   void initState() {
     super.initState();
     _messageController = TextEditingController();
+       _messageController.addListener(() {
+      setState(() {
+        hasText = _messageController.text.trim().isNotEmpty;
+      });
+    });
     context.read<ChatBloc>().add(
       ChatEvent.getMssg(receiverId: widget.user.id.toString()),
     );
@@ -87,12 +92,6 @@ class _ChatPageState extends State<ChatPage> {
       }
     });
   }
-
-  //   @override
-  // void dispose() {
-  //   super.dispose();
-
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -195,104 +194,104 @@ class _ChatPageState extends State<ChatPage> {
             ),
 
             /// BODY
-          body: ChatBodyContainer(
-  isDeviceThemeDark: isDeviceThemeDark,
-  child: ChatMainColumn(
-    messages: state.messages,
-    profile: context.read<LoginBloc>().state.profile,
-    mssgSelected: mssgSelected,
-    mssgIdSelected: mssgIdSelected,
-    mssgCopySelected: mssgCopySelected,
-    isReplying: isReplying,
-    replyMessage: replyMessage,
-    emoji: emoji,
-    mssgEdit: mssgEdit,
-    editingMessageId: editingMessageId,
-    messageController: _messageController,  
-    focusNode: _focusNode,
-    onLongPressMessage: (msg) {
-      setState(() {
-        mssgSelected = true;
-        mssgIdSelected.add(msg.id.toString());
-        mssgCopySelected.add(msg.message.toString());
-      });
-    },
-onTapMessage: (msg) {
-  if (mssgSelected) {
-    setState(() {
-      final id = msg.id.toString();
-      if (mssgIdSelected.contains(id)) {
-        mssgIdSelected.remove(id);
-        if (mssgIdSelected.isEmpty) {
-          mssgSelected = false;
-        }
-      } else {
-        mssgIdSelected.add(id);
-        mssgCopySelected.add(msg.message.toString());
-      }
-    });
-  } else {
-    // ✅ Handle emoji hide when tapping message (original logic)
-    setState(() => emoji = false);
-  }
-},
-    onReplyCancel: () {
-      setState(() {
-        isReplying = false;
-        replyMessage = null;
-        replyMessageId = null;
-      });
-      FocusScope.of(context).unfocus();
-      Future.delayed(const Duration(milliseconds: 50), () {
-        FocusScope.of(context).requestFocus(_focusNode);
-      });
-    },
-onEmojiToggle: () {
-  setState(() => emoji = !emoji); // ✅ State managed in parent
-  
-  if (emoji) {
-    _focusNode.unfocus(); // ✅ Use passed focusNode
-  } else {
-    _focusNode.requestFocus(); // ✅ Use passed focusNode
-  }
-},
-    onMessageChanged: (v) {
-      if (mssgEdit && v.trim().isEmpty) {
-        setState(() {
-          mssgEdit = false;
-          editingMessageId = null;
-        });
-      }
-    },
-    onEditMessage: () {
-      if (editingMessageId == null) return;
-      context.read<ChatBloc>().add(
-        ChatEvent.editMssg(
-          mssgId: int.parse(editingMessageId!),
-          newMssg: _messageController.text.trim(),
-        ),
-      );
-      _messageController.clear();
-      setState(() {
-        mssgEdit = false;
-        editingMessageId = null;
-      });
-    },
-    onSendMessage: () {
-      context.read<ChatBloc>().add(
-        ChatEvent.sendMssg(
-          mssg: _messageController.text.trim(),
-          receiverId: widget.user.id.toString(),
-          replyTo: replyMessageId,
-        ),
-      );
-      isReplying = false;
-      _messageController.clear();
-    },
-    onHandleReply: _handleReply,
-    user: widget.user,
-  ),
-),
+            body: ChatBodyContainer(
+              isDeviceThemeDark: isDeviceThemeDark,
+              child: ChatMainColumn(
+                messages: state.messages,
+                profile: context.read<LoginBloc>().state.profile,
+                mssgSelected: mssgSelected,
+                mssgIdSelected: mssgIdSelected,
+                mssgCopySelected: mssgCopySelected,
+                isReplying: isReplying,
+                replyMessage: replyMessage,
+                emoji: emoji,
+                mssgEdit: mssgEdit,
+                editingMessageId: editingMessageId,
+                messageController: _messageController,
+                focusNode: _focusNode,
+                onLongPressMessage: (msg) {
+                  setState(() {
+                    mssgSelected = true;
+                    mssgIdSelected.add(msg.id.toString());
+                    mssgCopySelected.add(msg.message.toString());
+                  });
+                },
+                onTapMessage: (msg) {
+                  if (mssgSelected) {
+                    setState(() {
+                      final id = msg.id.toString();
+                      if (mssgIdSelected.contains(id)) {
+                        mssgIdSelected.remove(id);
+                        if (mssgIdSelected.isEmpty) {
+                          mssgSelected = false;
+                        }
+                      } else {
+                        mssgIdSelected.add(id);
+                        mssgCopySelected.add(msg.message.toString());
+                      }
+                    });
+                  } else {
+                    setState(() => emoji = false);
+                  }
+                },
+                onReplyCancel: () {
+                  setState(() {
+                    isReplying = false;
+                    replyMessage = null;
+                    replyMessageId = null;
+                  });
+                  FocusScope.of(context).unfocus();
+                  Future.delayed(const Duration(milliseconds: 50), () {
+                    FocusScope.of(context).requestFocus(_focusNode);
+                  });
+                },
+                onEmojiToggle: () {
+                  setState(() => emoji = !emoji); 
+
+                  if (emoji) {
+                    _focusNode.unfocus();
+                  } else {
+                    _focusNode.requestFocus();
+                  }
+                },
+                onMessageChanged: (v) {
+                  if (mssgEdit && v.trim().isEmpty) {
+                    setState(() {
+                      mssgEdit = false;
+                      editingMessageId = null;
+                    });
+                  }
+                },
+                onEditMessage: () {
+                  if (editingMessageId == null) return;
+                  context.read<ChatBloc>().add(
+                    ChatEvent.editMssg(
+                      mssgId: int.parse(editingMessageId!),
+                      newMssg: _messageController.text.trim(),
+                    ),
+                  );
+                  _messageController.clear();
+                  setState(() {
+                    mssgEdit = false;
+                    editingMessageId = null;
+                  });
+                },
+                onSendMessage: () {
+                  if (_messageController.text.isNotEmpty)
+                    context.read<ChatBloc>().add(
+                      ChatEvent.sendMssg(
+                        mssg: _messageController.text.trim(),
+                        receiverId: widget.user.id.toString(),
+                        replyTo: replyMessageId,
+                      ),
+                    );
+                  isReplying = false;
+                  _messageController.clear();
+                },
+                onHandleReply: _handleReply,
+                user: widget.user,
+              ),
+            ),
           ),
         );
       },

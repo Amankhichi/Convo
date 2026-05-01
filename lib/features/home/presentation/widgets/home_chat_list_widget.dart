@@ -1,3 +1,4 @@
+import 'package:convo/core/const.dart/api_config.dart';
 import 'package:convo/core/const.dart/app_colors.dart';
 import 'package:convo/core/custom/custom_text.dart';
 import 'package:convo/core/enum/status.dart';
@@ -26,7 +27,6 @@ class HomeChatListWidget extends StatefulWidget {
 }
 
 class _HomeChatListWidgetState extends State<HomeChatListWidget> {
-
   @override
   void initState() {
     super.initState();
@@ -35,9 +35,11 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
 
   String _formatDate(DateTime date) {
     final now = DateTime.now();
-    final diff = DateTime(now.year, now.month, now.day)
-        .difference(DateTime(date.year, date.month, date.day))
-        .inDays;
+    final diff = DateTime(
+      now.year,
+      now.month,
+      now.day,
+    ).difference(DateTime(date.year, date.month, date.day)).inDays;
 
     if (diff == 0) return DateFormat('hh:mm a').format(date);
     if (diff == 1) return "Yesterday";
@@ -49,14 +51,13 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
       context,
       PageRouteBuilder(
         pageBuilder: (_, __, ___) => ChatPage(user: user),
-        transitionsBuilder: (_, animation, __, child) =>
-            SlideTransition(
-              position: Tween(
-                begin: const Offset(-1, 0),
-                end: Offset.zero,
-              ).animate(animation),
-              child: child,
-            ),
+        transitionsBuilder: (_, animation, __, child) => SlideTransition(
+          position: Tween(
+            begin: const Offset(-1, 0),
+            end: Offset.zero,
+          ).animate(animation),
+          child: child,
+        ),
       ),
     ).then((_) {
       context.read<HomeBloc>().add(const HomeEvent.init());
@@ -65,12 +66,10 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
 
   @override
   Widget build(BuildContext context) {
-
     final profile = context.watch<LoginBloc>().state.profile!;
 
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (_, state) {
-
         if (state.homeChatsStatus == Status.loading) {
           return const Center(child: CircularProgressIndicator());
         }
@@ -79,9 +78,7 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
           return Center(
             child: Text(
               "No Chats Yet",
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
+              style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
             ),
           );
         }
@@ -89,9 +86,8 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
         return ListView.builder(
           itemCount: state.homePageChats.length,
           itemBuilder: (_, i) {
-
             final chat = state.homePageChats[i];
-            final isMe = profile.id == chat.senderId;
+            final isMe = profile.id == chat.sender;
             final user = isMe ? chat.receiver : chat.sender;
             final selected = widget.selectedChats.contains(chat.id);
 
@@ -113,35 +109,33 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
 
                 child: Row(
                   children: [
+                    Stack(
+                      children: [
+                        CircleAvatar(
+                          radius: 25,
+                          backgroundColor: AppColors.primary,
+                          backgroundImage: NetworkImage(
+                            "${ApiConfig.baseUrl}/uploads/${user.profile}",
+                          ),
+                        ),
 
- Stack(
-      children: [
-
-        CircleAvatar(
-          backgroundColor: AppColors.primary,
-          radius: 35,
-          child: ClipOval(
-            child: Lottie.asset(user.profile),
-          ),
-        ),
-
-        if (selected)
-          const Positioned(
-            right: 0,
-            bottom: 0,
-            child: CircleAvatar(
-              radius: 12,
-              backgroundColor: AppColors.primary,
-              child: Icon(
-                Icons.check,
-                size: 18,
-                color: Colors.white,
-                weight:900,
-              ),
-            ),
-          ),
-      ],
-    ),
+                        if (selected)
+                          const Positioned(
+                            right: 0,
+                            bottom: 0,
+                            child: CircleAvatar(
+                              radius: 12,
+                              backgroundColor: AppColors.primary,
+                              child: Icon(
+                                Icons.check,
+                                size: 18,
+                                color: Colors.white,
+                                weight: 900,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
 
                     const SizedBox(width: 12),
 
@@ -149,7 +143,6 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-
                           Text(
                             user.name.isEmpty ? user.phone : user.name,
                             style: TextStyle(
@@ -161,14 +154,14 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
                           const SizedBox(height: 4),
 
                           Text(
-                            chat.unSeencount > 1
+                            chat.unSeenCount > 1
                                 ? "new messages"
                                 : chat.message,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               color: AppColors.iconColor,
-                              fontWeight: chat.unSeencount > 0
+                              fontWeight: chat.unSeenCount > 0
                                   ? FontWeight.w800
                                   : FontWeight.w400,
                             ),
@@ -179,18 +172,19 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
 
                     Column(
                       children: [
-
-                        if (chat.unSeencount > 0)
+                        if (chat.unSeenCount > 0)
                           Container(
                             margin: const EdgeInsets.only(bottom: 4),
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 6, vertical: 2),
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
                             decoration: BoxDecoration(
                               color: AppColors.primary,
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(
-                              chat.unSeencount.toString(),
+                              chat.unSeenCount.toString(),
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 11,
@@ -203,7 +197,7 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
                           text: _formatDate(chat.createdAt),
                           bold: FontWeight.w500,
                           size: 12,
-                          clr: chat.unSeencount > 0
+                          clr: chat.unSeenCount > 0
                               ? AppColors.iconColor
                               : Colors.grey,
                         ),
@@ -211,7 +205,6 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
                     ),
                   ],
                 ),
-              
               ),
             );
           },
@@ -220,6 +213,3 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
     );
   }
 }
-
-
-

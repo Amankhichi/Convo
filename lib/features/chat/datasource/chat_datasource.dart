@@ -33,44 +33,41 @@ class ChatDatasource {
   }
 
   // Set user Data
-Future<List<ChatModel>> getMessages({
-  required String senderId,
-  required String receiverId,
-}) async {
-  try {
-    final url = Uri.parse(
-      "${ApiConfig.baseUrl}/chat/all?"
-      "or=(and(senderId.eq.$senderId,receiverId.eq.$receiverId),"
-      "and(senderId.eq.$receiverId,receiverId.eq.$senderId))&"
-      "order=created_at.asc",
-    );
+  Future<List<ChatModel>> getMessages({
+    required String senderId,
+    required String receiverId,
+  }) async {
+    try {
+      final url = Uri.parse(
+  "${ApiConfig.baseUrl}/chat/between?senderId=$senderId&receiverId=$receiverId",
+);
+// http://192.168.1.14:7000/chat/between?senderId=102&receiverId=2
+      print("📡 URL: $url $senderId $receiverId");
+      print("📡 URL sender:  $senderId ");
+      print("📡 URL reciver: $receiverId");
 
-    print("📡 URL: $url");
+      final res = await http
+          .get(url, headers: {"Accept": "application/json"})
+          .timeout(const Duration(seconds: 10));
 
-    final res = await http
-        .get(url, headers: {"Accept": "application/json"})
-        .timeout(const Duration(seconds: 10));
+      print("📊 Status: ${res.statusCode}");
 
-    print("📊 Status: ${res.statusCode}");
+      if (res.statusCode == 200) {
+        final decoded = jsonDecode(res.body);
 
-    if (res.statusCode == 200) {
-      final decoded = jsonDecode(res.body);
-
-      if (decoded is List) {
-        return decoded
-            .map((e) => ChatModel.fromJson(e))
-            .toList();
+        if (decoded is List) {
+          return decoded.map((e) => ChatModel.fromJson(e)).toList();
+        }
+      } else {
+        print("❌ API Error: ${res.body}");
       }
-    } else {
-      print("❌ API Error: ${res.body}");
+    } catch (e) {
+      print("❌ get mssg error: $e");
+      print("URL API &url");
     }
-  } catch (e) {
-    print("❌ get mssg error: $e");
-    print("URL API &url");
-  }
 
-  return [];
-}
+    return [];
+  }
 
   Future<bool> deleteMessage({required int mssgId}) async {
     final url = Uri.parse("${ApiConfig.baseUrl}/chat/delete?id=eq.$mssgId");
@@ -95,29 +92,23 @@ Future<List<ChatModel>> getMessages({
     }
   }
 
- Future<bool> editMssg({
-  required int msgId,
-  required String newMessage,
-}) async {
-  final url = Uri.parse(
-    "${ApiConfig.baseUrl}/chat/find?id=$msgId", 
-  );
+  Future<bool> editMssg({
+    required int msgId,
+    required String newMessage,
+  }) async {
+    final url = Uri.parse("${ApiConfig.baseUrl}/chat/find?id=$msgId");
 
-  final res = await http.put(
-    url, // or PATCH depending on backend
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: jsonEncode({
-      "mssg": newMessage,
-    }),
-  );
+    final res = await http.put(
+      url, // or PATCH depending on backend
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({"mssg": newMessage}),
+    );
 
-  print("Status: ${res.statusCode}");
-  print("Response: ${res.body}");
+    print("Status: ${res.statusCode}");
+    print("Response: ${res.body}");
 
-  return res.statusCode == 200;
-}
+    return res.statusCode == 200;
+  }
 
   Future<void> seenMssg({
     required int senderId,

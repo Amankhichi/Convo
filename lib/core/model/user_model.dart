@@ -22,15 +22,35 @@ class UserModel extends Equatable {
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       id: json['id'] ?? 0,
-      name: json['name']?.toString() ?? '',
+
+      /// ✅ fallback name
+      name: json['name']?.toString() ??
+          json['nickname']?.toString() ??
+          'User',
+
       nickname: json['nickname']?.toString() ?? '',
       phone: json['phone']?.toString() ?? '',
       about: json['about']?.toString() ?? '',
+
+      /// ✅ safe profile parsing
       profile: json['profile'] != null
           ? json['profile']['url']?.toString() ?? ''
           : '',
 
       online: json['online'] == true || json['online'] == 1,
+    );
+  }
+
+  /// ✅ FIX: empty fallback user
+  factory UserModel.empty() {
+    return const UserModel(
+      id: 0,
+      name: 'Unknown',
+      nickname: 'Unknown',
+      phone: '',
+      about: '',
+      profile: '',
+      online: false,
     );
   }
 
@@ -56,12 +76,12 @@ class UserModel extends Equatable {
 
   @override
   List<Object?> get props => [
-    id,
-    name,
-    nickname,
-    phone,
-    about,
-    profile,
-    online,
-  ];
+        id,
+        name,
+        nickname,
+        phone,
+        about,
+        profile,
+        online,
+      ];
 }

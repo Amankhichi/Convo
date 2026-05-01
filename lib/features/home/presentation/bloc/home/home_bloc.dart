@@ -55,43 +55,52 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
-  List<HomeChatModel> buildConversationList(
-    List<HomeChatModel> chats,
-    int myId,
-  ) {
-    final Map<int, HomeChatModel> conversationMap = {};
-    final Map<int, int> unreadCountMap = {};
 
-    for (var chat in chats) {
-      if (chat.message.isEmpty) continue;
+List<HomeChatModel> buildConversationList(
+  List<HomeChatModel> chats,
+  int myId,
+) {
+  final Map<int, HomeChatModel> conversationMap = {};
+  final Map<int, int> unreadCountMap = {};
 
-      final otherUserId = chat.senderId == myId
-          ? chat.receiverId
-          : chat.senderId;
+  for (var chat in chats) {
+    if (chat.message.isEmpty) continue;
 
-      /// Count unread messages
-      if (chat.receiverId == myId && !chat.seen) {
-        unreadCountMap[otherUserId] = (unreadCountMap[otherUserId] ?? 0) + 1;
-      }
+    final otherUserId = chat.sender.id == myId
+        ? chat.receiver.id
+        : chat.sender.id;
 
-      /// Keep latest message
-      if (!conversationMap.containsKey(otherUserId) ||
-          chat.createdAt.isAfter(conversationMap[otherUserId]!.createdAt)) {
-        conversationMap[otherUserId] = chat;
-      }
+    /// Count unread messages
+    if (chat.receiver.id == myId && !chat.seen) {
+      unreadCountMap[otherUserId] =
+          (unreadCountMap[otherUserId] ?? 0) + 1;
     }
 
-    final conversations = conversationMap.values.map((chat) {
-      final otherUserId = chat.senderId == myId
-          ? chat.receiverId
-          : chat.senderId;
-
-      return chat.copyWith(unSeencount: unreadCountMap[otherUserId] ?? 0);
-    }).toList();
-
-    /// Sort by latest message
-    conversations.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-
-    return conversations;
+    /// Keep latest message
+    if (!conversationMap.containsKey(otherUserId) ||
+        chat.createdAt.isAfter(
+          conversationMap[otherUserId]!.createdAt,
+        )) {
+      conversationMap[otherUserId] = chat;
+    }
   }
+
+  final conversations = conversationMap.values.map((chat) {
+    final otherUserId = chat.sender.id == myId
+        ? chat.receiver.id
+        : chat.sender.id;
+
+    return chat.copyWith(
+      unSeenCount: unreadCountMap[otherUserId] ?? 0,
+    );
+  }).toList();
+
+  /// Sort by latest message
+  conversations.sort(
+    (a, b) => b.createdAt.compareTo(a.createdAt),
+  );
+
+  return conversations;
+}
+
 }

@@ -51,7 +51,7 @@ class UnreadChatWidget extends StatelessWidget {
 
         /// 🔥 filter only unseen chats
         final unreadChats = state.homePageChats
-            .where((chat) => chat.unSeencount > 0)
+            .where((chat) => chat.unSeenCount > 0)
             .toList();
 
         if (unreadChats.isEmpty) {
@@ -61,7 +61,7 @@ class UnreadChatWidget extends StatelessWidget {
         return Column(
           children: unreadChats.map((chat) 
            {
-            final bool isMe = profile.id == chat.senderId;
+            final bool isMe = profile.id == chat.sender;
             final user = isMe ? chat.receiver : chat.sender;
 
             return GestureDetector(
@@ -229,14 +229,14 @@ class UnreadChatWidget extends StatelessWidget {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            (chat.unSeencount) > 1
+                            (chat.unSeenCount) > 1
                                 ? "new messages"
                                 : chat.message,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               color: AppColors.iconColor,
-                              fontWeight: (chat.unSeencount) > 0
+                              fontWeight: (chat.unSeenCount) > 0
                                   ? FontWeight.w800
                                   : FontWeight.w400,
                             ),
@@ -249,7 +249,7 @@ class UnreadChatWidget extends StatelessWidget {
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        if ((chat.unSeencount ) > 0)
+                        if ((chat.unSeenCount ) > 0)
                           Container(
                             margin: const EdgeInsets.only(bottom: 4),
                             padding: const EdgeInsets.symmetric(
@@ -261,7 +261,7 @@ class UnreadChatWidget extends StatelessWidget {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(
-                              chat.unSeencount.toString(),
+                              chat.unSeenCount.toString(),
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 11,
@@ -273,7 +273,7 @@ class UnreadChatWidget extends StatelessWidget {
                           text: _formatDate(chat.createdAt),
                           bold: FontWeight.w500,
                           size: 12,
-                          clr: (chat.unSeencount) > 0
+                          clr: (chat.unSeenCount) > 0
                               ? AppColors.iconColor
                               : Colors.grey,
                         ),
