@@ -109,7 +109,7 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
             final selected = widget.selectedChats.contains(chat.id);
 
             final hasProfile =
-                user.profile != null && user.profile.toString().isNotEmpty;
+                user.profile.isNotEmpty && user.profile.toString().isNotEmpty;
 
             return GestureDetector(
               onTap: () {
