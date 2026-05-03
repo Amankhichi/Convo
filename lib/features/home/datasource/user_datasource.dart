@@ -68,13 +68,13 @@ Future<List<HomeChatModel>> getHomeChats() async {
     final idString = prefs.getString("id");
 
     if (idString == null || idString.isEmpty) {
-      print("❌ ID not found in SharedPreferences");
+      print("ID not found in SharedPreferences");
       return [];
     }
 
     final id = int.tryParse(idString);
     if (id == null) {
-      print("❌ Invalid ID format");
+      print("Invalid ID format");
       return [];
     }
 
@@ -84,14 +84,13 @@ Future<List<HomeChatModel>> getHomeChats() async {
   queryParameters: {
     'select': '*,sender:senderId(*),receiver:receiverId(*)',
 
-    /// ✅ Only chats where I am sender OR receiver
     'or': 'or(senderId.eq.$id,receiverId.eq.$id)',
 
     'order': 'createdAt.desc', // latest first (like WhatsApp)
   },
 );
 
-    print("Final URL = ${url.toString()}"); // 🔥 debug this
+    print("Final URL = ${url.toString()}");
 
     final response = await http.get(
       url,
@@ -105,17 +104,17 @@ Future<List<HomeChatModel>> getHomeChats() async {
 
     if (response.statusCode == 200) {
       final List data = jsonDecode(response.body);
-      print("✅ getChats success: ${data.length} chats");
+      print("getChats success: ${data.length} chats");
 
       return data
           .map((e) => HomeChatModel.fromJson(e))
           .toList();
     } else {
-      print("❌ getChats failed: ${response.body}");
+      print("getChats failed: ${response.body}");
       return [];
     }
   } catch (e) {
-    print("❌ Exception in getHomeChats: $e");
+    print("Exception in getHomeChats: $e");
     return [];
   }
 }

@@ -18,27 +18,35 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$HomeEvent {
   @optionalTypeArgs
-  TResult when<TResult extends Object?>({required TResult Function() init}) =>
-      throw _privateConstructorUsedError;
+  TResult when<TResult extends Object?>({
+    required TResult Function() init,
+    required TResult Function(int userId) clearUnread,
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({TResult? Function()? init}) =>
-      throw _privateConstructorUsedError;
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? init,
+    TResult? Function(int userId)? clearUnread,
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? init,
+    TResult Function(int userId)? clearUnread,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Init value) init,
+    required TResult Function(_ClearUnread value) clearUnread,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Init value)? init,
+    TResult? Function(_ClearUnread value)? clearUnread,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Init value)? init,
+    TResult Function(_ClearUnread value)? clearUnread,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
 }
@@ -103,13 +111,19 @@ class _$InitImpl implements _Init {
 
   @override
   @optionalTypeArgs
-  TResult when<TResult extends Object?>({required TResult Function() init}) {
+  TResult when<TResult extends Object?>({
+    required TResult Function() init,
+    required TResult Function(int userId) clearUnread,
+  }) {
     return init();
   }
 
   @override
   @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({TResult? Function()? init}) {
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? init,
+    TResult? Function(int userId)? clearUnread,
+  }) {
     return init?.call();
   }
 
@@ -117,6 +131,7 @@ class _$InitImpl implements _Init {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? init,
+    TResult Function(int userId)? clearUnread,
     required TResult orElse(),
   }) {
     if (init != null) {
@@ -129,6 +144,7 @@ class _$InitImpl implements _Init {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Init value) init,
+    required TResult Function(_ClearUnread value) clearUnread,
   }) {
     return init(this);
   }
@@ -137,6 +153,7 @@ class _$InitImpl implements _Init {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Init value)? init,
+    TResult? Function(_ClearUnread value)? clearUnread,
   }) {
     return init?.call(this);
   }
@@ -145,6 +162,7 @@ class _$InitImpl implements _Init {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Init value)? init,
+    TResult Function(_ClearUnread value)? clearUnread,
     required TResult orElse(),
   }) {
     if (init != null) {
@@ -156,6 +174,148 @@ class _$InitImpl implements _Init {
 
 abstract class _Init implements HomeEvent {
   const factory _Init() = _$InitImpl;
+}
+
+/// @nodoc
+abstract class _$$ClearUnreadImplCopyWith<$Res> {
+  factory _$$ClearUnreadImplCopyWith(
+    _$ClearUnreadImpl value,
+    $Res Function(_$ClearUnreadImpl) then,
+  ) = __$$ClearUnreadImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({int userId});
+}
+
+/// @nodoc
+class __$$ClearUnreadImplCopyWithImpl<$Res>
+    extends _$HomeEventCopyWithImpl<$Res, _$ClearUnreadImpl>
+    implements _$$ClearUnreadImplCopyWith<$Res> {
+  __$$ClearUnreadImplCopyWithImpl(
+    _$ClearUnreadImpl _value,
+    $Res Function(_$ClearUnreadImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of HomeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? userId = null}) {
+    return _then(
+      _$ClearUnreadImpl(
+        userId: null == userId
+            ? _value.userId
+            : userId // ignore: cast_nullable_to_non_nullable
+                  as int,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+
+class _$ClearUnreadImpl implements _ClearUnread {
+  const _$ClearUnreadImpl({required this.userId});
+
+  @override
+  final int userId;
+
+  @override
+  String toString() {
+    return 'HomeEvent.clearUnread(userId: $userId)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ClearUnreadImpl &&
+            (identical(other.userId, userId) || other.userId == userId));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, userId);
+
+  /// Create a copy of HomeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ClearUnreadImplCopyWith<_$ClearUnreadImpl> get copyWith =>
+      __$$ClearUnreadImplCopyWithImpl<_$ClearUnreadImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() init,
+    required TResult Function(int userId) clearUnread,
+  }) {
+    return clearUnread(userId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? init,
+    TResult? Function(int userId)? clearUnread,
+  }) {
+    return clearUnread?.call(userId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? init,
+    TResult Function(int userId)? clearUnread,
+    required TResult orElse(),
+  }) {
+    if (clearUnread != null) {
+      return clearUnread(userId);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Init value) init,
+    required TResult Function(_ClearUnread value) clearUnread,
+  }) {
+    return clearUnread(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Init value)? init,
+    TResult? Function(_ClearUnread value)? clearUnread,
+  }) {
+    return clearUnread?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Init value)? init,
+    TResult Function(_ClearUnread value)? clearUnread,
+    required TResult orElse(),
+  }) {
+    if (clearUnread != null) {
+      return clearUnread(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _ClearUnread implements HomeEvent {
+  const factory _ClearUnread({required final int userId}) = _$ClearUnreadImpl;
+
+  int get userId;
+
+  /// Create a copy of HomeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$ClearUnreadImplCopyWith<_$ClearUnreadImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc

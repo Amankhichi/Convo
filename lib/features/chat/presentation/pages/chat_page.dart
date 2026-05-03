@@ -20,7 +20,10 @@ import 'package:page_transition/page_transition.dart';
 class ChatPage extends StatefulWidget {
   final UserModel user;
 
-  const ChatPage({super.key, required this.user});
+  const ChatPage({
+    super.key,
+    required this.user,
+  });
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -28,23 +31,32 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   late final TextEditingController _messageController;
-  final FocusNode _focusNode = FocusNode();
-  // bool isMe = false;
-  bool emoji = false;
-  bool mssgSelected = false;
-  Set<String> mssgIdSelected = {};
-  Set<String> mssgCopySelected = {};
-  // bool seen = false;
 
-  bool mssgEdit = false;
+  final FocusNode _focusNode = FocusNode();
+  bool emoji = false;
+  bool isMessageSelected = false;
+
+  bool hasText = false;
+
+  final Set<String> selectedMessageIds = {};
+
+  final Set<String> selectedMessages = {};
+
+  bool isEditingMessage = false;
+
   String? editingMessageId;
 
   bool isReplying = false;
+
   String? replyMessage;
+
   int? replyMessageId;
 
   Future<void> makeCall(String phone) async {
-    final Uri callUri = Uri(scheme: 'tel', path: phone);
+    final Uri callUri = Uri(
+      scheme: 'tel',
+      path: phone,
+    );
 
     if (await canLaunchUrl(callUri)) {
       await launchUrl(callUri);
@@ -52,32 +64,42 @@ class _ChatPageState extends State<ChatPage> {
       throw 'Could not launch $callUri';
     }
   }
- bool hasText = false;
+
   @override
   void initState() {
     super.initState();
-    _messageController = TextEditingController();
-       _messageController.addListener(() {
-      setState(() {
-        hasText = _messageController.text.trim().isNotEmpty;
-      });
-    });
-    context.read<ChatBloc>().add(
-      ChatEvent.getMssg(receiverId: widget.user.id.toString()),
-    );
 
-    Future.delayed(Duration(milliseconds: 300), () {
-      _focusNode.requestFocus();
+    _messageController = TextEditingController();
+
+    _messageController.addListener(() {
+      if (mounted) {
+        setState(() {
+          hasText = _messageController.text.trim().isNotEmpty;
+        });
+      }
+    });
+
+    context.read<ChatBloc>().add(
+          ChatEvent.getMssg(
+            receiverId: widget.user.id.toString(),
+          ),
+        );
+
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (mounted) {
+        _focusNode.requestFocus();
+      }
     });
   }
 
   @override
   void dispose() {
     _messageController.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
-  void _handleReply(msg) {
+  void _handleReply(dynamic msg) {
     setState(() {
       isReplying = true;
       replyMessage = msg.message;
@@ -93,14 +115,72 @@ class _ChatPageState extends State<ChatPage> {
     });
   }
 
+  void _clearSelection() {
+    setState(() {
+      isMessageSelected = false;
+      selectedMessageIds.clear();
+      selectedMessages.clear();
+    });
+  }
+
+  void _sendMessage() {
+    final text = _messageController.text.trim();
+
+    if (text.isEmpty) return;
+
+    context.read<ChatBloc>().add(
+          ChatEvent.sendMssg(
+            mssg: text,
+            receiverId: widget.user.id.toString(),
+            replyTo: replyMessageId,
+          ),
+        );
+
+    _messageController.clear();
+
+    setState(() {
+      isReplying = false;
+      replyMessage = null;
+      replyMessageId = null;
+    });
+  }
+
+  void _editMessage() {
+    if (editingMessageId == null) return;
+
+    final text = _messageController.text.trim();
+
+    if (text.isEmpty) return;
+
+    context.read<ChatBloc>().add(
+          ChatEvent.editMssg(
+            mssgId: int.parse(editingMessageId!),
+            newMssg: text,
+          ),
+        );
+
+    _messageController.clear();
+
+    setState(() {
+      isEditingMessage = false;
+      editingMessageId = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ChatBloc, ChatState>(
       builder: (context, state) {
         return WillPopScope(
           onWillPop: () async {
-            Navigator.popUntil(context, (route) => route.isFirst);
-            return false; // prevent default back
+            if (isMessageSelected) {
+              _clearSelection();
+              return false;
+            }
+
+            Navigator.pop(context);
+
+            return false;
           },
           child: Scaffold(
             backgroundColor: AppColors.backgroundColor(context),
@@ -108,87 +188,118 @@ class _ChatPageState extends State<ChatPage> {
             /// APP BAR
             appBar: PreferredSize(
               preferredSize: const Size.fromHeight(70),
+
               child: CustomChatAppBar(
                 user: widget.user,
-                mssgSelected: mssgSelected,
-                mssgIdSelected: mssgIdSelected,
-                mssgCopySelected: mssgCopySelected,
+                mssgSelected: isMessageSelected,
+                mssgIdSelected: selectedMessageIds,
+                mssgCopySelected: selectedMessages,
                 state: state,
-                onBackPressed: () => mssgSelected
-                    ? setState(() {
-                        _focusNode.unfocus();
-                        mssgSelected = false;
-                        mssgIdSelected.clear();
-                      })
-                    : Navigator.pop(context),
+
+                onBackPressed: () {
+                  if (isMessageSelected) {
+                    _focusNode.unfocus();
+                    _clearSelection();
+                  } else {
+                    Navigator.pop(context);
+                  }
+                },
+
                 onProfileTap: () {
                   Navigator.push(
                     context,
                     SlidePageRoute(
-                      page: ContactUserProfilePage(user: widget.user),
+                      page: ContactUserProfilePage(
+                        user: widget.user,
+                      ),
                       beginOffset: const Offset(-1, 0),
                     ),
                   );
                 },
+
                 onVoiceCall: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => VoiceCallPage(user: widget.user),
+                      builder: (_) => VoiceCallPage(
+                        user: widget.user,
+                      ),
                     ),
                   );
                 },
+
                 onVideoCall: () {
                   Navigator.push(
                     context,
                     PageTransition(
                       type: PageTransitionType.scale,
                       alignment: Alignment.bottomCenter,
-                      child: VideoCallPage(user: widget.user),
+                      child: VideoCallPage(
+                        user: widget.user,
+                      ),
                     ),
                   );
                 },
+
                 onCopyMessages: () async {
-                  if (mssgCopySelected.isEmpty) return;
+                  if (selectedMessages.isEmpty) return;
 
-                  final copyText = mssgCopySelected.join("\n");
+                  final copyText = selectedMessages.join("\n");
 
-                  await Clipboard.setData(ClipboardData(text: copyText));
+                  await Clipboard.setData(
+                    ClipboardData(text: copyText),
+                  );
 
                   Fluttertoast.showToast(
                     msg: "Text Copied",
                     gravity: ToastGravity.CENTER,
                   );
 
-                  setState(() {
-                    mssgSelected = false;
-                    mssgCopySelected.clear();
-                  });
+                  _clearSelection();
                 },
+
                 onDeleteMessages: () {
-                  for (final id in mssgIdSelected) {
+                  for (final id in selectedMessageIds) {
                     context.read<ChatBloc>().add(
-                      ChatEvent.deletMssg(mssId: int.parse(id)),
-                    );
+                          ChatEvent.deletMssg(
+                            mssId: int.parse(id),
+                          ),
+                        );
                   }
 
-                  setState(() {
-                    mssgSelected = false;
-                    mssgIdSelected.clear();
-                  });
+                  _clearSelection();
                 },
+
                 onEditMessage: (messageId) {
-                  final selectedMsg = state.messages.firstWhere(
+                  final index = state.messages.indexWhere(
                     (e) => e.id.toString() == messageId,
                   );
+
+                  if (index == -1) return;
+
+                  final selectedMsg = state.messages[index];
+
                   _messageController.text = selectedMsg.message;
 
                   setState(() {
-                    mssgEdit = true;
+                    isEditingMessage = true;
                     editingMessageId = messageId;
-                    mssgSelected = false;
-                    mssgIdSelected.clear();
+
+                    isMessageSelected = false;
+
+                    selectedMessageIds.clear();
+
+                    selectedMessages.clear();
                   });
+
+                  Future.delayed(
+                    const Duration(milliseconds: 100),
+                    () {
+                      if (mounted) {
+                        _focusNode.requestFocus();
+                      }
+                    },
+                  );
                 },
               ),
             ),
@@ -196,57 +307,105 @@ class _ChatPageState extends State<ChatPage> {
             /// BODY
             body: ChatBodyContainer(
               isDeviceThemeDark: isDeviceThemeDark,
+
               child: ChatMainColumn(
                 messages: state.messages,
+
                 profile: context.read<LoginBloc>().state.profile,
-                mssgSelected: mssgSelected,
-                mssgIdSelected: mssgIdSelected,
-                mssgCopySelected: mssgCopySelected,
+
+                mssgSelected: isMessageSelected,
+
+                mssgIdSelected: selectedMessageIds,
+
+                mssgCopySelected: selectedMessages,
+
                 isReplying: isReplying,
+
                 replyMessage: replyMessage,
+
                 emoji: emoji,
-                mssgEdit: mssgEdit,
+
+                mssgEdit: isEditingMessage,
+
                 editingMessageId: editingMessageId,
+
                 messageController: _messageController,
+
                 focusNode: _focusNode,
+
+                user: widget.user,
+
                 onLongPressMessage: (msg) {
+                  FocusScope.of(context).unfocus();
+
                   setState(() {
-                    mssgSelected = true;
-                    mssgIdSelected.add(msg.id.toString());
-                    mssgCopySelected.add(msg.message.toString());
+                    isMessageSelected = true;
+
+                    selectedMessageIds.add(
+                      msg.id.toString(),
+                    );
+
+                    selectedMessages.add(
+                      msg.message.toString(),
+                    );
                   });
                 },
+
                 onTapMessage: (msg) {
-                  if (mssgSelected) {
+                  if (isMessageSelected) {
                     setState(() {
                       final id = msg.id.toString();
-                      if (mssgIdSelected.contains(id)) {
-                        mssgIdSelected.remove(id);
-                        if (mssgIdSelected.isEmpty) {
-                          mssgSelected = false;
+
+                      if (selectedMessageIds.contains(id)) {
+                        selectedMessageIds.remove(id);
+
+                        selectedMessages.remove(
+                          msg.message.toString(),
+                        );
+
+                        if (selectedMessageIds.isEmpty) {
+                          isMessageSelected = false;
                         }
                       } else {
-                        mssgIdSelected.add(id);
-                        mssgCopySelected.add(msg.message.toString());
+                        selectedMessageIds.add(id);
+
+                        selectedMessages.add(
+                          msg.message.toString(),
+                        );
                       }
                     });
                   } else {
-                    setState(() => emoji = false);
+                    setState(() {
+                      emoji = false;
+                    });
                   }
                 },
+
                 onReplyCancel: () {
                   setState(() {
                     isReplying = false;
                     replyMessage = null;
                     replyMessageId = null;
                   });
+
                   FocusScope.of(context).unfocus();
-                  Future.delayed(const Duration(milliseconds: 50), () {
-                    FocusScope.of(context).requestFocus(_focusNode);
-                  });
+
+                  Future.delayed(
+                    const Duration(milliseconds: 50),
+                    () {
+                      if (mounted) {
+                        FocusScope.of(context).requestFocus(
+                          _focusNode,
+                        );
+                      }
+                    },
+                  );
                 },
+
                 onEmojiToggle: () {
-                  setState(() => emoji = !emoji); 
+                  setState(() {
+                    emoji = !emoji;
+                  });
 
                   if (emoji) {
                     _focusNode.unfocus();
@@ -254,42 +413,22 @@ class _ChatPageState extends State<ChatPage> {
                     _focusNode.requestFocus();
                   }
                 },
+
                 onMessageChanged: (v) {
-                  if (mssgEdit && v.trim().isEmpty) {
+                  if (isEditingMessage &&
+                      v.trim().isEmpty) {
                     setState(() {
-                      mssgEdit = false;
+                      isEditingMessage = false;
                       editingMessageId = null;
                     });
                   }
                 },
-                onEditMessage: () {
-                  if (editingMessageId == null) return;
-                  context.read<ChatBloc>().add(
-                    ChatEvent.editMssg(
-                      mssgId: int.parse(editingMessageId!),
-                      newMssg: _messageController.text.trim(),
-                    ),
-                  );
-                  _messageController.clear();
-                  setState(() {
-                    mssgEdit = false;
-                    editingMessageId = null;
-                  });
-                },
-                onSendMessage: () {
-                  if (_messageController.text.isNotEmpty)
-                    context.read<ChatBloc>().add(
-                      ChatEvent.sendMssg(
-                        mssg: _messageController.text.trim(),
-                        receiverId: widget.user.id.toString(),
-                        replyTo: replyMessageId,
-                      ),
-                    );
-                  isReplying = false;
-                  _messageController.clear();
-                },
+
+                onEditMessage: _editMessage,
+
+                onSendMessage: _sendMessage,
+
                 onHandleReply: _handleReply,
-                user: widget.user,
               ),
             ),
           ),

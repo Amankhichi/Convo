@@ -83,7 +83,7 @@ class CustomChatAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   Widget _buildNicknameText() {
     return Text(
-      user.nickname,
+      user.name,
       style: const TextStyle(
         color: Colors.white,
         fontWeight: FontWeight.bold,
