@@ -23,7 +23,7 @@ class _ContactUserProfilePageState
   @override
   Widget build(BuildContext context) {
     final hasProfile =
-        widget.user.profile != null &&
+        widget.user.profile.isNotEmpty &&
         widget.user.profile.toString().isNotEmpty;
 
     return Scaffold(
