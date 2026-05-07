@@ -1,7 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:convo/core/enum/status.dart';
 import 'package:convo/core/model/home_chat_model.dart';
+import 'package:convo/core/model/user_model.dart';
 import 'package:convo/features/home/domain_usecase/get_home_chats_list_usecase.dart';
+import 'package:convo/features/home/domain_usecase/update_onile_status_usecase.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,19 +13,22 @@ part 'home_bloc.freezed.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final GetHomeChatsListUsecase _getHomeChatsListUseCase;
-  HomeBloc({required GetHomeChatsListUsecase gethomechatslistusecase})
-    : _getHomeChatsListUseCase = gethomechatslistusecase,
-      super(const HomeState()) {
+  final UpdateOnlineStatusUseCase _updateOnlineStatusUseCase;
+  HomeBloc({
+    required GetHomeChatsListUsecase gethomechatslistusecase,
+    required UpdateOnlineStatusUseCase updateonlinestatususecase,
+  }) : _getHomeChatsListUseCase = gethomechatslistusecase,
+       _updateOnlineStatusUseCase = updateonlinestatususecase,
+       super(const HomeState()) {
     on<_Init>(__Init);
+    on<_SetOnline>(__SetOnline);
   }
 
   Future<void> __Init(_Init event, Emitter<HomeState> emit) async {
     emit(state.copyWith(homeChatsStatus: Status.loading));
 
     try {
-      
       final chats = await _getHomeChatsListUseCase();
-
       final prefs = await SharedPreferences.getInstance();
       final idString = prefs.getString("id");
 
@@ -39,7 +44,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
 
       if (chats.isEmpty) {
-        emit(state.copyWith(homeChatsStatus: Status.error));
+        emit(
+          state.copyWith(homeChatsStatus: Status.success, homePageChats: []),
+        );
         return;
       }
 
@@ -51,56 +58,64 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     } catch (e, stack) {
       print("🔥 ERROR: $e");
       print(stack);
+
       emit(state.copyWith(homeChatsStatus: Status.error));
     }
   }
 
-
-List<HomeChatModel> buildConversationList(
-  List<HomeChatModel> chats,
-  int myId,
-) {
-  final Map<int, HomeChatModel> conversationMap = {};
-  final Map<int, int> unreadCountMap = {};
-
-  for (var chat in chats) {
-    if (chat.message.isEmpty) continue;
-
-    final otherUserId = chat.sender.id == myId
-        ? chat.receiver.id
-        : chat.sender.id;
-
-    /// Count unread messages
-    if (chat.receiver.id == myId && !chat.seen) {
-      unreadCountMap[otherUserId] =
-          (unreadCountMap[otherUserId] ?? 0) + 1;
-    }
-
-    /// Keep latest message
-    if (!conversationMap.containsKey(otherUserId) ||
-        chat.createdAt.isAfter(
-          conversationMap[otherUserId]!.createdAt,
-        )) {
-      conversationMap[otherUserId] = chat;
-    }
-  }
-
-  final conversations = conversationMap.values.map((chat) {
-    final otherUserId = chat.sender.id == myId
-        ? chat.receiver.id
-        : chat.sender.id;
-
-    return chat.copyWith(
-      unSeenCount: unreadCountMap[otherUserId] ?? 0,
-    );
-  }).toList();
-
-  /// Sort by latest message
-  conversations.sort(
-    (a, b) => b.createdAt.compareTo(a.createdAt),
+Future<void> __SetOnline(
+  _SetOnline event,
+  Emitter<HomeState> emit,
+) async {
+  await _updateOnlineStatusUseCase(
+    id: event.userId,
+    online: event.online,
   );
 
-  return conversations;
+  emit(state.copyWith(
+    profile: state.profile?.copyWith(
+      online: event.online,
+    ),
+  ));
 }
 
+  List<HomeChatModel> buildConversationList(
+    List<HomeChatModel> chats,
+    int myId,
+  ) {
+    final Map<int, HomeChatModel> conversationMap = {};
+    final Map<int, int> unreadCountMap = {};
+
+    for (var chat in chats) {
+      if (chat.message.isEmpty) continue;
+
+      final otherUserId = chat.sender.id == myId
+          ? chat.receiver.id
+          : chat.sender.id;
+
+      /// Count unread messages
+      if (chat.receiver.id == myId && !chat.seen) {
+        unreadCountMap[otherUserId] = (unreadCountMap[otherUserId] ?? 0) + 1;
+      }
+
+      /// Keep latest message
+      if (!conversationMap.containsKey(otherUserId) ||
+          chat.createdAt.isAfter(conversationMap[otherUserId]!.createdAt)) {
+        conversationMap[otherUserId] = chat;
+      }
+    }
+
+    final conversations = conversationMap.values.map((chat) {
+      final otherUserId = chat.sender.id == myId
+          ? chat.receiver.id
+          : chat.sender.id;
+
+      return chat.copyWith(unSeenCount: unreadCountMap[otherUserId] ?? 0);
+    }).toList();
+
+    /// Sort by latest message
+    conversations.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+    return conversations;
+  }
 }

@@ -149,12 +149,12 @@ class _ContactsPageState extends State<ContactsPage> {
                               leading: CircleAvatar(
                                 backgroundColor: AppColors.primary,
                                 child: Text(
-                                  user.nickname[0].toUpperCase(),
+                                  user.name[0].toUpperCase(),
                                   style: const TextStyle(color: Colors.white),
                                 ),
                               ),
                               title: Text(
-                                user.nickname,
+                                user.name,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
                                   color: AppColors.iconColor,
@@ -203,6 +203,7 @@ class _ContactsPageState extends State<ContactsPage> {
                         },
                       ),
               ),
+            
             ],
           ),
         );

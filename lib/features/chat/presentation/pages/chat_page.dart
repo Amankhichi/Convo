@@ -20,10 +20,7 @@ import 'package:page_transition/page_transition.dart';
 class ChatPage extends StatefulWidget {
   final UserModel user;
 
-  const ChatPage({
-    super.key,
-    required this.user,
-  });
+  const ChatPage({super.key, required this.user});
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -53,10 +50,7 @@ class _ChatPageState extends State<ChatPage> {
   int? replyMessageId;
 
   Future<void> makeCall(String phone) async {
-    final Uri callUri = Uri(
-      scheme: 'tel',
-      path: phone,
-    );
+    final Uri callUri = Uri(scheme: 'tel', path: phone);
 
     if (await canLaunchUrl(callUri)) {
       await launchUrl(callUri);
@@ -80,10 +74,8 @@ class _ChatPageState extends State<ChatPage> {
     });
 
     context.read<ChatBloc>().add(
-          ChatEvent.getMssg(
-            receiverId: widget.user.id.toString(),
-          ),
-        );
+      ChatEvent.getMssg(receiverId: widget.user.id.toString()),
+    );
 
     Future.delayed(const Duration(milliseconds: 300), () {
       if (mounted) {
@@ -129,12 +121,12 @@ class _ChatPageState extends State<ChatPage> {
     if (text.isEmpty) return;
 
     context.read<ChatBloc>().add(
-          ChatEvent.sendMssg(
-            mssg: text,
-            receiverId: widget.user.id.toString(),
-            replyTo: replyMessageId,
-          ),
-        );
+      ChatEvent.sendMssg(
+        mssg: text,
+        receiverId: widget.user.id.toString(),
+        replyTo: replyMessageId,
+      ),
+    );
 
     _messageController.clear();
 
@@ -153,11 +145,8 @@ class _ChatPageState extends State<ChatPage> {
     if (text.isEmpty) return;
 
     context.read<ChatBloc>().add(
-          ChatEvent.editMssg(
-            mssgId: int.parse(editingMessageId!),
-            newMssg: text,
-          ),
-        );
+      ChatEvent.editMssg(mssgId: int.parse(editingMessageId!), newMssg: text),
+    );
 
     _messageController.clear();
 
@@ -209,9 +198,7 @@ class _ChatPageState extends State<ChatPage> {
                   Navigator.push(
                     context,
                     SlidePageRoute(
-                      page: ContactUserProfilePage(
-                        user: widget.user,
-                      ),
+                      page: ContactUserProfilePage(user: widget.user),
                       beginOffset: const Offset(-1, 0),
                     ),
                   );
@@ -221,9 +208,7 @@ class _ChatPageState extends State<ChatPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => VoiceCallPage(
-                        user: widget.user,
-                      ),
+                      builder: (_) => VoiceCallPage(user: widget.user),
                     ),
                   );
                 },
@@ -234,9 +219,7 @@ class _ChatPageState extends State<ChatPage> {
                     PageTransition(
                       type: PageTransitionType.scale,
                       alignment: Alignment.bottomCenter,
-                      child: VideoCallPage(
-                        user: widget.user,
-                      ),
+                      child: VideoCallPage(user: widget.user),
                     ),
                   );
                 },
@@ -246,9 +229,7 @@ class _ChatPageState extends State<ChatPage> {
 
                   final copyText = selectedMessages.join("\n");
 
-                  await Clipboard.setData(
-                    ClipboardData(text: copyText),
-                  );
+                  await Clipboard.setData(ClipboardData(text: copyText));
 
                   Fluttertoast.showToast(
                     msg: "Text Copied",
@@ -259,16 +240,15 @@ class _ChatPageState extends State<ChatPage> {
                 },
 
                 onDeleteMessages: () {
-                  for (final id in selectedMessageIds) {
+                  final ids = List<String>.from(selectedMessageIds);
+                  for (final id in ids) {
                     context.read<ChatBloc>().add(
-                          ChatEvent.deletMssg(
-                            mssId: int.parse(id),
-                          ),
-                        );
+                      ChatEvent.deletMssg(mssId: int.parse(id)),
+                    );
                   }
-
                   _clearSelection();
                 },
+
 
                 onEditMessage: (messageId) {
                   final index = state.messages.indexWhere(
@@ -292,14 +272,11 @@ class _ChatPageState extends State<ChatPage> {
                     selectedMessages.clear();
                   });
 
-                  Future.delayed(
-                    const Duration(milliseconds: 100),
-                    () {
-                      if (mounted) {
-                        _focusNode.requestFocus();
-                      }
-                    },
-                  );
+                  Future.delayed(const Duration(milliseconds: 100), () {
+                    if (mounted) {
+                      _focusNode.requestFocus();
+                    }
+                  });
                 },
               ),
             ),
@@ -307,71 +284,42 @@ class _ChatPageState extends State<ChatPage> {
             /// BODY
             body: ChatBodyContainer(
               isDeviceThemeDark: isDeviceThemeDark,
-
               child: ChatMainColumn(
                 messages: state.messages,
-
                 profile: context.read<LoginBloc>().state.profile,
-
                 mssgSelected: isMessageSelected,
-
                 mssgIdSelected: selectedMessageIds,
-
                 mssgCopySelected: selectedMessages,
-
                 isReplying: isReplying,
-
                 replyMessage: replyMessage,
-
                 emoji: emoji,
-
                 mssgEdit: isEditingMessage,
-
                 editingMessageId: editingMessageId,
-
                 messageController: _messageController,
-
                 focusNode: _focusNode,
-
                 user: widget.user,
-
                 onLongPressMessage: (msg) {
                   FocusScope.of(context).unfocus();
 
                   setState(() {
                     isMessageSelected = true;
-
-                    selectedMessageIds.add(
-                      msg.id.toString(),
-                    );
-
-                    selectedMessages.add(
-                      msg.message.toString(),
-                    );
+                    selectedMessageIds.add(msg.id.toString());
+                    selectedMessages.add(msg.message.toString());
                   });
                 },
-
                 onTapMessage: (msg) {
                   if (isMessageSelected) {
                     setState(() {
                       final id = msg.id.toString();
-
                       if (selectedMessageIds.contains(id)) {
                         selectedMessageIds.remove(id);
-
-                        selectedMessages.remove(
-                          msg.message.toString(),
-                        );
-
+                        selectedMessages.remove(msg.message.toString());
                         if (selectedMessageIds.isEmpty) {
                           isMessageSelected = false;
                         }
                       } else {
                         selectedMessageIds.add(id);
-
-                        selectedMessages.add(
-                          msg.message.toString(),
-                        );
+                        selectedMessages.add(msg.message.toString());
                       }
                     });
                   } else {
@@ -380,7 +328,6 @@ class _ChatPageState extends State<ChatPage> {
                     });
                   }
                 },
-
                 onReplyCancel: () {
                   setState(() {
                     isReplying = false;
@@ -390,16 +337,11 @@ class _ChatPageState extends State<ChatPage> {
 
                   FocusScope.of(context).unfocus();
 
-                  Future.delayed(
-                    const Duration(milliseconds: 50),
-                    () {
-                      if (mounted) {
-                        FocusScope.of(context).requestFocus(
-                          _focusNode,
-                        );
-                      }
-                    },
-                  );
+                  Future.delayed(const Duration(milliseconds: 50), () {
+                    if (mounted) {
+                      FocusScope.of(context).requestFocus(_focusNode);
+                    }
+                  });
                 },
 
                 onEmojiToggle: () {
@@ -415,8 +357,7 @@ class _ChatPageState extends State<ChatPage> {
                 },
 
                 onMessageChanged: (v) {
-                  if (isEditingMessage &&
-                      v.trim().isEmpty) {
+                  if (isEditingMessage && v.trim().isEmpty) {
                     setState(() {
                       isEditingMessage = false;
                       editingMessageId = null;

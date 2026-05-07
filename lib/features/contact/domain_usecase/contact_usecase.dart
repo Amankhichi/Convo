@@ -41,11 +41,12 @@ class ContactUsecase {
       if (user != null) {
         print("NAME:" + c.displayName);
         user.copyWith(name: c.displayName);
+        print("22contactname$c.displayName");
         matchedContacts.add(
           UserModel(
             id: user.id,
             name: c.displayName,
-            nickname: c.displayName,
+            nickname: user.nickname,
             phone: user.phone,
             about: user.about,
             profile: user.profile,
@@ -59,15 +60,19 @@ class ContactUsecase {
 }
 
 Future<String> nameInPhone(String phone) async {
-  final phoneContacts = await FlutterContacts.getContacts(withProperties: true);
-  final Set<Contact> phoneNumbers = phoneContacts
-      .where((c) => c.phones.isNotEmpty)
-      .toSet();
-  return phoneNumbers
-          .where(
-            (c) => (c.phones.map((p) => p.number).toList()).contains(phone),
-          )
-          .firstOrNull
-          ?.displayName ??
-      "";
+  final normalizedPhone = normalizeNumber(phone);
+
+  final phoneContacts = await FlutterContacts.getContacts(
+    withProperties: true,
+  );
+
+  for (final contact in phoneContacts) {
+    for (final p in contact.phones) {
+      if (normalizeNumber(p.number) == normalizedPhone) {
+        return contact.displayName;
+      }
+    }
+  }
+
+  return "";
 }

@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:convo/core/const.dart/api_config.dart';
-import 'package:convo/core/const.dart/constant.dart';
 import 'package:convo/core/model/chat_model.dart';
 import 'package:convo/core/payload/chat_payload.dart';
 import 'package:http/http.dart' as http;
@@ -38,19 +37,16 @@ class ChatDatasource {
     required String receiverId,
   }) async {
     try {
-      final url = Uri.parse(
-  "${ApiConfig.baseUrl}/chat/between?senderId=$senderId&receiverId=$receiverId",
-);
-// http://192.168.1.14:7000/chat/between?senderId=102&receiverId=2
-      print("📡 URL: $url $senderId $receiverId");
-      print("📡 URL sender:  $senderId ");
-      print("📡 URL reciver: $receiverId");
+      final url = Uri.parse("${ApiConfig.baseUrl}/chat/between?senderId=$senderId&receiverId=$receiverId",);
+      print("URL: $url $senderId $receiverId");
+      print("URL sender:  $senderId ");
+      print("URL reciver: $receiverId");
 
       final res = await http
           .get(url, headers: {"Accept": "application/json"})
           .timeout(const Duration(seconds: 10));
 
-      print("📊 Status: ${res.statusCode}");
+      print("Status: ${res.statusCode}");
 
       if (res.statusCode == 200) {
         final decoded = jsonDecode(res.body);
@@ -59,30 +55,32 @@ class ChatDatasource {
           return decoded.map((e) => ChatModel.fromJson(e)).toList();
         }
       } else {
-        print("❌ API Error: ${res.body}");
+        print("API Error: ${res.body}");
       }
     } catch (e) {
-      print("❌ get mssg error: $e");
+      print("get mssg error: $e");
       print("URL API &url");
     }
 
     return [];
   }
 
-  Future<bool> deleteMessage({required int mssgId}) async {
-    final url = Uri.parse("${ApiConfig.baseUrl}/chat/delete?id=eq.$mssgId");
+Future<bool> deleteMessage({
+  required int mssgId,
+}) async {
+  try {
+    final url = Uri.parse(
+      "${ApiConfig.baseUrl}/chat/delete?id=$mssgId",
+    );
 
     final response = await http.delete(
       url,
       headers: {
-        "apikey": apikey,
-        "Authorization": "Bearer $apikey",
         "Content-Type": "application/json",
-        "Prefer": "return=minimal", // IMPORTANT for delete
       },
     );
 
-    if (response.statusCode == 204) {
+    if (response.statusCode == 200) {
       print("✅ Message Deleted Successfully");
       return true;
     } else {
@@ -90,45 +88,69 @@ class ChatDatasource {
       print("❌ Body: ${response.body}");
       return false;
     }
+  } catch (e) {
+    print("❌ Delete Error: $e");
+    return false;
   }
+}
 
-  Future<bool> editMssg({
-    required int msgId,
-    required String newMessage,
-  }) async {
-    final url = Uri.parse("${ApiConfig.baseUrl}/chat/find?id=$msgId");
+Future<bool> editMssg({
+  required int msgId,
+  required String newMessage,
+}) async {
+  try {
+    final url = Uri.parse(
+      "${ApiConfig.baseUrl}/chat/update?id=$msgId",
+    );
 
     final res = await http.put(
-      url, // or PATCH depending on backend
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode({"mssg": newMessage}),
+      url,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: jsonEncode({
+        "massage": newMessage,
+      }),
     );
 
     print("Status: ${res.statusCode}");
     print("Response: ${res.body}");
 
     return res.statusCode == 200;
-  }
 
-  Future<void> seenMssg({
-    required int senderId,
-    required int receiverId,
-  }) async {
+  } catch (e) {
+    print("Edit Message Error: $e");
+    return false;
+  }
+}
+Future<void> seenMssg({
+  required int senderId,
+  required int receiverId,
+}) async {
+  try {
     final url = Uri.parse(
-      "https://ehmqgiqrfpvvznvsvfyu.supabase.co/rest/v1/chats?senderId=eq.$senderId&receiverId=eq.$receiverId",
+      "${ApiConfig.baseUrl}/chat/seen?"
+      "senderId=$senderId&receiverId=$receiverId",
     );
 
-    await http.patch(
+    final response = await http.put(
       url,
-      headers: {
-        "apikey": apikey,
-        "Authorization": "Bearer $apikey",
-        "Content-Type": "application/json",
-        "Prefer": "return=minimal",
-      },
-      body: jsonEncode({"seen": true}),
     );
+
+    if (response.statusCode == 200) {
+      print("Messages marked as seen");
+    } else {
+      print(
+        "Failed to update seen status: ${response.statusCode}",
+      );
+
+      print(response.body);
+    }
+  } catch (e) {
+    print("Seen message error: $e");
   }
+}
+
 
   // Future<bool> createGroup({
   //   required int msgId,
@@ -150,4 +172,5 @@ class ChatDatasource {
   //   print("Edit Status: ${res.statusCode}");
   //   return res.statusCode == 200 || res.statusCode == 204;
   // }
+
 }

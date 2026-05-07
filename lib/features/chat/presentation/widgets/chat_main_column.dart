@@ -60,12 +60,10 @@ class ChatMainColumn extends StatefulWidget {
 }
 
 class _ChatMainColumnState extends State<ChatMainColumn> {
-
   @override
   void initState() {
     super.initState();
 
-    /// ✅ instant icon update
     widget.messageController.addListener(() {
       if (mounted) {
         setState(() {});
@@ -83,8 +81,7 @@ class _ChatMainColumnState extends State<ChatMainColumn> {
 
         _buildInputBar(context),
 
-        if (widget.emoji &&
-            MediaQuery.of(context).viewInsets.bottom == 0)
+        if (widget.emoji && MediaQuery.of(context).viewInsets.bottom == 0)
           _buildEmojiPicker(context),
       ],
     );
@@ -96,22 +93,19 @@ class _ChatMainColumnState extends State<ChatMainColumn> {
         return widget.messages.isEmpty
             ? const SizedBox()
             : ListView.builder(
+                key: ValueKey(widget.mssgSelected),
                 reverse: true,
                 itemCount: widget.messages.length,
-                itemBuilder: (context, index) =>
-                    _buildMessageItem(index),
+                itemBuilder: (context, index) => _buildMessageItem(index),
               );
       },
     );
   }
 
   Widget _buildMessageItem(int index) {
-    final msg =
-        widget.messages[widget.messages.length - index - 1];
+    final msg = widget.messages[widget.messages.length - index - 1];
 
-    final bool isMe =
-        msg.senderId.toString() ==
-        widget.profile?.id.toString();
+    final bool isMe = msg.senderId.toString() == widget.profile?.id.toString();
 
     return Dismissible(
       key: Key(msg.id.toString()),
@@ -129,44 +123,42 @@ class _ChatMainColumnState extends State<ChatMainColumn> {
     return Container(
       alignment: Alignment.centerLeft,
       padding: const EdgeInsets.only(left: 20),
-      child: const Icon(
-        Icons.reply,
-        color: Colors.blue,
-      ),
+      child: const Icon(Icons.reply, color: Colors.blue),
     );
   }
 
-  Widget _buildMessageGestureDetector(
-      dynamic msg,
-      bool isMe,
-      ) {
+  Widget _buildMessageGestureDetector(dynamic msg, bool isMe) {
     return GestureDetector(
       onLongPress: () => widget.onLongPressMessage(msg),
       onTap: () => widget.onTapMessage(msg),
       child: Row(
         children: [
-          if (widget.mssgSelected)
-            _buildSelectionIcon(msg),
-
-          Expanded(
-            child: _buildMessageWidget(msg, isMe),
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 150),
+            child: widget.mssgSelected
+                ? _buildSelectionIcon(msg,isMe)
+                : const SizedBox(),
           ),
+          Expanded(child: _buildMessageWidget(msg, isMe)),
         ],
       ),
     );
   }
 
-  Widget _buildSelectionIcon(dynamic msg) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 8),
-      child: Icon(
-        widget.mssgIdSelected.contains(msg.id.toString())
-            ? Icons.check_circle
-            : Icons.radio_button_unchecked,
-        color: Colors.blue,
-      ),
-    );
+Widget _buildSelectionIcon(dynamic msg, bool isMe) {
+  if (!isMe) {
+    return const SizedBox();
   }
+  return Padding(
+    padding: const EdgeInsets.only(left: 8),
+    child: Icon(
+      widget.mssgIdSelected.contains(msg.id.toString())
+          ? Icons.check_circle
+          : Icons.radio_button_unchecked,
+      color: Colors.blue,
+    ),
+  );
+}
 
   Widget _buildMessageWidget(dynamic msg, bool isMe) {
     return MssgWidgets(
@@ -216,33 +208,27 @@ class _ChatMainColumnState extends State<ChatMainColumn> {
         widget.onSendMessage();
 
         /// ✅ instant mic/send icon change
-        Future.delayed(
-          const Duration(milliseconds: 10),
-              () {
-            if (mounted) {
-              setState(() {});
-            }
-          },
-        );
+        Future.delayed(const Duration(milliseconds: 10), () {
+          if (mounted) {
+            setState(() {});
+          }
+        });
       },
 
       sendButtonColor: AppColors.sendBT,
 
-      backgroundColor:
-      (context) => AppColors.backgroundColor(context),
+      backgroundColor: (context) => AppColors.backgroundColor(context),
 
       iconColor: AppColors.iconColor,
 
-      chatProfileColor:
-      (context) => AppColors.chatProfileColor(context),
+      chatProfileColor: (context) => AppColors.chatProfileColor(context),
     );
   }
 
   Widget _buildEmojiPicker(BuildContext context) {
     return AnimatedSlide(
       duration: const Duration(milliseconds: 50),
-      offset:
-      widget.emoji ? Offset.zero : const Offset(0, 1),
+      offset: widget.emoji ? Offset.zero : const Offset(0, 1),
       child: SizedBox(
         height: MediaQuery.of(context).size.height * 0.35,
         child: EmojiPicker(

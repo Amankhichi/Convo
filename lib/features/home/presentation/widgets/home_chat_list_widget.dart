@@ -3,6 +3,7 @@ import 'package:convo/core/const.dart/app_colors.dart';
 import 'package:convo/core/custom/custom_text.dart';
 import 'package:convo/core/enum/status.dart';
 import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
+import 'package:convo/features/auth/presentation/widgets/full_image_screen_page.dart';
 import 'package:convo/features/chat/presentation/pages/chat_page.dart';
 import 'package:convo/features/home/presentation/bloc/home/home_bloc.dart';
 import 'package:flutter/material.dart';
@@ -68,6 +69,107 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
     });
   }
 
+  void _showProfileDialog(BuildContext context, dynamic user) {
+    final imageUrl = "${ApiConfig.baseUrl}/uploads/${user.profile}";
+    showDialog(
+      context: context,
+      barrierColor: Colors.black87,
+      builder: (_) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: const EdgeInsets.symmetric(horizontal: 35),
+          child: Container(
+            width: 280,
+            decoration: BoxDecoration(
+              border: Border.all(width: 4, color: AppColors.primary),
+              color: const Color.fromARGB(255, 222, 204, 204),
+              borderRadius: BorderRadius.circular(25),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                /// IMAGE
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => FullScreenImagePage(image: imageUrl),
+                      ),
+                    );
+                  },
+                  child: Hero(
+                    tag: imageUrl,
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(26),
+                      ),
+                      child: Image.network(
+                        imageUrl,
+                        height: 300,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) {
+                          return Container(
+                            height: 300,
+                            color: Colors.grey.shade900,
+                            alignment: Alignment.center,
+                            child: const Icon(
+                              Icons.person,
+                              color: Colors.white,
+                              size: 80,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+
+                /// ACTIONS
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 15,
+                    vertical: 10,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _dialogButton(
+                        icon: Icons.call_rounded,
+                        color: Colors.green,
+                        onTap: () {},
+                      ),
+                      _dialogButton(
+                        icon: Icons.chat_rounded,
+                        color: Colors.blue,
+                        onTap: () {
+                          Navigator.pop(context);
+                          _openChat(user);
+                        },
+                      ),
+                      _dialogButton(
+                        icon: Icons.videocam_rounded,
+                        color: Colors.purple,
+                        onTap: () {},
+                      ),
+                      _dialogButton(
+                        icon: Icons.info_outline_rounded,
+                        color: Colors.orange,
+                        onTap: () {},
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final profile = context.watch<LoginBloc>().state.profile;
@@ -78,10 +180,6 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
 
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (_, state) {
-        if (state.homeChatsStatus == Status.loading) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
         if (state.homeChatsStatus == Status.error ||
             state.homePageChats.isEmpty) {
           return Center(
@@ -96,20 +194,19 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
           );
         }
 
-        return ListView.separated(
+        return ListView.builder(
           physics: const BouncingScrollPhysics(),
           itemCount: state.homePageChats.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 2),
+
           itemBuilder: (_, i) {
             final chat = state.homePageChats[i];
             final isMe = profile.id == chat.sender.id;
-
             final user = isMe ? chat.receiver : chat.sender;
-
             final selected = widget.selectedChats.contains(chat.id);
-
             final hasProfile =
-                user.profile.isNotEmpty && user.profile.toString().isNotEmpty;
+            user.profile.isNotEmpty && user.profile.toString().isNotEmpty;
+
+            final showUnread = !isMe && chat.unSeenCount > 0;
 
             return GestureDetector(
               onTap: () {
@@ -119,15 +216,19 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
                   _openChat(user);
                 }
               },
+
               onLongPress: () {
                 widget.onSelect(chat.id);
               },
 
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 10),
+
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
+
                   color: selected
                       ? AppColors.primary.withOpacity(0.15)
                       : Colors.transparent,
@@ -137,31 +238,83 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
                   children: [
                     Stack(
                       children: [
-                        CircleAvatar(
-                          radius: 28,
-                          backgroundColor: AppColors.primary.withOpacity(0.2),
+                        GestureDetector(
+                          onTap: () {
+                            _showProfileDialog(context, user);
+                          },
 
-                          backgroundImage: hasProfile
-                              ? NetworkImage(
-                                  "${ApiConfig.baseUrl}/uploads/${user.profile}",
-                                )
-                              : null,
+                          child: Hero(
+                            tag: NetworkImage(
+                              "${ApiConfig.baseUrl}/uploads/${user.profile}",
+                            ),
 
-                          child: !hasProfile
-                              ? Icon(Icons.person, color: AppColors.primary)
-                              : null,
+                            child: Container(
+                              padding: const EdgeInsets.all(2),
+
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xff4F46E5),
+                                    Color(0xff7C3AED),
+                                  ],
+                                ),
+                              ),
+
+                              child: CircleAvatar(
+                                radius: 31,
+
+                                backgroundColor: Colors.grey.shade200,
+
+                                backgroundImage: hasProfile
+                                    ? NetworkImage(
+                                        "${ApiConfig.baseUrl}/uploads/${user.profile}",
+                                      )
+                                    : null,
+
+                                child: !hasProfile
+                                    ? const Icon(
+                                        Icons.person,
+                                        color: Colors.grey,
+                                      )
+                                    : null,
+                              ),
+                            ),
+                          ),
                         ),
 
+                        /// ONLINE DOT
+                        Positioned(
+                          right: 2,
+                          bottom: 2,
+
+                          child: Container(
+                            height: 15,
+                            width: 15,
+
+                            decoration: BoxDecoration(
+                              color: user.online ? Colors.green : Colors.grey,
+
+                              shape: BoxShape.circle,
+
+                              border: Border.all(color: Colors.white, width: 2),
+                            ),
+                          ),
+                        ),
+
+                        /// SELECTED
                         if (selected)
-                          const Positioned(
-                            right: 0,
-                            bottom: 0,
-                            child: CircleAvatar(
-                              radius: 11,
-                              backgroundColor: AppColors.primary,
-                              child: Icon(
+                          Positioned.fill(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(.35),
+
+                                shape: BoxShape.circle,
+                              ),
+
+                              child: const Icon(
                                 Icons.check,
-                                size: 16,
                                 color: Colors.white,
                               ),
                             ),
@@ -174,6 +327,7 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+
                         children: [
                           Text(
                             user.name.toString().trim().isEmpty
@@ -193,8 +347,8 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
                           const SizedBox(height: 4),
 
                           Text(
-                            chat.unSeenCount > 0
-                                ? "${chat.unSeenCount} new message${chat.unSeenCount > 1 ? 's' : ''}"
+                            showUnread
+                                ? "${chat.unSeenCount} new message${chat.unSeenCount > 1 ? "'s" : ''}"
                                 : chat.message.toString(),
 
                             maxLines: 1,
@@ -203,7 +357,8 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
                             style: TextStyle(
                               fontSize: 13,
                               color: AppColors.iconColor,
-                              fontWeight: chat.unSeenCount > 0
+
+                              fontWeight: showUnread
                                   ? FontWeight.w700
                                   : FontWeight.w400,
                             ),
@@ -216,10 +371,12 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
 
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
+
                       children: [
-                        if (chat.unSeenCount > 0)
+                        if (showUnread)
                           Container(
                             margin: const EdgeInsets.only(bottom: 5),
+
                             padding: const EdgeInsets.symmetric(
                               horizontal: 7,
                               vertical: 3,
@@ -227,6 +384,7 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
 
                             decoration: BoxDecoration(
                               color: AppColors.primary,
+
                               borderRadius: BorderRadius.circular(20),
                             ),
 
@@ -243,11 +401,11 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
 
                         CustomText(
                           text: _formatDate(chat.createdAt),
+
                           bold: FontWeight.w500,
                           size: 11,
-                          clr: chat.unSeenCount > 0
-                              ? AppColors.iconColor
-                              : Colors.grey,
+
+                          clr: showUnread ? AppColors.iconColor : Colors.grey,
                         ),
                       ],
                     ),
@@ -258,6 +416,26 @@ class _HomeChatListWidgetState extends State<HomeChatListWidget> {
           },
         );
       },
+    );
+  }
+
+  Widget _dialogButton({
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(16),
+      onTap: onTap,
+      child: Container(
+        height: 50,
+        width: 50,
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.15),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Icon(icon, color: color),
+      ),
     );
   }
 }

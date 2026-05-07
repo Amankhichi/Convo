@@ -1,8 +1,10 @@
 import 'package:convo/core/const.dart/app_colors.dart';
 import 'package:convo/core/model/stroy_model.dart';
+import 'package:convo/core/model/user_model.dart';
 import 'package:convo/features/auth/presentation/pages/profile_page.dart';
 import 'package:convo/features/contact/presentation/pages/contact_page.dart';
 import 'package:convo/features/auth/presentation/pages/login_page.dart';
+import 'package:convo/features/home/presentation/bloc/home/home_bloc.dart';
 import 'package:convo/features/home/presentation/pages/add_stroy_page.dart';
 import 'package:convo/features/home/presentation/pages/call_history_page.dart';
 import 'package:convo/features/home/presentation/widgets/home_chat_list_widget.dart';
@@ -10,6 +12,7 @@ import 'package:convo/features/home/presentation/widgets/home_navbar_widget.dart
 import 'package:convo/features/home/presentation/widgets/my_story_widget.dart';
 import 'package:convo/features/home/presentation/widgets/unread_chat_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart' show ReadContext;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,6 +24,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  UserModel? user;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late PageController _pageController;
@@ -42,16 +46,28 @@ class _HomePageState extends State<HomePage> {
     ),
   ];
 
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController();
+  
+
+@override
+void initState() {
+  super.initState();
+
+  _pageController = PageController();
+  if (user != null) {
+    context.read<HomeBloc>().add(
+      HomeEvent.setOnline(
+        userId: user!.id,
+        online: true,
+      ),
+    );
   }
+}
 
   @override
   void dispose() {
-    _pageController.dispose();
     super.dispose();
+    _pageController.dispose();
+      context.read<HomeBloc>().add(HomeEvent.setOnline(userId: user!.id,online: false,),);
   }
 
   void toggleChat(int id) {

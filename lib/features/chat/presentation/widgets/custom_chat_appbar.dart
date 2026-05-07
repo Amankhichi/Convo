@@ -142,6 +142,7 @@ class CustomChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   Widget _buildDeleteButton() {
+    
     return IconButton(
       icon: const Icon(Icons.delete, color: Colors.white),
       onPressed: onDeleteMessages,

@@ -5,5 +5,6 @@ class HomeState with _$HomeState {
  const factory HomeState({
     @Default(Status.init) Status homeChatsStatus,
     @Default([]) List<HomeChatModel> homePageChats,
+  UserModel? profile,
   }) = _HomeState;
 }

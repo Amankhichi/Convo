@@ -1,3 +1,4 @@
+import 'package:convo/core/const.dart/api_config.dart';
 import 'package:convo/core/const.dart/app_colors.dart';
 import 'package:convo/core/custom/custom_text.dart';
 import 'package:convo/core/enum/status.dart';
@@ -41,9 +42,9 @@ class UnreadChatWidget extends StatelessWidget {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
 
-        if (state.homeChatsStatus == Status.loading) {
-          return const Center(child: CircularProgressIndicator());
-        }
+        // if (state.homeChatsStatus == Status.loading) {
+        //   return const Center(child: CircularProgressIndicator());
+        // }
 
         if (state.homeChatsStatus == Status.error) {
           return const Center(child: Text("No Chats"));
@@ -53,7 +54,7 @@ class UnreadChatWidget extends StatelessWidget {
         final unreadChats = state.homePageChats
             .where((chat) => chat.unSeenCount > 0)
             .toList();
-
+print("unreadchats $unreadChats");
         if (unreadChats.isEmpty) {
           return const Center(child: Text("No unread chats"));
         }
@@ -61,7 +62,7 @@ class UnreadChatWidget extends StatelessWidget {
         return Column(
           children: unreadChats.map((chat) 
            {
-            final bool isMe = profile.id == chat.sender;
+            final bool isMe = profile.id == chat.sender.id;
             final user = isMe ? chat.receiver : chat.sender;
 
             return GestureDetector(
@@ -209,7 +210,9 @@ class UnreadChatWidget extends StatelessWidget {
                       child: CircleAvatar(
                         backgroundColor: AppColors.primary,
                         radius: 35,
-                        child: ClipOval(child: Lottie.asset(user.profile)),
+                        backgroundImage: NetworkImage(
+                                        "${ApiConfig.baseUrl}/uploads/${user.profile}",
+                                      ),
                       ),
                     ),
 
@@ -290,3 +293,4 @@ class UnreadChatWidget extends StatelessWidget {
     );
   }
 }
+
