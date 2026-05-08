@@ -25,25 +25,22 @@ class HomeChatModel {
     return HomeChatModel(
       id: json['id'] ?? 0,
 
-      createdAt: DateTime.tryParse(
-            json['createdAt'] ??
-            json['created_at'] ??
-            '',
-          ) ??
+      createdAt:
+          DateTime.tryParse(json['createdAt'] ?? json['created_at'] ?? '') ??
           DateTime.now(),
 
       /// ✅ HANDLE BOTH CASES (VERY IMPORTANT)
       sender: json['sender'] != null
           ? UserModel.fromJson(json['sender'])
           : json['sender_id'] != null
-              ? UserModel.fromJson(json['sender_id'])
-              : UserModel.empty(),
+          ? UserModel.fromJson(json['sender_id'])
+          : UserModel.empty(),
 
       receiver: json['receiver'] != null
           ? UserModel.fromJson(json['receiver'])
           : json['receiver_id'] != null
-              ? UserModel.fromJson(json['receiver_id'])
-              : UserModel.empty(),
+          ? UserModel.fromJson(json['receiver_id'])
+          : UserModel.empty(),
 
       /// ✅ HANDLE TYPO FROM API
       message: json['mssg'] ?? json['massage'] ?? json['message'] ?? '',
@@ -54,8 +51,8 @@ class HomeChatModel {
       replyTo: json['reply_to'] != null
           ? int.tryParse(json['reply_to'].toString())
           : json['replyTo'] != null
-              ? int.tryParse(json['replyTo'].toString())
-              : null,
+          ? int.tryParse(json['replyTo'].toString())
+          : null,
 
       unSeenCount: 0,
     );

@@ -4,10 +4,7 @@ class FileUploadModel extends Equatable {
   final int id;
   final String url;
 
-  const FileUploadModel({
-    required this.id,
-    required this.url,
-  });
+  const FileUploadModel({required this.id, required this.url});
 
   factory FileUploadModel.fromJson(Map<String, dynamic> json) {
     return FileUploadModel(
@@ -17,20 +14,11 @@ class FileUploadModel extends Equatable {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'url': url,
-    };
+    return {'id': id, 'url': url};
   }
 
-  FileUploadModel copyWith({
-    int? id,
-    String? url,
-  }) {
-    return FileUploadModel(
-      id: id ?? this.id,
-      url: url ?? this.url,
-    );
+  FileUploadModel copyWith({int? id, String? url}) {
+    return FileUploadModel(id: id ?? this.id, url: url ?? this.url);
   }
 
   @override

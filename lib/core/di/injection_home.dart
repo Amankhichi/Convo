@@ -1,19 +1,12 @@
 part of "injection.dart";
 
 Future<void> __homeDependency() async {
-
   /// 🔹 DATASOURCES FIRST
-  getIt.registerLazySingleton<UserDatasource>(
-    () => UserDatasource(),
-  );
+  getIt.registerLazySingleton<UserDatasource>(() => UserDatasource());
 
-  getIt.registerLazySingleton<ChatDatasource>(
-    () => ChatDatasource(),
-  );
+  getIt.registerLazySingleton<ChatDatasource>(() => ChatDatasource());
 
-    getIt.registerLazySingleton<LoginDatasource>(
-    () => LoginDatasource(),
-  );
+  getIt.registerLazySingleton<LoginDatasource>(() => LoginDatasource());
 
   /// 🔹 USER USECASES
   getIt.registerLazySingleton<AddUserUsecase>(
@@ -45,11 +38,11 @@ Future<void> __homeDependency() async {
     () => EditMessageUseCase(datasource: getIt<ChatDatasource>()),
   );
 
-    getIt.registerLazySingleton<SeenMssgUsecase>(
+  getIt.registerLazySingleton<SeenMssgUsecase>(
     () => SeenMssgUsecase(datasource: getIt<ChatDatasource>()),
   );
 
-getIt.registerLazySingleton<UpdateOnlineStatusUseCase>(
-  () => UpdateOnlineStatusUseCase(getIt<UserDatasource>(),),
-);
+  getIt.registerLazySingleton<UpdateOnlineStatusUseCase>(
+    () => UpdateOnlineStatusUseCase(getIt<UserDatasource>()),
+  );
 }

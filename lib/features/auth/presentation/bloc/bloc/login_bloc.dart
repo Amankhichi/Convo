@@ -7,6 +7,7 @@ import 'package:convo/features/auth/presentation/pages/add_name_page.dart';
 import 'package:convo/features/auth/presentation/pages/login_page.dart';
 import 'package:convo/features/auth/domain_usecase/add_user_usecase.dart';
 import 'package:convo/features/auth/domain_usecase/get_user_usecase.dart';
+import 'package:convo/features/home/domain_usecase/update_onile_status_usecase.dart';
 import 'package:convo/features/home/presentation/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -19,11 +20,17 @@ part 'login_bloc.freezed.dart';
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final AddUserUsecase _addUserUsecase;
   final GetUserUsecase _getUserUsecase;
+  final UpdateOnlineStatusUseCase _updateOnlineStatusUseCase;
+
   LoginBloc({
     required AddUserUsecase adduserusecase,
     required GetUserUsecase getuserusecase,
+    required UpdateOnlineStatusUseCase updateonlinestatususecase,
   }) : _addUserUsecase = adduserusecase,
        _getUserUsecase = getuserusecase,
+       _updateOnlineStatusUseCase = updateonlinestatususecase,
+
+
   super(const LoginState()) {
         on<_Init>(__Init);
     on<_Phone>(__Phone);
@@ -35,6 +42,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<_Add>(__Add);
     on<_CheckNumber>(__checkNumber);
     on<_CheckUser>(__CheckUser);
+    on<_SetOnline>(__SetOnline);
+
   }
     Future<void> __Init(_Init event, Emitter<LoginState> emit) async {
     
@@ -202,4 +211,25 @@ Future<void> __Add(_Add event, Emitter<LoginState> emit) async {
       );
     }
   }
+
+Future<void> __SetOnline(
+  _SetOnline event,
+  Emitter<LoginState> emit,
+) async {
+
+  final updatedUser = await _updateOnlineStatusUseCase(
+    id: event.userId,
+    online: event.online,
+  );
+
+  emit(
+    state.copyWith(
+      profile: updatedUser,
+      online: updatedUser.online,
+    ),
+  );
+
+  print("✅ profile updated ${updatedUser.online}");
+}
+
 }

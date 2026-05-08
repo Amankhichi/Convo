@@ -10,10 +10,6 @@ class StoryModel {
   });
 
   factory StoryModel.empty() {
-    return StoryModel(
-      imageUrl: '',
-      username: '',
-      isMyStory: true,
-    );
+    return StoryModel(imageUrl: '', username: '', isMyStory: true);
   }
 }

@@ -1,3 +1,4 @@
+import 'package:convo/core/model/user_model.dart';
 import 'package:convo/features/home/datasource/user_datasource.dart';
 
 class UpdateOnlineStatusUseCase {
@@ -5,7 +6,7 @@ class UpdateOnlineStatusUseCase {
 
   UpdateOnlineStatusUseCase(this.datasource);
 
-  Future<bool> call({
+  Future<UserModel> call({
     required bool online,
     required int id,
   }) {

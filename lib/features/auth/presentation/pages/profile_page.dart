@@ -88,95 +88,96 @@ class ProfilePage extends StatelessWidget {
                             const SizedBox(height: 30),
 
                             /// PROFILE IMAGE
-/// PROFILE IMAGE
-Hero(
-  tag: "profile-image",
+                            /// PROFILE IMAGE
+                            Hero(
+                              tag: "profile-image",
 
-  child: GestureDetector(
-    onTap: () {
-      if (!hasImage) return;
+                              child: GestureDetector(
+                                onTap: () {
+                                  if (!hasImage) return;
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => FullScreenImagePage(
-            image:
-                "${ApiConfig.baseUrl}/uploads/${state.lotti}",
-          ),
-        ),
-      );
-    },
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => FullScreenImagePage(
+                                        image:
+                                            "${ApiConfig.baseUrl}/uploads/${state.lotti}",
+                                      ),
+                                    ),
+                                  );
+                                },
 
-    child: Stack(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(5),
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(5),
 
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
 
-            border: Border.all(
-              color: Colors.white24,
-              width: 3,
-            ),
+                                        border: Border.all(
+                                          color: Colors.white24,
+                                          width: 3,
+                                        ),
 
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0xff7C3AED)
-                    .withOpacity(0.5),
-                blurRadius: 30,
-                spreadRadius: 8,
-              ),
-            ],
-          ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: const Color(
+                                              0xff7C3AED,
+                                            ).withOpacity(0.5),
+                                            blurRadius: 30,
+                                            spreadRadius: 8,
+                                          ),
+                                        ],
+                                      ),
 
-          child: CircleAvatar(
-            radius: 62,
-            backgroundColor: Colors.white10,
+                                      child: CircleAvatar(
+                                        radius: 62,
+                                        backgroundColor: Colors.white10,
 
-            backgroundImage: hasImage
-                ? NetworkImage(
-                    "${ApiConfig.baseUrl}/uploads/${state.lotti}",
-                  )
-                : null,
+                                        backgroundImage: hasImage
+                                            ? NetworkImage(
+                                                "${ApiConfig.baseUrl}/uploads/${state.lotti}",
+                                              )
+                                            : null,
 
-            child: !hasImage
-                ? const Icon(
-                    Icons.person_rounded,
-                    size: 70,
-                    color: Colors.white,
-                  )
-                : null,
-          ),
-        ),
+                                        child: !hasImage
+                                            ? const Icon(
+                                                Icons.person_rounded,
+                                                size: 70,
+                                                color: Colors.white,
+                                              )
+                                            : null,
+                                      ),
+                                    ),
 
-        /// ONLINE INDICATOR
-        Positioned(
-          right: 10,
-          bottom: 12,
+                                    /// ONLINE INDICATOR
+                                    Positioned(
+                                      right: 10,
+                                      bottom: 12,
 
-          child: Container(
-            height: 22,
-            width: 22,
+                                      child: Container(
+                                        height: 22,
+                                        width: 22,
 
-            decoration: BoxDecoration(
-              color: state.online
-                  ? Colors.greenAccent
-                  : Colors.grey,
+                                        decoration: BoxDecoration(
+                                          color: state.online
+                                              ? Colors.greenAccent
+                                              : Colors.grey,
 
-              shape: BoxShape.circle,
+                                          shape: BoxShape.circle,
 
-              border: Border.all(
-                color: Colors.black,
-                width: 3,
-              ),
-            ),
-          ),
-        ),
-      ],
-    ),
-  ),
-),
+                                          border: Border.all(
+                                            color: Colors.black,
+                                            width: 3,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                             const SizedBox(height: 22),
 
                             /// NAME

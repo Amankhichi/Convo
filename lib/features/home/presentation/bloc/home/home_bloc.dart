@@ -1,7 +1,9 @@
 import 'package:bloc/bloc.dart';
+// import 'package:convo/core/di/injection.dart';
 import 'package:convo/core/enum/status.dart';
 import 'package:convo/core/model/home_chat_model.dart';
 import 'package:convo/core/model/user_model.dart';
+// import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
 import 'package:convo/features/home/domain_usecase/get_home_chats_list_usecase.dart';
 import 'package:convo/features/home/domain_usecase/update_onile_status_usecase.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -67,16 +69,33 @@ Future<void> __SetOnline(
   _SetOnline event,
   Emitter<HomeState> emit,
 ) async {
-  await _updateOnlineStatusUseCase(
+
+  final updatedUser = await _updateOnlineStatusUseCase(
     id: event.userId,
     online: event.online,
   );
 
-  emit(state.copyWith(
-    profile: state.profile?.copyWith(
-      online: event.online,
+  emit(
+    state.copyWith(
+      profile: updatedUser,
+
+      homePageChats: state.homePageChats.map((chat) {
+
+        return chat.copyWith(
+
+          sender: chat.sender.id == event.userId
+              ? updatedUser
+              : chat.sender,
+
+          receiver: chat.receiver.id == event.userId
+              ? updatedUser
+              : chat.receiver,
+        );
+
+      }).toList(),
     ),
-  ));
+  );
+  print("profile dtaaa $updatedUser");
 }
 
   List<HomeChatModel> buildConversationList(

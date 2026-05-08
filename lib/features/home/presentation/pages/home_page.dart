@@ -1,10 +1,11 @@
 import 'package:convo/core/const.dart/app_colors.dart';
 import 'package:convo/core/model/stroy_model.dart';
 import 'package:convo/core/model/user_model.dart';
+import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
 import 'package:convo/features/auth/presentation/pages/profile_page.dart';
+import 'package:convo/features/contact/presentation/bloc/contact_bloc/contact_bloc.dart';
 import 'package:convo/features/contact/presentation/pages/contact_page.dart';
 import 'package:convo/features/auth/presentation/pages/login_page.dart';
-import 'package:convo/features/home/presentation/bloc/home/home_bloc.dart';
 import 'package:convo/features/home/presentation/pages/add_stroy_page.dart';
 import 'package:convo/features/home/presentation/pages/call_history_page.dart';
 import 'package:convo/features/home/presentation/widgets/home_chat_list_widget.dart';
@@ -24,8 +25,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  UserModel? user;
-
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late PageController _pageController;
 
@@ -46,28 +45,28 @@ class _HomePageState extends State<HomePage> {
     ),
   ];
 
-  
+  late UserModel user;
 
-@override
-void initState() {
-  super.initState();
-
-  _pageController = PageController();
-  if (user != null) {
-    context.read<HomeBloc>().add(
-      HomeEvent.setOnline(
-        userId: user!.id,
-        online: true,
-      ),
+  @override
+  void initState() {
+    super.initState();
+    context.read<ContactBloc>().add(ContactEvent.init());
+    _pageController = PageController();
+    user = context.read<LoginBloc>().state.profile!;
+    context.read<LoginBloc>().add(
+      LoginEvent.setOnline(userId: user.id, online: true),
     );
   }
-}
 
   @override
   void dispose() {
-    super.dispose();
+    context.read<LoginBloc>().add(
+      LoginEvent.setOnline(userId: user.id, online: false),
+    );
+
     _pageController.dispose();
-      context.read<HomeBloc>().add(HomeEvent.setOnline(userId: user!.id,online: false,),);
+
+    super.dispose();
   }
 
   void toggleChat(int id) {
@@ -109,28 +108,20 @@ void initState() {
 
   @override
   Widget build(BuildContext context) {
-
     final drawerWidth = MediaQuery.of(context).size.width * .5;
 
     return Scaffold(
       key: _scaffoldKey,
-
       appBar: _buildAppBar(),
-
       drawer: _buildDrawer(drawerWidth),
-
       body: SafeArea(
         child: Container(
           color: AppColors.backgroundColor(context),
           child: Column(
             children: [
-
               _buildStories(),
 
-              HomeNavbar(
-                selectedIndex: selectedTab,
-                onTabChanged: changeTab,
-              ),
+              HomeNavbar(selectedIndex: selectedTab, onTabChanged: changeTab),
 
               const SizedBox(height: 10),
 
@@ -159,7 +150,6 @@ void initState() {
     );
   }
 
-  /// ---------------- APPBAR ----------------
   AppBar _buildAppBar() {
     return AppBar(
       titleSpacing: 0,
@@ -167,7 +157,7 @@ void initState() {
 
       leading: selectionMode
           ? IconButton(
-            color: AppColors.iconColor,
+              color: AppColors.iconColor,
               icon: const Icon(Icons.arrow_back),
               onPressed: clearSelection,
             )
@@ -178,7 +168,10 @@ void initState() {
             ),
 
       title: selectionMode
-          ? Text("${selectedChats.length} selected",style: TextStyle(color: AppColors.iconColor),)
+          ? Text(
+              "${selectedChats.length} selected",
+              style: TextStyle(color: AppColors.iconColor),
+            )
           : Text(
               " ConVO",
               style: GoogleFonts.courgette(
@@ -190,8 +183,16 @@ void initState() {
 
       actions: selectionMode
           ? [
-              IconButton(color: AppColors.iconColor, icon: const Icon(Icons.star), onPressed: () {}),
-              IconButton(color: AppColors.iconColor, icon: const Icon(Icons.delete), onPressed: () {}),
+              IconButton(
+                color: AppColors.iconColor,
+                icon: const Icon(Icons.star),
+                onPressed: () {},
+              ),
+              IconButton(
+                color: AppColors.iconColor,
+                icon: const Icon(Icons.delete),
+                onPressed: () {},
+              ),
             ]
           : [
               IconButton(
@@ -204,21 +205,16 @@ void initState() {
     );
   }
 
-  /// ---------------- DRAWER ----------------
   Widget _buildDrawer(double width) {
     return SizedBox(
       width: width,
       child: Drawer(
         child: Column(
           children: [
-
             const DrawerHeader(
               decoration: BoxDecoration(color: Colors.blueGrey),
               child: Center(
-                child: Text(
-                  "Menu",
-                  style: TextStyle(color: Colors.white),
-                ),
+                child: Text("Menu", style: TextStyle(color: Colors.white)),
               ),
             ),
 
@@ -250,7 +246,6 @@ void initState() {
     );
   }
 
-  /// ---------------- STORIES ----------------
   Widget _buildStories() {
     return SizedBox(
       height: 100,
@@ -258,7 +253,6 @@ void initState() {
         scrollDirection: Axis.horizontal,
         itemCount: stories.length + 1,
         itemBuilder: (context, i) {
-
           if (i == 0) {
             return GestureDetector(
               onTap: () async {
@@ -307,7 +301,6 @@ void initState() {
     );
   }
 
-  /// ---------------- FAB ----------------
   Widget _buildFAB() {
     return Padding(
       padding: const EdgeInsets.only(right: 20, bottom: 20),
@@ -318,8 +311,7 @@ void initState() {
             context,
             PageRouteBuilder(
               pageBuilder: (_, __, ___) => ContactsPage(),
-              transitionsBuilder: (_, animation, __, child) =>
-                  SlideTransition(
+              transitionsBuilder: (_, animation, __, child) => SlideTransition(
                 position: Tween(
                   begin: const Offset(1, 0),
                   end: Offset.zero,

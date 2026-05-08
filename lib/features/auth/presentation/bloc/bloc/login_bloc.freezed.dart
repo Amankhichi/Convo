@@ -29,6 +29,7 @@ mixin _$LoginEvent {
     required TResult Function() add,
     required TResult Function() checkNumber,
     required TResult Function() checkUser,
+    required TResult Function(int userId, bool online) setOnline,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
@@ -42,6 +43,7 @@ mixin _$LoginEvent {
     TResult? Function()? add,
     TResult? Function()? checkNumber,
     TResult? Function()? checkUser,
+    TResult? Function(int userId, bool online)? setOnline,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
@@ -55,6 +57,7 @@ mixin _$LoginEvent {
     TResult Function()? add,
     TResult Function()? checkNumber,
     TResult Function()? checkUser,
+    TResult Function(int userId, bool online)? setOnline,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -69,6 +72,7 @@ mixin _$LoginEvent {
     required TResult Function(_Add value) add,
     required TResult Function(_CheckNumber value) checkNumber,
     required TResult Function(_CheckUser value) checkUser,
+    required TResult Function(_SetOnline value) setOnline,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
@@ -82,6 +86,7 @@ mixin _$LoginEvent {
     TResult? Function(_Add value)? add,
     TResult? Function(_CheckNumber value)? checkNumber,
     TResult? Function(_CheckUser value)? checkUser,
+    TResult? Function(_SetOnline value)? setOnline,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
@@ -95,6 +100,7 @@ mixin _$LoginEvent {
     TResult Function(_Add value)? add,
     TResult Function(_CheckNumber value)? checkNumber,
     TResult Function(_CheckUser value)? checkUser,
+    TResult Function(_SetOnline value)? setOnline,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
 }
@@ -172,6 +178,7 @@ class _$InitImpl implements _Init {
     required TResult Function() add,
     required TResult Function() checkNumber,
     required TResult Function() checkUser,
+    required TResult Function(int userId, bool online) setOnline,
   }) {
     return init();
   }
@@ -189,6 +196,7 @@ class _$InitImpl implements _Init {
     TResult? Function()? add,
     TResult? Function()? checkNumber,
     TResult? Function()? checkUser,
+    TResult? Function(int userId, bool online)? setOnline,
   }) {
     return init?.call();
   }
@@ -206,6 +214,7 @@ class _$InitImpl implements _Init {
     TResult Function()? add,
     TResult Function()? checkNumber,
     TResult Function()? checkUser,
+    TResult Function(int userId, bool online)? setOnline,
     required TResult orElse(),
   }) {
     if (init != null) {
@@ -227,6 +236,7 @@ class _$InitImpl implements _Init {
     required TResult Function(_Add value) add,
     required TResult Function(_CheckNumber value) checkNumber,
     required TResult Function(_CheckUser value) checkUser,
+    required TResult Function(_SetOnline value) setOnline,
   }) {
     return init(this);
   }
@@ -244,6 +254,7 @@ class _$InitImpl implements _Init {
     TResult? Function(_Add value)? add,
     TResult? Function(_CheckNumber value)? checkNumber,
     TResult? Function(_CheckUser value)? checkUser,
+    TResult? Function(_SetOnline value)? setOnline,
   }) {
     return init?.call(this);
   }
@@ -261,6 +272,7 @@ class _$InitImpl implements _Init {
     TResult Function(_Add value)? add,
     TResult Function(_CheckNumber value)? checkNumber,
     TResult Function(_CheckUser value)? checkUser,
+    TResult Function(_SetOnline value)? setOnline,
     required TResult orElse(),
   }) {
     if (init != null) {
@@ -354,6 +366,7 @@ class _$PhoneImpl implements _Phone {
     required TResult Function() add,
     required TResult Function() checkNumber,
     required TResult Function() checkUser,
+    required TResult Function(int userId, bool online) setOnline,
   }) {
     return phone(value);
   }
@@ -371,6 +384,7 @@ class _$PhoneImpl implements _Phone {
     TResult? Function()? add,
     TResult? Function()? checkNumber,
     TResult? Function()? checkUser,
+    TResult? Function(int userId, bool online)? setOnline,
   }) {
     return phone?.call(value);
   }
@@ -388,6 +402,7 @@ class _$PhoneImpl implements _Phone {
     TResult Function()? add,
     TResult Function()? checkNumber,
     TResult Function()? checkUser,
+    TResult Function(int userId, bool online)? setOnline,
     required TResult orElse(),
   }) {
     if (phone != null) {
@@ -409,6 +424,7 @@ class _$PhoneImpl implements _Phone {
     required TResult Function(_Add value) add,
     required TResult Function(_CheckNumber value) checkNumber,
     required TResult Function(_CheckUser value) checkUser,
+    required TResult Function(_SetOnline value) setOnline,
   }) {
     return phone(this);
   }
@@ -426,6 +442,7 @@ class _$PhoneImpl implements _Phone {
     TResult? Function(_Add value)? add,
     TResult? Function(_CheckNumber value)? checkNumber,
     TResult? Function(_CheckUser value)? checkUser,
+    TResult? Function(_SetOnline value)? setOnline,
   }) {
     return phone?.call(this);
   }
@@ -443,6 +460,7 @@ class _$PhoneImpl implements _Phone {
     TResult Function(_Add value)? add,
     TResult Function(_CheckNumber value)? checkNumber,
     TResult Function(_CheckUser value)? checkUser,
+    TResult Function(_SetOnline value)? setOnline,
     required TResult orElse(),
   }) {
     if (phone != null) {
@@ -542,6 +560,7 @@ class _$NameImpl implements _Name {
     required TResult Function() add,
     required TResult Function() checkNumber,
     required TResult Function() checkUser,
+    required TResult Function(int userId, bool online) setOnline,
   }) {
     return name(value);
   }
@@ -559,6 +578,7 @@ class _$NameImpl implements _Name {
     TResult? Function()? add,
     TResult? Function()? checkNumber,
     TResult? Function()? checkUser,
+    TResult? Function(int userId, bool online)? setOnline,
   }) {
     return name?.call(value);
   }
@@ -576,6 +596,7 @@ class _$NameImpl implements _Name {
     TResult Function()? add,
     TResult Function()? checkNumber,
     TResult Function()? checkUser,
+    TResult Function(int userId, bool online)? setOnline,
     required TResult orElse(),
   }) {
     if (name != null) {
@@ -597,6 +618,7 @@ class _$NameImpl implements _Name {
     required TResult Function(_Add value) add,
     required TResult Function(_CheckNumber value) checkNumber,
     required TResult Function(_CheckUser value) checkUser,
+    required TResult Function(_SetOnline value) setOnline,
   }) {
     return name(this);
   }
@@ -614,6 +636,7 @@ class _$NameImpl implements _Name {
     TResult? Function(_Add value)? add,
     TResult? Function(_CheckNumber value)? checkNumber,
     TResult? Function(_CheckUser value)? checkUser,
+    TResult? Function(_SetOnline value)? setOnline,
   }) {
     return name?.call(this);
   }
@@ -631,6 +654,7 @@ class _$NameImpl implements _Name {
     TResult Function(_Add value)? add,
     TResult Function(_CheckNumber value)? checkNumber,
     TResult Function(_CheckUser value)? checkUser,
+    TResult Function(_SetOnline value)? setOnline,
     required TResult orElse(),
   }) {
     if (name != null) {
@@ -732,6 +756,7 @@ class _$NickNameImpl implements _NickName {
     required TResult Function() add,
     required TResult Function() checkNumber,
     required TResult Function() checkUser,
+    required TResult Function(int userId, bool online) setOnline,
   }) {
     return nickName(value);
   }
@@ -749,6 +774,7 @@ class _$NickNameImpl implements _NickName {
     TResult? Function()? add,
     TResult? Function()? checkNumber,
     TResult? Function()? checkUser,
+    TResult? Function(int userId, bool online)? setOnline,
   }) {
     return nickName?.call(value);
   }
@@ -766,6 +792,7 @@ class _$NickNameImpl implements _NickName {
     TResult Function()? add,
     TResult Function()? checkNumber,
     TResult Function()? checkUser,
+    TResult Function(int userId, bool online)? setOnline,
     required TResult orElse(),
   }) {
     if (nickName != null) {
@@ -787,6 +814,7 @@ class _$NickNameImpl implements _NickName {
     required TResult Function(_Add value) add,
     required TResult Function(_CheckNumber value) checkNumber,
     required TResult Function(_CheckUser value) checkUser,
+    required TResult Function(_SetOnline value) setOnline,
   }) {
     return nickName(this);
   }
@@ -804,6 +832,7 @@ class _$NickNameImpl implements _NickName {
     TResult? Function(_Add value)? add,
     TResult? Function(_CheckNumber value)? checkNumber,
     TResult? Function(_CheckUser value)? checkUser,
+    TResult? Function(_SetOnline value)? setOnline,
   }) {
     return nickName?.call(this);
   }
@@ -821,6 +850,7 @@ class _$NickNameImpl implements _NickName {
     TResult Function(_Add value)? add,
     TResult Function(_CheckNumber value)? checkNumber,
     TResult Function(_CheckUser value)? checkUser,
+    TResult Function(_SetOnline value)? setOnline,
     required TResult orElse(),
   }) {
     if (nickName != null) {
@@ -922,6 +952,7 @@ class _$AboutImpl implements _About {
     required TResult Function() add,
     required TResult Function() checkNumber,
     required TResult Function() checkUser,
+    required TResult Function(int userId, bool online) setOnline,
   }) {
     return about(value);
   }
@@ -939,6 +970,7 @@ class _$AboutImpl implements _About {
     TResult? Function()? add,
     TResult? Function()? checkNumber,
     TResult? Function()? checkUser,
+    TResult? Function(int userId, bool online)? setOnline,
   }) {
     return about?.call(value);
   }
@@ -956,6 +988,7 @@ class _$AboutImpl implements _About {
     TResult Function()? add,
     TResult Function()? checkNumber,
     TResult Function()? checkUser,
+    TResult Function(int userId, bool online)? setOnline,
     required TResult orElse(),
   }) {
     if (about != null) {
@@ -977,6 +1010,7 @@ class _$AboutImpl implements _About {
     required TResult Function(_Add value) add,
     required TResult Function(_CheckNumber value) checkNumber,
     required TResult Function(_CheckUser value) checkUser,
+    required TResult Function(_SetOnline value) setOnline,
   }) {
     return about(this);
   }
@@ -994,6 +1028,7 @@ class _$AboutImpl implements _About {
     TResult? Function(_Add value)? add,
     TResult? Function(_CheckNumber value)? checkNumber,
     TResult? Function(_CheckUser value)? checkUser,
+    TResult? Function(_SetOnline value)? setOnline,
   }) {
     return about?.call(this);
   }
@@ -1011,6 +1046,7 @@ class _$AboutImpl implements _About {
     TResult Function(_Add value)? add,
     TResult Function(_CheckNumber value)? checkNumber,
     TResult Function(_CheckUser value)? checkUser,
+    TResult Function(_SetOnline value)? setOnline,
     required TResult orElse(),
   }) {
     if (about != null) {
@@ -1112,6 +1148,7 @@ class _$LottiImpl implements _Lotti {
     required TResult Function() add,
     required TResult Function() checkNumber,
     required TResult Function() checkUser,
+    required TResult Function(int userId, bool online) setOnline,
   }) {
     return lotti(value);
   }
@@ -1129,6 +1166,7 @@ class _$LottiImpl implements _Lotti {
     TResult? Function()? add,
     TResult? Function()? checkNumber,
     TResult? Function()? checkUser,
+    TResult? Function(int userId, bool online)? setOnline,
   }) {
     return lotti?.call(value);
   }
@@ -1146,6 +1184,7 @@ class _$LottiImpl implements _Lotti {
     TResult Function()? add,
     TResult Function()? checkNumber,
     TResult Function()? checkUser,
+    TResult Function(int userId, bool online)? setOnline,
     required TResult orElse(),
   }) {
     if (lotti != null) {
@@ -1167,6 +1206,7 @@ class _$LottiImpl implements _Lotti {
     required TResult Function(_Add value) add,
     required TResult Function(_CheckNumber value) checkNumber,
     required TResult Function(_CheckUser value) checkUser,
+    required TResult Function(_SetOnline value) setOnline,
   }) {
     return lotti(this);
   }
@@ -1184,6 +1224,7 @@ class _$LottiImpl implements _Lotti {
     TResult? Function(_Add value)? add,
     TResult? Function(_CheckNumber value)? checkNumber,
     TResult? Function(_CheckUser value)? checkUser,
+    TResult? Function(_SetOnline value)? setOnline,
   }) {
     return lotti?.call(this);
   }
@@ -1201,6 +1242,7 @@ class _$LottiImpl implements _Lotti {
     TResult Function(_Add value)? add,
     TResult Function(_CheckNumber value)? checkNumber,
     TResult Function(_CheckUser value)? checkUser,
+    TResult Function(_SetOnline value)? setOnline,
     required TResult orElse(),
   }) {
     if (lotti != null) {
@@ -1302,6 +1344,7 @@ class _$OnlineImpl implements _Online {
     required TResult Function() add,
     required TResult Function() checkNumber,
     required TResult Function() checkUser,
+    required TResult Function(int userId, bool online) setOnline,
   }) {
     return online(value);
   }
@@ -1319,6 +1362,7 @@ class _$OnlineImpl implements _Online {
     TResult? Function()? add,
     TResult? Function()? checkNumber,
     TResult? Function()? checkUser,
+    TResult? Function(int userId, bool online)? setOnline,
   }) {
     return online?.call(value);
   }
@@ -1336,6 +1380,7 @@ class _$OnlineImpl implements _Online {
     TResult Function()? add,
     TResult Function()? checkNumber,
     TResult Function()? checkUser,
+    TResult Function(int userId, bool online)? setOnline,
     required TResult orElse(),
   }) {
     if (online != null) {
@@ -1357,6 +1402,7 @@ class _$OnlineImpl implements _Online {
     required TResult Function(_Add value) add,
     required TResult Function(_CheckNumber value) checkNumber,
     required TResult Function(_CheckUser value) checkUser,
+    required TResult Function(_SetOnline value) setOnline,
   }) {
     return online(this);
   }
@@ -1374,6 +1420,7 @@ class _$OnlineImpl implements _Online {
     TResult? Function(_Add value)? add,
     TResult? Function(_CheckNumber value)? checkNumber,
     TResult? Function(_CheckUser value)? checkUser,
+    TResult? Function(_SetOnline value)? setOnline,
   }) {
     return online?.call(this);
   }
@@ -1391,6 +1438,7 @@ class _$OnlineImpl implements _Online {
     TResult Function(_Add value)? add,
     TResult Function(_CheckNumber value)? checkNumber,
     TResult Function(_CheckUser value)? checkUser,
+    TResult Function(_SetOnline value)? setOnline,
     required TResult orElse(),
   }) {
     if (online != null) {
@@ -1461,6 +1509,7 @@ class _$AddImpl implements _Add {
     required TResult Function() add,
     required TResult Function() checkNumber,
     required TResult Function() checkUser,
+    required TResult Function(int userId, bool online) setOnline,
   }) {
     return add();
   }
@@ -1478,6 +1527,7 @@ class _$AddImpl implements _Add {
     TResult? Function()? add,
     TResult? Function()? checkNumber,
     TResult? Function()? checkUser,
+    TResult? Function(int userId, bool online)? setOnline,
   }) {
     return add?.call();
   }
@@ -1495,6 +1545,7 @@ class _$AddImpl implements _Add {
     TResult Function()? add,
     TResult Function()? checkNumber,
     TResult Function()? checkUser,
+    TResult Function(int userId, bool online)? setOnline,
     required TResult orElse(),
   }) {
     if (add != null) {
@@ -1516,6 +1567,7 @@ class _$AddImpl implements _Add {
     required TResult Function(_Add value) add,
     required TResult Function(_CheckNumber value) checkNumber,
     required TResult Function(_CheckUser value) checkUser,
+    required TResult Function(_SetOnline value) setOnline,
   }) {
     return add(this);
   }
@@ -1533,6 +1585,7 @@ class _$AddImpl implements _Add {
     TResult? Function(_Add value)? add,
     TResult? Function(_CheckNumber value)? checkNumber,
     TResult? Function(_CheckUser value)? checkUser,
+    TResult? Function(_SetOnline value)? setOnline,
   }) {
     return add?.call(this);
   }
@@ -1550,6 +1603,7 @@ class _$AddImpl implements _Add {
     TResult Function(_Add value)? add,
     TResult Function(_CheckNumber value)? checkNumber,
     TResult Function(_CheckUser value)? checkUser,
+    TResult Function(_SetOnline value)? setOnline,
     required TResult orElse(),
   }) {
     if (add != null) {
@@ -1616,6 +1670,7 @@ class _$CheckNumberImpl implements _CheckNumber {
     required TResult Function() add,
     required TResult Function() checkNumber,
     required TResult Function() checkUser,
+    required TResult Function(int userId, bool online) setOnline,
   }) {
     return checkNumber();
   }
@@ -1633,6 +1688,7 @@ class _$CheckNumberImpl implements _CheckNumber {
     TResult? Function()? add,
     TResult? Function()? checkNumber,
     TResult? Function()? checkUser,
+    TResult? Function(int userId, bool online)? setOnline,
   }) {
     return checkNumber?.call();
   }
@@ -1650,6 +1706,7 @@ class _$CheckNumberImpl implements _CheckNumber {
     TResult Function()? add,
     TResult Function()? checkNumber,
     TResult Function()? checkUser,
+    TResult Function(int userId, bool online)? setOnline,
     required TResult orElse(),
   }) {
     if (checkNumber != null) {
@@ -1671,6 +1728,7 @@ class _$CheckNumberImpl implements _CheckNumber {
     required TResult Function(_Add value) add,
     required TResult Function(_CheckNumber value) checkNumber,
     required TResult Function(_CheckUser value) checkUser,
+    required TResult Function(_SetOnline value) setOnline,
   }) {
     return checkNumber(this);
   }
@@ -1688,6 +1746,7 @@ class _$CheckNumberImpl implements _CheckNumber {
     TResult? Function(_Add value)? add,
     TResult? Function(_CheckNumber value)? checkNumber,
     TResult? Function(_CheckUser value)? checkUser,
+    TResult? Function(_SetOnline value)? setOnline,
   }) {
     return checkNumber?.call(this);
   }
@@ -1705,6 +1764,7 @@ class _$CheckNumberImpl implements _CheckNumber {
     TResult Function(_Add value)? add,
     TResult Function(_CheckNumber value)? checkNumber,
     TResult Function(_CheckUser value)? checkUser,
+    TResult Function(_SetOnline value)? setOnline,
     required TResult orElse(),
   }) {
     if (checkNumber != null) {
@@ -1771,6 +1831,7 @@ class _$CheckUserImpl implements _CheckUser {
     required TResult Function() add,
     required TResult Function() checkNumber,
     required TResult Function() checkUser,
+    required TResult Function(int userId, bool online) setOnline,
   }) {
     return checkUser();
   }
@@ -1788,6 +1849,7 @@ class _$CheckUserImpl implements _CheckUser {
     TResult? Function()? add,
     TResult? Function()? checkNumber,
     TResult? Function()? checkUser,
+    TResult? Function(int userId, bool online)? setOnline,
   }) {
     return checkUser?.call();
   }
@@ -1805,6 +1867,7 @@ class _$CheckUserImpl implements _CheckUser {
     TResult Function()? add,
     TResult Function()? checkNumber,
     TResult Function()? checkUser,
+    TResult Function(int userId, bool online)? setOnline,
     required TResult orElse(),
   }) {
     if (checkUser != null) {
@@ -1826,6 +1889,7 @@ class _$CheckUserImpl implements _CheckUser {
     required TResult Function(_Add value) add,
     required TResult Function(_CheckNumber value) checkNumber,
     required TResult Function(_CheckUser value) checkUser,
+    required TResult Function(_SetOnline value) setOnline,
   }) {
     return checkUser(this);
   }
@@ -1843,6 +1907,7 @@ class _$CheckUserImpl implements _CheckUser {
     TResult? Function(_Add value)? add,
     TResult? Function(_CheckNumber value)? checkNumber,
     TResult? Function(_CheckUser value)? checkUser,
+    TResult? Function(_SetOnline value)? setOnline,
   }) {
     return checkUser?.call(this);
   }
@@ -1860,6 +1925,7 @@ class _$CheckUserImpl implements _CheckUser {
     TResult Function(_Add value)? add,
     TResult Function(_CheckNumber value)? checkNumber,
     TResult Function(_CheckUser value)? checkUser,
+    TResult Function(_SetOnline value)? setOnline,
     required TResult orElse(),
   }) {
     if (checkUser != null) {
@@ -1871,6 +1937,213 @@ class _$CheckUserImpl implements _CheckUser {
 
 abstract class _CheckUser implements LoginEvent {
   const factory _CheckUser() = _$CheckUserImpl;
+}
+
+/// @nodoc
+abstract class _$$SetOnlineImplCopyWith<$Res> {
+  factory _$$SetOnlineImplCopyWith(
+    _$SetOnlineImpl value,
+    $Res Function(_$SetOnlineImpl) then,
+  ) = __$$SetOnlineImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({int userId, bool online});
+}
+
+/// @nodoc
+class __$$SetOnlineImplCopyWithImpl<$Res>
+    extends _$LoginEventCopyWithImpl<$Res, _$SetOnlineImpl>
+    implements _$$SetOnlineImplCopyWith<$Res> {
+  __$$SetOnlineImplCopyWithImpl(
+    _$SetOnlineImpl _value,
+    $Res Function(_$SetOnlineImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of LoginEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? userId = null, Object? online = null}) {
+    return _then(
+      _$SetOnlineImpl(
+        userId: null == userId
+            ? _value.userId
+            : userId // ignore: cast_nullable_to_non_nullable
+                  as int,
+        online: null == online
+            ? _value.online
+            : online // ignore: cast_nullable_to_non_nullable
+                  as bool,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+
+class _$SetOnlineImpl implements _SetOnline {
+  const _$SetOnlineImpl({required this.userId, required this.online});
+
+  @override
+  final int userId;
+  @override
+  final bool online;
+
+  @override
+  String toString() {
+    return 'LoginEvent.setOnline(userId: $userId, online: $online)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SetOnlineImpl &&
+            (identical(other.userId, userId) || other.userId == userId) &&
+            (identical(other.online, online) || other.online == online));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, userId, online);
+
+  /// Create a copy of LoginEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SetOnlineImplCopyWith<_$SetOnlineImpl> get copyWith =>
+      __$$SetOnlineImplCopyWithImpl<_$SetOnlineImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() init,
+    required TResult Function(String value) phone,
+    required TResult Function(String value) name,
+    required TResult Function(String value) nickName,
+    required TResult Function(String value) about,
+    required TResult Function(String value) lotti,
+    required TResult Function(bool value) online,
+    required TResult Function() add,
+    required TResult Function() checkNumber,
+    required TResult Function() checkUser,
+    required TResult Function(int userId, bool online) setOnline,
+  }) {
+    return setOnline(userId, this.online);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? init,
+    TResult? Function(String value)? phone,
+    TResult? Function(String value)? name,
+    TResult? Function(String value)? nickName,
+    TResult? Function(String value)? about,
+    TResult? Function(String value)? lotti,
+    TResult? Function(bool value)? online,
+    TResult? Function()? add,
+    TResult? Function()? checkNumber,
+    TResult? Function()? checkUser,
+    TResult? Function(int userId, bool online)? setOnline,
+  }) {
+    return setOnline?.call(userId, this.online);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? init,
+    TResult Function(String value)? phone,
+    TResult Function(String value)? name,
+    TResult Function(String value)? nickName,
+    TResult Function(String value)? about,
+    TResult Function(String value)? lotti,
+    TResult Function(bool value)? online,
+    TResult Function()? add,
+    TResult Function()? checkNumber,
+    TResult Function()? checkUser,
+    TResult Function(int userId, bool online)? setOnline,
+    required TResult orElse(),
+  }) {
+    if (setOnline != null) {
+      return setOnline(userId, this.online);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Init value) init,
+    required TResult Function(_Phone value) phone,
+    required TResult Function(_Name value) name,
+    required TResult Function(_NickName value) nickName,
+    required TResult Function(_About value) about,
+    required TResult Function(_Lotti value) lotti,
+    required TResult Function(_Online value) online,
+    required TResult Function(_Add value) add,
+    required TResult Function(_CheckNumber value) checkNumber,
+    required TResult Function(_CheckUser value) checkUser,
+    required TResult Function(_SetOnline value) setOnline,
+  }) {
+    return setOnline(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Init value)? init,
+    TResult? Function(_Phone value)? phone,
+    TResult? Function(_Name value)? name,
+    TResult? Function(_NickName value)? nickName,
+    TResult? Function(_About value)? about,
+    TResult? Function(_Lotti value)? lotti,
+    TResult? Function(_Online value)? online,
+    TResult? Function(_Add value)? add,
+    TResult? Function(_CheckNumber value)? checkNumber,
+    TResult? Function(_CheckUser value)? checkUser,
+    TResult? Function(_SetOnline value)? setOnline,
+  }) {
+    return setOnline?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Init value)? init,
+    TResult Function(_Phone value)? phone,
+    TResult Function(_Name value)? name,
+    TResult Function(_NickName value)? nickName,
+    TResult Function(_About value)? about,
+    TResult Function(_Lotti value)? lotti,
+    TResult Function(_Online value)? online,
+    TResult Function(_Add value)? add,
+    TResult Function(_CheckNumber value)? checkNumber,
+    TResult Function(_CheckUser value)? checkUser,
+    TResult Function(_SetOnline value)? setOnline,
+    required TResult orElse(),
+  }) {
+    if (setOnline != null) {
+      return setOnline(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _SetOnline implements LoginEvent {
+  const factory _SetOnline({
+    required final int userId,
+    required final bool online,
+  }) = _$SetOnlineImpl;
+
+  int get userId;
+  bool get online;
+
+  /// Create a copy of LoginEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$SetOnlineImplCopyWith<_$SetOnlineImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc

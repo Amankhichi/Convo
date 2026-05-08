@@ -1,30 +1,33 @@
-// import 'dart:convert';
+import 'dart:convert';
 
-// import 'package:convo/core/const.dart/constant.dart';
-// import 'package:convo/core/payload/user_payload.dart';
-// import 'package:http/http.dart' as http;
+import 'package:convo/core/const.dart/api_config.dart';
+import 'package:convo/core/payload/user_payload.dart';
+import 'package:http/http.dart' as http;
 
 class LoginDatasource {
 
-//   Future<bool> addUser(UserPayload user) async {
-//   try {
-//     final response = await http.post(
-//       Uri.parse("http://$IpAddress:7000/user/add"),
-//       headers: {"Content-Type": "application/json"},
-//       body: jsonEncode(user.toJson()),
-//     );
+Future<bool> updateUser(UserPayload payload) async {
 
-//     if (response.statusCode == 200) {
-//       return true;
-//     } else {
-//       print("Error: ${response.body}");
-//       return false;
-//     }
+  try {
 
-//   } catch (e) {
-//     print("Catch Error: $e");
-//     return false; // ✅ MUST return
-//   }
-// }
+    final url = "${ApiConfig.baseUrl}/user/update";
+
+    final res = await http.put(
+      Uri.parse(url),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: jsonEncode(payload.toJson()),
+    );
+
+    return res.statusCode == 200;
+
+  } catch (e) {
+
+    print(e);
+
+    return false;
+  }
+}
 
 }

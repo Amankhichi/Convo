@@ -1,7 +1,5 @@
 part of "injection.dart";
 
-
-
 Future<void> __contactDependency() async {
   // Datasource
   final contactDatasource = ContactDatasource();
@@ -11,6 +9,4 @@ Future<void> __contactDependency() async {
   getIt.registerLazySingleton<ContactUsecase>(
     () => ContactUsecase(datasource: getIt<ContactDatasource>()),
   );
-  
-  
 }

@@ -24,9 +24,7 @@ class UserModel extends Equatable {
       id: json['id'] ?? 0,
 
       /// ✅ fallback name
-      name: json['name']?.toString() ??
-          json['nickname']?.toString() ??
-          'User',
+      name: json['name']?.toString() ?? json['nickname']?.toString() ?? 'User',
 
       nickname: json['nickname']?.toString() ?? '',
       phone: json['phone']?.toString() ?? '',
@@ -76,12 +74,12 @@ class UserModel extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        name,
-        nickname,
-        phone,
-        about,
-        profile,
-        online,
-      ];
+    id,
+    name,
+    nickname,
+    phone,
+    about,
+    profile,
+    online,
+  ];
 }

@@ -12,4 +12,8 @@ class LoginEvent with _$LoginEvent {
   const factory LoginEvent.add() = _Add;
   const factory LoginEvent.checkNumber() = _CheckNumber;
   const factory LoginEvent.checkUser() = _CheckUser;
+  const factory LoginEvent.setOnline({
+    required int userId,
+    required bool online,
+  }) = _SetOnline;
 }

@@ -112,29 +112,43 @@ class UserDatasource {
     }
   }
 
-Future<bool> updateOnlineStatus({
+Future<UserModel> updateOnlineStatus({
   required int id,
   required bool online,
 }) async {
+
   try {
+
+    print("🟡 API CALL START");
+
+    final url =
+        "${ApiConfig.baseUrl}/user/status?id=$id&online=$online";
+
+    print("🌐 URL: $url");
+
     final res = await http.put(
-      Uri.parse("${ApiConfig.baseUrl}/user/status/$id"),
+      Uri.parse(url),
       headers: {
         "Content-Type": "application/json",
       },
-      body: jsonEncode({
-        "online": online,
-      }),
     );
 
-    if (res.statusCode == 200) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (e) {
-    print("🔥 Error: $e");
-    return false;
+    print("✅ STATUS CODE: ${res.statusCode}");
+    print("📦 RESPONSE BODY: ${res.body}");
+
+    final data = jsonDecode(res.body);
+
+    return UserModel.fromJson(data);
+
+  } catch (e, stack) {
+
+    print("🔥 ERROR updateOnlineStatus");
+    print(e);
+    print(stack);
+
+    rethrow;
   }
 }
+
+
 }

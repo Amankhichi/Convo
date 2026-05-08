@@ -4,21 +4,22 @@ class InjectionBloc {
   static LoginBloc get loginbloc => LoginBloc(
     adduserusecase: getIt<AddUserUsecase>(),
     getuserusecase: getIt<GetUserUsecase>(),
+    updateonlinestatususecase: getIt<UpdateOnlineStatusUseCase>(),
   );
 
   static ChatBloc get chatbloc => ChatBloc(
     sendmssgusecase: getIt<SendMssgUsecase>(),
     getmssgusecase: getIt<GetMssgUseCase>(),
     deletmssgusecase: getIt<DeletMssgUsecase>(),
-    editmessageusecase: getIt<EditMessageUseCase>(), 
+    editmessageusecase: getIt<EditMessageUseCase>(),
     seenmssgusecase: getIt<SeenMssgUsecase>(),
   );
 
   static ContactBloc get contactbloc =>
       ContactBloc(contactusecase: getIt<ContactUsecase>());
 
-  static HomeBloc get homebloc =>HomeBloc(
+  static HomeBloc get homebloc => HomeBloc(
     gethomechatslistusecase: getIt<GetHomeChatsListUsecase>(),
-updateonlinestatususecase: getIt<UpdateOnlineStatusUseCase>(),
-    );
+    updateonlinestatususecase: getIt<UpdateOnlineStatusUseCase>(),
+  );
 }

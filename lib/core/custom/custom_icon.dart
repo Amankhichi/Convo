@@ -16,11 +16,7 @@ class CustomIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(5),
-      child: Icon(
-        icon,
-        color: clr,
-        size: size,
-      ),
+      child: Icon(icon, color: clr, size: size),
     );
   }
 }
