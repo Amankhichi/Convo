@@ -47,7 +47,7 @@ class _WelcomePageState extends State<WelcomePage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     CustomText(
-                      text: "Welcome ${state.name} 🎉",
+                      text: "Welcome ${state.nickName} 🎉",
                       size: 26,
                       bold: FontWeight.w700,
                     ),

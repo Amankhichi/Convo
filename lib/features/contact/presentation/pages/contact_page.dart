@@ -1,7 +1,7 @@
 import 'package:convo/core/const.dart/slide_page_route.dart';
 import 'package:convo/features/chat/presentation/pages/chat_page.dart';
 import 'package:convo/features/chat/presentation/pages/voice_call_page.dart';
-import 'package:convo/features/contact/presentation/bloc/contact_bloc/contact_bloc.dart';
+import 'package:convo/features/contact/presentation/bloc/bloc/contact_bloc.dart';
 import 'package:convo/features/contact/presentation/pages/create_group_page.dart';
 import 'package:convo/features/contact/presentation/widgets/build_Action_title_widget.dart';
 import 'package:flutter/material.dart';

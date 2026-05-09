@@ -14,17 +14,14 @@ class GetHomeChatsListUsecase {
     if (!await FlutterContacts.requestPermission()) {
       return list; // return API data only
     }
-    final phoneContacts = await FlutterContacts.getContacts(
-      withProperties: true,
-    );
-    final Set<Contact> phoneNumbers = phoneContacts
-        .where((c) => c.phones.isNotEmpty)
-        .toSet();
+    final phoneContacts = await FlutterContacts.getContacts(withProperties: true,);
+    final Set<Contact> phoneNumbers = phoneContacts.where((c) => c.phones.isNotEmpty).toSet();
     final prefs = await SharedPreferences.getInstance();
     final myNumber = prefs.getString("phone") ?? "";
     final nlist = List<HomeChatModel>.from([]);
     for (var u in list) {
       if (u.receiver.phone == myNumber) {
+        print("receiver.phone ${u.receiver.phone}");
         bool found = false;
         final user = u.sender;
         for (final c in phoneNumbers) {

@@ -20,6 +20,6 @@ class InjectionBloc {
 
   static HomeBloc get homebloc => HomeBloc(
     gethomechatslistusecase: getIt<GetHomeChatsListUsecase>(),
-    updateonlinestatususecase: getIt<UpdateOnlineStatusUseCase>(),
+    // updateonlinestatususecase: getIt<UpdateOnlineStatusUseCase>(),
   );
 }

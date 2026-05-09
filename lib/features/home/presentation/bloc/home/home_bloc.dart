@@ -1,11 +1,7 @@
 import 'package:bloc/bloc.dart';
-// import 'package:convo/core/di/injection.dart';
 import 'package:convo/core/enum/status.dart';
 import 'package:convo/core/model/home_chat_model.dart';
-import 'package:convo/core/model/user_model.dart';
-// import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
 import 'package:convo/features/home/domain_usecase/get_home_chats_list_usecase.dart';
-import 'package:convo/features/home/domain_usecase/update_onile_status_usecase.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,15 +11,10 @@ part 'home_bloc.freezed.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final GetHomeChatsListUsecase _getHomeChatsListUseCase;
-  final UpdateOnlineStatusUseCase _updateOnlineStatusUseCase;
-  HomeBloc({
-    required GetHomeChatsListUsecase gethomechatslistusecase,
-    required UpdateOnlineStatusUseCase updateonlinestatususecase,
-  }) : _getHomeChatsListUseCase = gethomechatslistusecase,
-       _updateOnlineStatusUseCase = updateonlinestatususecase,
-       super(const HomeState()) {
+  HomeBloc({required GetHomeChatsListUsecase gethomechatslistusecase,})
+    : _getHomeChatsListUseCase = gethomechatslistusecase,
+      super(const HomeState()) {
     on<_Init>(__Init);
-    on<_SetOnline>(__SetOnline);
   }
 
   Future<void> __Init(_Init event, Emitter<HomeState> emit) async {
@@ -46,9 +37,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
 
       if (chats.isEmpty) {
-        emit(
-          state.copyWith(homeChatsStatus: Status.success, homePageChats: []),
-        );
+        emit(state.copyWith(homeChatsStatus: Status.error));
         return;
       }
 
@@ -60,43 +49,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     } catch (e, stack) {
       print("🔥 ERROR: $e");
       print(stack);
-
       emit(state.copyWith(homeChatsStatus: Status.error));
     }
   }
 
-Future<void> __SetOnline(
-  _SetOnline event,
-  Emitter<HomeState> emit,
-) async {
-
-  final updatedUser = await _updateOnlineStatusUseCase(
-    id: event.userId,
-    online: event.online,
-  );
-
-  emit(
-    state.copyWith(
-      profile: updatedUser,
-
-      homePageChats: state.homePageChats.map((chat) {
-
-        return chat.copyWith(
-
-          sender: chat.sender.id == event.userId
-              ? updatedUser
-              : chat.sender,
-
-          receiver: chat.receiver.id == event.userId
-              ? updatedUser
-              : chat.receiver,
-        );
-
-      }).toList(),
-    ),
-  );
-  print("profile dtaaa $updatedUser");
-}
 
   List<HomeChatModel> buildConversationList(
     List<HomeChatModel> chats,
@@ -137,4 +93,5 @@ Future<void> __SetOnline(
 
     return conversations;
   }
+
 }

@@ -182,9 +182,9 @@ class ProfilePage extends StatelessWidget {
 
                             /// NAME
                             Text(
-                              state.name.trim().isEmpty
-                                  ? "Unknown User"
-                                  : state.name,
+                              state.nickName.trim().isEmpty
+                                  ? "@convo_user"
+                                  : "@${state.nickName}",
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 30,
@@ -195,17 +195,6 @@ class ProfilePage extends StatelessWidget {
 
                             const SizedBox(height: 8),
 
-                            /// NICKNAME
-                            Text(
-                              state.nickName.trim().isEmpty
-                                  ? "@convo_user"
-                                  : "@${state.nickName}",
-                              style: const TextStyle(
-                                color: Colors.white70,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
 
                             const SizedBox(height: 18),
 

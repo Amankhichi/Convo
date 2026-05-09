@@ -8,7 +8,7 @@ import 'package:convo/features/chat/domain_usecase/seen_mssg_usecase.dart';
 import 'package:convo/features/home/domain_usecase/get_home_chats_list_usecase.dart';
 import 'package:convo/features/chat/domain_usecase/get_mssg_usecase.dart';
 import 'package:convo/features/contact/datasource/contact_datasource.dart';
-import 'package:convo/features/contact/presentation/bloc/contact_bloc/contact_bloc.dart';
+import 'package:convo/features/contact/presentation/bloc/bloc/contact_bloc.dart';
 import 'package:convo/features/home/datasource/user_datasource.dart';
 import 'package:convo/features/auth/domain_usecase/add_user_usecase.dart';
 import 'package:convo/features/chat/domain_usecase/send_mssg_usecase.dart';
@@ -20,9 +20,9 @@ import 'package:convo/features/home/presentation/bloc/home/home_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
+part "injection_bloc.dart";
 part "injection_auth.dart";
 part "injection_home.dart";
-part "injection_bloc.dart";
 part "injection_contact.dart";
 
 final GetIt getIt = GetIt.instance;

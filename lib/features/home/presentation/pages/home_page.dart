@@ -3,15 +3,14 @@ import 'package:convo/core/model/stroy_model.dart';
 import 'package:convo/core/model/user_model.dart';
 import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
 import 'package:convo/features/auth/presentation/pages/profile_page.dart';
-import 'package:convo/features/contact/presentation/bloc/contact_bloc/contact_bloc.dart';
 import 'package:convo/features/contact/presentation/pages/contact_page.dart';
 import 'package:convo/features/auth/presentation/pages/login_page.dart';
 import 'package:convo/features/home/presentation/pages/add_stroy_page.dart';
 import 'package:convo/features/home/presentation/pages/call_history_page.dart';
-import 'package:convo/features/home/presentation/widgets/home_chat_list_widget.dart';
+import 'package:convo/features/home/presentation/pages/all_chat_page.dart';
 import 'package:convo/features/home/presentation/widgets/home_navbar_widget.dart';
 import 'package:convo/features/home/presentation/widgets/my_story_widget.dart';
-import 'package:convo/features/home/presentation/widgets/unread_chat_widget.dart';
+import 'package:convo/features/home/presentation/pages/unread_mssg_chat_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show ReadContext;
 import 'package:google_fonts/google_fonts.dart';
@@ -50,9 +49,11 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    context.read<ContactBloc>().add(ContactEvent.init());
+
     _pageController = PageController();
+
     user = context.read<LoginBloc>().state.profile!;
+
     context.read<LoginBloc>().add(
       LoginEvent.setOnline(userId: user.id, online: true),
     );
@@ -131,16 +132,17 @@ class _HomePageState extends State<HomePage> {
                   physics: const BouncingScrollPhysics(),
                   onPageChanged: (i) => setState(() => selectedTab = i),
                   children: [
-                    HomeChatListWidget(
+                    AllChatPage(
                       selectedChats: selectedChats,
                       selectionMode: selectionMode,
                       onSelect: toggleChat,
                     ),
-                    const UnreadChatWidget(),
+                    const UnreadMssgChatPage(),
                     const CallHistoryPage(),
                   ],
                 ),
               ),
+            
             ],
           ),
         ),
@@ -150,6 +152,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  /// ---------------- APPBAR ----------------
   AppBar _buildAppBar() {
     return AppBar(
       titleSpacing: 0,

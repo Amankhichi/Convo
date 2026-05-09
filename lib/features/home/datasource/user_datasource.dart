@@ -8,26 +8,21 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserDatasource {
-  Future<bool> addUser(UserPayload user) async {
-    try {
-      print("URL: ${ApiConfig.baseUrl}/user/add");
-      print("BODY: ${jsonEncode(user.toJson())}");
 
-      final response = await http.post(
-        Uri.parse("${ApiConfig.baseUrl}/user/add"),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode(user.toJson()),
-      );
+Future<bool> addUser(UserPayload user) async {
+  print("API Calling...");
 
-      print("STATUS: ${response.statusCode}");
-      print("RESPONSE: ${response.body}");
+  final response = await http.post(
+    Uri.parse("${ApiConfig.baseUrl}/user/add"),
+    headers: {"Content-Type": "application/json"},
+    body: jsonEncode(user.toJson()),
+  );
 
-      return response.statusCode == 200;
-    } catch (e) {
-      print("Catch Error: $e");
-      return false;
-    }
-  }
+  print("Status Code: ${response.statusCode}");
+  print("Response Body: ${response.body}");
+
+  return response.statusCode == 200;
+}
 
   Future<UserModel?> isUser({required String phone}) async {
     try {
@@ -57,60 +52,39 @@ class UserDatasource {
     }
   }
 
-  Future<List<HomeChatModel>> getHomeChats() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final idString = prefs.getString("id");
+Future<List<HomeChatModel>> getHomeChats() async {
+  final prefs = await SharedPreferences.getInstance();
 
-      if (idString == null || idString.isEmpty) {
-        print("ID not found in SharedPreferences");
-        return [];
-      }
+  final myId = int.tryParse(prefs.getString("id") ?? "");
 
-      final id = int.tryParse(idString);
-      if (id == null) {
-        print("Invalid ID format");
-        return [];
-      }
-
-      print("User ID = $id");
-
-      final url = Uri.parse('${ApiConfig.baseUrl}/chat/all').replace(
-        queryParameters: {
-          'select': '*,sender:senderId(*),receiver:receiverId(*)',
-
-          'or': 'or(senderId.eq.$id,receiverId.eq.$id)',
-
-          'order': 'createdAt.desc', // latest first (like WhatsApp)
-        },
-      );
-
-      print("Final URL = ${url.toString()}");
-
-      final response = await http.get(
-        url,
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
-      );
-
-      print("Status Code = ${response.statusCode}");
-
-      if (response.statusCode == 200) {
-        final List data = jsonDecode(response.body);
-        print("getChats success: ${data.length} chats");
-
-        return data.map((e) => HomeChatModel.fromJson(e)).toList();
-      } else {
-        print("getChats failed: ${response.body}");
-        return [];
-      }
-    } catch (e) {
-      print("Exception in getHomeChats: $e");
-      return [];
-    }
+  if (myId == null) {
+    throw Exception("Invalid User ID");
   }
+
+  final response = await http.get(
+    Uri.parse("${ApiConfig.baseUrl}/chat/all"),
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+    },
+  );
+
+  if (response.statusCode != 200) {
+    throw Exception("API Failed");
+  }
+
+  final List data = jsonDecode(response.body);
+
+  final chats = data.where((e) =>e["sender_id"]?["id"] == myId ||e["receiver_id"]?["id"] == myId,)
+      .map((e) => HomeChatModel.fromJson(e))
+      .toList();
+
+  if (chats.isEmpty) {
+    throw Exception("No chats found");
+  }
+
+  return chats;
+}
 
 Future<UserModel> updateOnlineStatus({
   required int id,

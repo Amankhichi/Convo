@@ -18,35 +18,27 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$HomeEvent {
   @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() init,
-    required TResult Function(int userId, bool online) setOnline,
-  }) => throw _privateConstructorUsedError;
+  TResult when<TResult extends Object?>({required TResult Function() init}) =>
+      throw _privateConstructorUsedError;
   @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? init,
-    TResult? Function(int userId, bool online)? setOnline,
-  }) => throw _privateConstructorUsedError;
+  TResult? whenOrNull<TResult extends Object?>({TResult? Function()? init}) =>
+      throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? init,
-    TResult Function(int userId, bool online)? setOnline,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Init value) init,
-    required TResult Function(_SetOnline value) setOnline,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Init value)? init,
-    TResult? Function(_SetOnline value)? setOnline,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Init value)? init,
-    TResult Function(_SetOnline value)? setOnline,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
 }
@@ -111,19 +103,13 @@ class _$InitImpl implements _Init {
 
   @override
   @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() init,
-    required TResult Function(int userId, bool online) setOnline,
-  }) {
+  TResult when<TResult extends Object?>({required TResult Function() init}) {
     return init();
   }
 
   @override
   @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? init,
-    TResult? Function(int userId, bool online)? setOnline,
-  }) {
+  TResult? whenOrNull<TResult extends Object?>({TResult? Function()? init}) {
     return init?.call();
   }
 
@@ -131,7 +117,6 @@ class _$InitImpl implements _Init {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? init,
-    TResult Function(int userId, bool online)? setOnline,
     required TResult orElse(),
   }) {
     if (init != null) {
@@ -144,7 +129,6 @@ class _$InitImpl implements _Init {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Init value) init,
-    required TResult Function(_SetOnline value) setOnline,
   }) {
     return init(this);
   }
@@ -153,7 +137,6 @@ class _$InitImpl implements _Init {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Init value)? init,
-    TResult? Function(_SetOnline value)? setOnline,
   }) {
     return init?.call(this);
   }
@@ -162,7 +145,6 @@ class _$InitImpl implements _Init {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Init value)? init,
-    TResult Function(_SetOnline value)? setOnline,
     required TResult orElse(),
   }) {
     if (init != null) {
@@ -177,163 +159,9 @@ abstract class _Init implements HomeEvent {
 }
 
 /// @nodoc
-abstract class _$$SetOnlineImplCopyWith<$Res> {
-  factory _$$SetOnlineImplCopyWith(
-    _$SetOnlineImpl value,
-    $Res Function(_$SetOnlineImpl) then,
-  ) = __$$SetOnlineImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({int userId, bool online});
-}
-
-/// @nodoc
-class __$$SetOnlineImplCopyWithImpl<$Res>
-    extends _$HomeEventCopyWithImpl<$Res, _$SetOnlineImpl>
-    implements _$$SetOnlineImplCopyWith<$Res> {
-  __$$SetOnlineImplCopyWithImpl(
-    _$SetOnlineImpl _value,
-    $Res Function(_$SetOnlineImpl) _then,
-  ) : super(_value, _then);
-
-  /// Create a copy of HomeEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({Object? userId = null, Object? online = null}) {
-    return _then(
-      _$SetOnlineImpl(
-        userId: null == userId
-            ? _value.userId
-            : userId // ignore: cast_nullable_to_non_nullable
-                  as int,
-        online: null == online
-            ? _value.online
-            : online // ignore: cast_nullable_to_non_nullable
-                  as bool,
-      ),
-    );
-  }
-}
-
-/// @nodoc
-
-class _$SetOnlineImpl implements _SetOnline {
-  const _$SetOnlineImpl({required this.userId, required this.online});
-
-  @override
-  final int userId;
-  @override
-  final bool online;
-
-  @override
-  String toString() {
-    return 'HomeEvent.setOnline(userId: $userId, online: $online)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$SetOnlineImpl &&
-            (identical(other.userId, userId) || other.userId == userId) &&
-            (identical(other.online, online) || other.online == online));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, userId, online);
-
-  /// Create a copy of HomeEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$SetOnlineImplCopyWith<_$SetOnlineImpl> get copyWith =>
-      __$$SetOnlineImplCopyWithImpl<_$SetOnlineImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() init,
-    required TResult Function(int userId, bool online) setOnline,
-  }) {
-    return setOnline(userId, online);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? init,
-    TResult? Function(int userId, bool online)? setOnline,
-  }) {
-    return setOnline?.call(userId, online);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? init,
-    TResult Function(int userId, bool online)? setOnline,
-    required TResult orElse(),
-  }) {
-    if (setOnline != null) {
-      return setOnline(userId, online);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_Init value) init,
-    required TResult Function(_SetOnline value) setOnline,
-  }) {
-    return setOnline(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Init value)? init,
-    TResult? Function(_SetOnline value)? setOnline,
-  }) {
-    return setOnline?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Init value)? init,
-    TResult Function(_SetOnline value)? setOnline,
-    required TResult orElse(),
-  }) {
-    if (setOnline != null) {
-      return setOnline(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _SetOnline implements HomeEvent {
-  const factory _SetOnline({
-    required final int userId,
-    required final bool online,
-  }) = _$SetOnlineImpl;
-
-  int get userId;
-  bool get online;
-
-  /// Create a copy of HomeEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SetOnlineImplCopyWith<_$SetOnlineImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
 mixin _$HomeState {
   Status get homeChatsStatus => throw _privateConstructorUsedError;
   List<HomeChatModel> get homePageChats => throw _privateConstructorUsedError;
-  UserModel? get profile => throw _privateConstructorUsedError;
 
   /// Create a copy of HomeState
   /// with the given fields replaced by the non-null parameter values.
@@ -347,11 +175,7 @@ abstract class $HomeStateCopyWith<$Res> {
   factory $HomeStateCopyWith(HomeState value, $Res Function(HomeState) then) =
       _$HomeStateCopyWithImpl<$Res, HomeState>;
   @useResult
-  $Res call({
-    Status homeChatsStatus,
-    List<HomeChatModel> homePageChats,
-    UserModel? profile,
-  });
+  $Res call({Status homeChatsStatus, List<HomeChatModel> homePageChats});
 }
 
 /// @nodoc
@@ -368,11 +192,7 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? homeChatsStatus = null,
-    Object? homePageChats = null,
-    Object? profile = freezed,
-  }) {
+  $Res call({Object? homeChatsStatus = null, Object? homePageChats = null}) {
     return _then(
       _value.copyWith(
             homeChatsStatus: null == homeChatsStatus
@@ -383,10 +203,6 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
                 ? _value.homePageChats
                 : homePageChats // ignore: cast_nullable_to_non_nullable
                       as List<HomeChatModel>,
-            profile: freezed == profile
-                ? _value.profile
-                : profile // ignore: cast_nullable_to_non_nullable
-                      as UserModel?,
           )
           as $Val,
     );
@@ -402,11 +218,7 @@ abstract class _$$HomeStateImplCopyWith<$Res>
   ) = __$$HomeStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({
-    Status homeChatsStatus,
-    List<HomeChatModel> homePageChats,
-    UserModel? profile,
-  });
+  $Res call({Status homeChatsStatus, List<HomeChatModel> homePageChats});
 }
 
 /// @nodoc
@@ -422,11 +234,7 @@ class __$$HomeStateImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? homeChatsStatus = null,
-    Object? homePageChats = null,
-    Object? profile = freezed,
-  }) {
+  $Res call({Object? homeChatsStatus = null, Object? homePageChats = null}) {
     return _then(
       _$HomeStateImpl(
         homeChatsStatus: null == homeChatsStatus
@@ -437,10 +245,6 @@ class __$$HomeStateImplCopyWithImpl<$Res>
             ? _value._homePageChats
             : homePageChats // ignore: cast_nullable_to_non_nullable
                   as List<HomeChatModel>,
-        profile: freezed == profile
-            ? _value.profile
-            : profile // ignore: cast_nullable_to_non_nullable
-                  as UserModel?,
       ),
     );
   }
@@ -452,7 +256,6 @@ class _$HomeStateImpl implements _HomeState {
   const _$HomeStateImpl({
     this.homeChatsStatus = Status.init,
     final List<HomeChatModel> homePageChats = const [],
-    this.profile,
   }) : _homePageChats = homePageChats;
 
   @override
@@ -468,11 +271,8 @@ class _$HomeStateImpl implements _HomeState {
   }
 
   @override
-  final UserModel? profile;
-
-  @override
   String toString() {
-    return 'HomeState(homeChatsStatus: $homeChatsStatus, homePageChats: $homePageChats, profile: $profile)';
+    return 'HomeState(homeChatsStatus: $homeChatsStatus, homePageChats: $homePageChats)';
   }
 
   @override
@@ -485,8 +285,7 @@ class _$HomeStateImpl implements _HomeState {
             const DeepCollectionEquality().equals(
               other._homePageChats,
               _homePageChats,
-            ) &&
-            (identical(other.profile, profile) || other.profile == profile));
+            ));
   }
 
   @override
@@ -494,7 +293,6 @@ class _$HomeStateImpl implements _HomeState {
     runtimeType,
     homeChatsStatus,
     const DeepCollectionEquality().hash(_homePageChats),
-    profile,
   );
 
   /// Create a copy of HomeState
@@ -510,15 +308,12 @@ abstract class _HomeState implements HomeState {
   const factory _HomeState({
     final Status homeChatsStatus,
     final List<HomeChatModel> homePageChats,
-    final UserModel? profile,
   }) = _$HomeStateImpl;
 
   @override
   Status get homeChatsStatus;
   @override
   List<HomeChatModel> get homePageChats;
-  @override
-  UserModel? get profile;
 
   /// Create a copy of HomeState
   /// with the given fields replaced by the non-null parameter values.
