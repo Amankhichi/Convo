@@ -53,7 +53,7 @@ class _DialpadPageState extends State<DialpadPage> {
             final matchedContacts = state.contacts.where((user) {
               if (enteredNumber.isEmpty)
                 return true; // Show recent/all when empty
-              final clearPhone = (user.phone ?? "").replaceAll(
+              final clearPhone = (user.phone ).replaceAll(
                 RegExp(r'\D'),
                 '',
               );
