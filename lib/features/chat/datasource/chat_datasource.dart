@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:convo/core/const.dart/api_config.dart';
+import 'package:convo/const.dart/api_config.dart';
 import 'package:convo/core/model/chat_model.dart';
 import 'package:convo/core/payload/chat_payload.dart';
 import 'package:http/http.dart' as http;

@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:convo/core/const.dart/snakbar_status.dart';
+import 'package:convo/const.dart/snakbar_status.dart';
 import 'package:convo/core/di/injection.dart';
 import 'package:convo/core/enum/status.dart';
 import 'package:convo/core/model/chat_model.dart';

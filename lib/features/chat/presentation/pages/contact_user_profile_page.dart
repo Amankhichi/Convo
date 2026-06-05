@@ -1,5 +1,5 @@
-import 'package:convo/core/const.dart/api_config.dart';
-import 'package:convo/core/const.dart/app_colors.dart';
+import 'package:convo/const.dart/api_config.dart';
+import 'package:convo/const.dart/app_colors.dart';
 import 'package:convo/core/model/user_model.dart';
 import 'package:flutter/material.dart';
 

@@ -26,7 +26,6 @@ class _ViewImagePageState extends State<ViewImagePage> {
             child: Image.file(File(widget.imagePath), fit: BoxFit.contain),
           ),
 
-          /// 🔝 Top Bar
           Positioned(
             top: 50,
             left: 20,

@@ -1,5 +1,5 @@
 import 'package:camera/camera.dart';
-import 'package:convo/features/home/presentation/pages/view_image_page.dart';
+import 'package:convo/features/home/presentation/widgets/view_image_page.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:convo/core/model/stroy_model.dart';

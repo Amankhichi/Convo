@@ -1,4 +1,4 @@
-import 'package:convo/core/const.dart/app_colors.dart';
+import 'package:convo/const.dart/app_colors.dart';
 import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
 import 'package:convo/features/auth/presentation/pages/otp_page.dart';
 import 'package:convo/features/home/presentation/widgets/country.dart';

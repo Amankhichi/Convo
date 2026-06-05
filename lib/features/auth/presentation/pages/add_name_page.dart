@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
-import 'package:convo/core/const.dart/snakbar_status.dart';
-import 'package:convo/core/const.dart/upload_file.dart';
+import 'package:convo/const.dart/snakbar_status.dart';
+import 'package:convo/const.dart/upload_file.dart';
 import 'package:convo/core/enum/status.dart';
 import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
 import 'package:convo/features/auth/presentation/pages/welcome_page.dart';

@@ -1,20 +1,21 @@
-import 'package:convo/core/const.dart/app_colors.dart';
+import 'package:convo/const.dart/app_colors.dart';
 import 'package:convo/core/model/stroy_model.dart';
 import 'package:convo/core/model/user_model.dart';
 import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
+import 'package:convo/features/auth/presentation/pages/login_page.dart';
 import 'package:convo/features/auth/presentation/pages/profile_page.dart';
 import 'package:convo/features/contact/presentation/pages/contact_page.dart';
-import 'package:convo/features/auth/presentation/pages/login_page.dart';
+import 'package:convo/features/home/presentation/bloc/home/home_bloc.dart';
 import 'package:convo/features/home/presentation/pages/add_stroy_page.dart';
-import 'package:convo/features/home/presentation/pages/call_history_page.dart';
 import 'package:convo/features/home/presentation/pages/all_chat_page.dart';
+import 'package:convo/features/home/presentation/pages/call_history_page.dart';
+import 'package:convo/features/home/presentation/pages/unread_mssg_chat_page.dart';
+import 'package:convo/features/home/presentation/widgets/home_app_bar_widget.dart';
+import 'package:convo/features/home/presentation/widgets/home_drawer_widget.dart';
 import 'package:convo/features/home/presentation/widgets/home_navbar_widget.dart';
 import 'package:convo/features/home/presentation/widgets/my_story_widget.dart';
-import 'package:convo/features/home/presentation/pages/unread_mssg_chat_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart' show ReadContext;
-import 'package:google_fonts/google_fonts.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -25,31 +26,36 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   late PageController _pageController;
 
+  bool isSearching = false;
+  String searchQuery = "";
+  final TextEditingController searchController = TextEditingController();
+
   int selectedTab = 0;
+
   Set<int> selectedChats = {};
   bool selectionMode = false;
 
+  late UserModel user;
+
   final List<StoryModel> stories = [
-    StoryModel(
-      username: "Sumurk sir",
-      imageUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e",
-      isMyStory: false,
-    ),
     StoryModel(
       username: "Rahul",
       imageUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2",
       isMyStory: false,
     ),
+    StoryModel(
+      username: "Aman",
+      imageUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e",
+      isMyStory: false,
+    ),
   ];
-
-  late UserModel user;
 
   @override
   void initState() {
     super.initState();
-
     _pageController = PageController();
 
     user = context.read<LoginBloc>().state.profile!;
@@ -61,28 +67,31 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
+    searchController.dispose();
+    _pageController.dispose();
+
     context.read<LoginBloc>().add(
       LoginEvent.setOnline(userId: user.id, online: false),
     );
 
-    _pageController.dispose();
-
     super.dispose();
   }
 
-  void toggleChat(int id) {
-    setState(() {
-      selectedChats.contains(id)
-          ? selectedChats.remove(id)
-          : selectedChats.add(id);
-      selectionMode = selectedChats.isNotEmpty;
-    });
+  /// ✅ SWIPE REFRESH
+  Future<void> _onRefresh() async {
+    context.read<HomeBloc>().add(const HomeEvent.init());
+    await Future.delayed(const Duration(milliseconds: 800));
   }
 
-  void clearSelection() {
+  void onSearch(String value) {
+    setState(() => searchQuery = value);
+  }
+
+  void clearSearch() {
     setState(() {
-      selectedChats.clear();
-      selectionMode = false;
+      searchQuery = "";
+      searchController.clear();
+      isSearching = false;
     });
   }
 
@@ -96,164 +105,143 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove("id");
-    await prefs.remove("phone");
+  void toggleChat(int id) {
+    setState(() {
+      if (selectedChats.contains(id)) {
+        selectedChats.remove(id);
+      } else {
+        selectedChats.add(id);
+      }
+      selectionMode = selectedChats.isNotEmpty;
+    });
+  }
 
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (_) => LoginPage()),
-      (route) => false,
-    );
+  void clearSelection() {
+    setState(() {
+      selectedChats.clear();
+      selectionMode = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final drawerWidth = MediaQuery.of(context).size.width * .5;
+    return BlocBuilder<HomeBloc, HomeState>(
+      builder: (context, state) {
+        final filteredChats = searchQuery.trim().isEmpty
+            ? state.homePageChats
+            : state.homePageChats.where((chat) {
+                final currentUserId = user.id;
 
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: _buildAppBar(),
-      drawer: _buildDrawer(drawerWidth),
-      body: SafeArea(
-        child: Container(
-          color: AppColors.backgroundColor(context),
-          child: Column(
-            children: [
-              _buildStories(),
+                final chatUser = chat.sender.id == currentUserId
+                    ? chat.receiver
+                    : chat.sender;
 
-              HomeNavbar(selectedIndex: selectedTab, onTabChanged: changeTab),
+                final q = searchQuery.toLowerCase().trim();
 
-              const SizedBox(height: 10),
+                return chatUser.name.toLowerCase().contains(q) ||
+                    chatUser.nickname.toLowerCase().contains(q) ||
+                    chatUser.phone.toLowerCase().contains(q) ||
+                    chat.message.toLowerCase().contains(q);
+              }).toList();
 
-              Expanded(
-                child: PageView(
-                  controller: _pageController,
-                  physics: const BouncingScrollPhysics(),
-                  onPageChanged: (i) => setState(() => selectedTab = i),
-                  children: [
-                    AllChatPage(
-                      selectedChats: selectedChats,
-                      selectionMode: selectionMode,
-                      onSelect: toggleChat,
-                    ),
-                    const UnreadMssgChatPage(),
-                    const CallHistoryPage(),
-                  ],
-                ),
-              ),
-            
-            ],
+        return Scaffold(
+          key: _scaffoldKey,
+          backgroundColor: AppColors.backgroundColor(context),
+
+          appBar: HomeAppBarWidget(
+            isSearching: isSearching,
+            searchController: searchController,
+            onSearch: onSearch,
+            onSearchTap: () => setState(() => isSearching = true),
+
+            selectionMode: selectionMode,
+            selectedCount: selectedChats.length,
+
+            onBackTap: () {
+              if (selectionMode) {
+                clearSelection();
+              } else {
+                clearSearch();
+              }
+            },
+
+            onMenuTap: () => _scaffoldKey.currentState!.openDrawer(),
+
+            onDeleteTap: () {},
+            onStarTap: () {},
           ),
-        ),
-      ),
 
-      floatingActionButton: _buildFAB(),
+          drawer: HomeDrawerWidget(
+            user: user,
+            onProfileTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ProfilePage()),
+              );
+            },
+            onSettingsTap: () => Navigator.pop(context),
+            onAboutTap: () => Navigator.pop(context),
+            onLogout: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const LoginPage()),
+              );
+            },
+          ),
+
+          body: SafeArea(
+            child: Column(
+              children: [
+                if (!isSearching) _buildStories(),
+
+                HomeNavbar(selectedIndex: selectedTab, onTabChanged: changeTab),
+
+                const SizedBox(height: 10),
+
+                /// ✅ SWIPE TO REFRESH ONLY CHAT AREA
+                Expanded(
+                  child: RefreshIndicator(
+                    color: AppColors.primary,
+                    backgroundColor: AppColors.backgroundColor(context),
+                    onRefresh: _onRefresh,
+
+                    child: PageView(
+                      controller: _pageController,
+                      physics: const BouncingScrollPhysics(),
+                      onPageChanged: (i) {
+                        setState(() => selectedTab = i);
+                      },
+                      children: [
+                        AllChatPage(
+                          chats: filteredChats,
+                          selectedChats: selectedChats,
+                          selectionMode: selectionMode,
+                          onSelect: toggleChat,
+                        ),
+                        const UnreadMssgChatPage(),
+                        const CallHistoryPage(),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          floatingActionButton: _buildFAB(),
+        );
+      },
     );
   }
 
-  /// ---------------- APPBAR ----------------
-  AppBar _buildAppBar() {
-    return AppBar(
-      titleSpacing: 0,
-      backgroundColor: AppColors.backgroundColor(context),
-
-      leading: selectionMode
-          ? IconButton(
-              color: AppColors.iconColor,
-              icon: const Icon(Icons.arrow_back),
-              onPressed: clearSelection,
-            )
-          : IconButton(
-              icon: const Icon(Icons.menu),
-              color: AppColors.textColor(context),
-              onPressed: () => _scaffoldKey.currentState!.openDrawer(),
-            ),
-
-      title: selectionMode
-          ? Text(
-              "${selectedChats.length} selected",
-              style: TextStyle(color: AppColors.iconColor),
-            )
-          : Text(
-              " ConVO",
-              style: GoogleFonts.courgette(
-                fontSize: 35,
-                fontWeight: FontWeight.w600,
-                color: AppColors.primary,
-              ),
-            ),
-
-      actions: selectionMode
-          ? [
-              IconButton(
-                color: AppColors.iconColor,
-                icon: const Icon(Icons.star),
-                onPressed: () {},
-              ),
-              IconButton(
-                color: AppColors.iconColor,
-                icon: const Icon(Icons.delete),
-                onPressed: () {},
-              ),
-            ]
-          : [
-              IconButton(
-                icon: const Icon(Icons.search, size: 28),
-                color: AppColors.iconColor,
-                onPressed: () {},
-              ),
-              const SizedBox(width: 10),
-            ],
-    );
-  }
-
-  Widget _buildDrawer(double width) {
-    return SizedBox(
-      width: width,
-      child: Drawer(
-        child: Column(
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(color: Colors.blueGrey),
-              child: Center(
-                child: Text("Menu", style: TextStyle(color: Colors.white)),
-              ),
-            ),
-
-            ListTile(
-              leading: const Icon(Icons.home),
-              title: const Text("Home"),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => ProfilePage()),
-                );
-              },
-            ),
-
-            const ListTile(
-              leading: Icon(Icons.settings),
-              title: Text("Settings"),
-            ),
-
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text("Logout"),
-              onTap: logout,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
+  /// STORIES
   Widget _buildStories() {
     return SizedBox(
       height: 100,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         itemCount: stories.length + 1,
         itemBuilder: (context, i) {
           if (i == 0) {
@@ -298,12 +286,16 @@ class _HomePageState extends State<HomePage> {
             child: const CircleAvatar(child: Icon(Icons.add)),
           ),
           const SizedBox(height: 6),
-          const Text("Your Story", style: TextStyle(fontSize: 13)),
+          Text(
+            "Your Story",
+            style: TextStyle(fontSize: 13, color: AppColors.textColor(context)),
+          ),
         ],
       ),
     );
   }
 
+  /// FAB
   Widget _buildFAB() {
     return Padding(
       padding: const EdgeInsets.only(right: 20, bottom: 20),
@@ -312,16 +304,7 @@ class _HomePageState extends State<HomePage> {
         onPressed: () {
           Navigator.push(
             context,
-            PageRouteBuilder(
-              pageBuilder: (_, __, ___) => ContactsPage(),
-              transitionsBuilder: (_, animation, __, child) => SlideTransition(
-                position: Tween(
-                  begin: const Offset(1, 0),
-                  end: Offset.zero,
-                ).animate(animation),
-                child: child,
-              ),
-            ),
+            MaterialPageRoute(builder: (_) => const ContactsPage()),
           );
         },
         child: const Icon(Icons.add, color: Colors.white, size: 30),

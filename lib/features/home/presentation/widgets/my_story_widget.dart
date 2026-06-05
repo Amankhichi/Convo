@@ -1,4 +1,4 @@
-import 'package:convo/core/const.dart/app_colors.dart';
+import 'package:convo/const.dart/app_colors.dart';
 import 'package:convo/core/model/stroy_model.dart';
 import 'package:convo/features/home/presentation/pages/viwe_stroy_page.dart';
 import 'package:flutter/material.dart';

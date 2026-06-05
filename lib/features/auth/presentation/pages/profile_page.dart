@@ -1,5 +1,5 @@
 // import 'package:convo/core/model/user_model.dart';
-import 'package:convo/core/const.dart/api_config.dart';
+import 'package:convo/const.dart/api_config.dart';
 import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
 import 'package:convo/features/auth/presentation/widgets/full_image_screen_page.dart';
 import 'package:flutter/material.dart';

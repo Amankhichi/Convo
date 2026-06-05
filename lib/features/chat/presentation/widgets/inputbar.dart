@@ -1,4 +1,4 @@
-import 'package:convo/core/const.dart/app_colors.dart';
+import 'package:convo/const.dart/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class InputBar extends StatelessWidget {

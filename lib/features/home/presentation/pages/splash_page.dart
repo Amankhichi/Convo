@@ -1,6 +1,7 @@
 import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:convo/core/const.dart/app_colors.dart';
+import 'package:convo/const.dart/app_colors.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SplashPage extends StatefulWidget {
@@ -15,7 +16,7 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-
+FirebaseMessaging.instance.requestPermission();
     Future.delayed(const Duration(seconds: 2), () async {
       context.read<LoginBloc>().add(LoginEvent.checkUser());
     });

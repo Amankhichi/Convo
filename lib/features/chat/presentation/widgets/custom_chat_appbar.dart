@@ -1,6 +1,6 @@
-import 'package:convo/core/const.dart/api_config.dart';
-import 'package:convo/core/const.dart/app_colors.dart';
-import 'package:convo/core/const.dart/constant.dart';
+import 'package:convo/const.dart/api_config.dart';
+import 'package:convo/const.dart/app_colors.dart';
+import 'package:convo/const.dart/constant.dart';
 import 'package:convo/core/model/user_model.dart';
 import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
 import 'package:convo/features/chat/presentation/bloc/chat_bloc/chat_bloc.dart';

@@ -1,5 +1,5 @@
-import 'package:convo/core/const.dart/constant.dart';
-import 'package:convo/core/const.dart/slide_page_route.dart';
+import 'package:convo/const.dart/constant.dart';
+import 'package:convo/const.dart/slide_page_route.dart';
 import 'package:convo/features/auth/presentation/bloc/bloc/login_bloc.dart';
 import 'package:convo/features/chat/presentation/pages/contact_user_profile_page.dart';
 import 'package:convo/features/chat/presentation/pages/video_call_page.dart';
@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:convo/core/model/user_model.dart';
-import 'package:convo/core/const.dart/app_colors.dart';
+import 'package:convo/const.dart/app_colors.dart';
 import 'package:convo/features/chat/presentation/bloc/chat_bloc/chat_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';

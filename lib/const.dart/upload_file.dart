@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:convo/core/const.dart/api_config.dart';
+import 'package:convo/const.dart/api_config.dart';
 import 'package:http/http.dart' as http;
 
 Future<Map<String, dynamic>?> uploadFile(Uint8List bytes) async {

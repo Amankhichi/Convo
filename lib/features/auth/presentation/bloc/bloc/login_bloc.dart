@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:convo/const.dart/notification_services.dart';
 import 'package:convo/core/di/injection.dart';
 import 'package:convo/core/enum/status.dart';
 import 'package:convo/core/model/user_model.dart';
@@ -115,64 +116,105 @@ Future<void> __Add(_Add event, Emitter<LoginState> emit) async {
   );
 }
 
-  Future<void> __checkNumber(
-    _CheckNumber event,
-    Emitter<LoginState> emit,
-  ) async {
-    emit(state.copyWith(checkNumberStatus: Status.loading));
-    print("TEST1");
-    final user = await _getUserUsecase(phone: state.phone);
-    print("TEST2");
+Future<void> __checkNumber(_CheckNumber event,Emitter<LoginState> emit,
+) async {
 
-    print("test 33 $user");
+  emit(state.copyWith(checkNumberStatus: Status.loading));
 
-    if (user != null) {
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setString("id", user.id.toString());
-      prefs.setString("phone", user.phone.toString());
+  print("TEST1");
 
-      emit(
-        state.copyWith(
-          profile: user,
-          name: user.name,
-          nickName: user.nickname,
-          phone: user.phone,
-          about: user.about,
-          lotti: user.profile,
+  final user = await _getUserUsecase(phone: state.phone);
+
+  print("TEST2");
+
+  print("test 33 $user");
+
+  if (user != null) {
+
+    // ==============================
+    // SHOW NOTIFICATION
+    // ==============================
+
+    await NotificationService.showNotification(
+      title: "Login Successful",
+      body: "Welcome ${user.name}",
+    );
+
+    // ==============================
+    // SAVE USER
+    // ==============================
+
+    final prefs = await SharedPreferences.getInstance();
+
+    prefs.setString("id", user.id.toString());
+
+    prefs.setString("phone", user.phone.toString());
+
+    // ==============================
+    // UPDATE STATE
+    // ==============================
+
+    emit(
+      state.copyWith(
+        profile: user,
+        name: user.name,
+        nickName: user.nickname,
+        phone: user.phone,
+        about: user.about,
+        lotti: user.profile,
+      ),
+    );
+
+    emit(
+      state.copyWith(
+        checkNumberStatus: Status.success,
+      ),
+    );
+
+    // ==============================
+    // NAVIGATION
+    // ==============================
+
+    Navigator.pushAndRemoveUntil(
+      Injection.currentContext,
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) => HomePage(),
+        transitionsBuilder: (_, a, __, c) => SlideTransition(
+          position: Tween(
+            begin: const Offset(1, 0),
+            end: Offset.zero,
+          ).animate(a),
+          child: c,
         ),
-      );
-      emit(state.copyWith(checkNumberStatus: Status.success));
+      ),
+      (Route) => false,
+    );
 
-      Navigator.pushAndRemoveUntil(
-        Injection.currentContext,
-        PageRouteBuilder(
-          pageBuilder: (_, __, ___) => HomePage(),
-          transitionsBuilder: (_, a, __, c) => SlideTransition(
-            position: Tween(
-              begin: const Offset(1, 0),
-              end: Offset.zero,
-            ).animate(a),
-            child: c,
-          ),
-        ),(Route)=>false
-      );
-    } else {
-      emit(state.copyWith(checkNumberStatus: Status.error));
-      Navigator.pushReplacement(
-        Injection.currentContext,
-        PageRouteBuilder(
-          pageBuilder: (_, __, ___) => AddNamePage(lotti: ''),
-          transitionsBuilder: (_, a, __, c) => SlideTransition(
-            position: Tween(
-              begin: const Offset(1, 0),
-              end: Offset.zero,
-            ).animate(a),
-            child: c,
-          ),
+  } else {
+
+    emit(
+      state.copyWith(
+        checkNumberStatus: Status.error,
+      ),
+    );
+
+    Navigator.pushReplacement(
+      Injection.currentContext,
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) => AddNamePage(
+          lotti: '',
         ),
-      );
-    }
+        transitionsBuilder: (_, a, __, c) => SlideTransition(
+          position: Tween(
+            begin: const Offset(1, 0),
+            end: Offset.zero,
+          ).animate(a),
+          child: c,
+        ),
+      ),
+    );
   }
+}
 
   Future<void> __CheckUser(_CheckUser event, Emitter<LoginState> emit) async {
     emit(state.copyWith(checkuserStatus: Status.loading));

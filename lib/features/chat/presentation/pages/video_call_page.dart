@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:convo/core/const.dart/api_config.dart';
+import 'package:convo/const.dart/api_config.dart';
 import 'package:flutter/material.dart';
 import 'package:convo/core/model/user_model.dart';
 
