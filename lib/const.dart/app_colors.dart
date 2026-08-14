@@ -1,6 +1,6 @@
 import 'package:convo/core/di/injection.dart';
 import 'package:flutter/material.dart';
-import 'package:convo/const.dart/constant.dart';
+import 'package:convo/core/constants/constant.dart';
 import 'package:flutter/services.dart';
 // Note: Assuming GoogleFonts comes from your packages, ensure 'google_fonts' is in pubspec.yaml
 import 'package:google_fonts/google_fonts.dart'; 
