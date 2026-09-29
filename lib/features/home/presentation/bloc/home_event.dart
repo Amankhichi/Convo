@@ -1,9 +1,20 @@
-part of 'home_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:convo/features/chats/domain/entities/message_entity.dart';
 
-abstract class HomeEvent {
-  const factory HomeEvent.init() = _Init;
+abstract class HomeEvent extends Equatable {
+  const HomeEvent();
+
+  @override
+  List<Object?> get props => [];
 }
 
-class _Init implements HomeEvent {
-  const _Init();
+class FetchHomeChatsEvent extends HomeEvent {}
+
+class RealtimeHomeMessageReceivedEvent extends HomeEvent {
+  final MessageEntity message;
+
+  const RealtimeHomeMessageReceivedEvent(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }

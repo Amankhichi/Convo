@@ -1,92 +1,165 @@
-import 'package:bloc/bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../../../core/utils/status.dart';
-import '../../data/model/home_chat_model.dart';
-import '../../domain/usecase/get_home_chats_list_usecase.dart';
-
-part 'home_event.dart';
-part 'home_state.dart';
+import 'dart:async';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:convo/core/network/chat_realtime_service.dart';
+import 'package:convo/features/home/domain/entities/chat_summary_entity.dart';
+import 'package:convo/features/home/domain/repositories/home_repository.dart';
+import 'package:convo/features/home/presentation/bloc/home_event.dart';
+import 'package:convo/features/home/presentation/bloc/home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  final GetHomeChatsListUsecase _getHomeChatsListUseCase;
+  final HomeRepository _homeRepository;
+  final ChatRealtimeService _realtimeService;
+  StreamSubscription? _realtimeSub;
+  Timer? _pollTimer;
 
-  HomeBloc({required GetHomeChatsListUsecase gethomechatslistusecase})
-    : _getHomeChatsListUseCase = gethomechatslistusecase,
-      super(const HomeState()) {
-    on<_Init>(__Init);
+  HomeBloc({
+    required HomeRepository homeRepository,
+    required ChatRealtimeService realtimeService,
+  }) : _homeRepository = homeRepository,
+       _realtimeService = realtimeService,
+       super(HomeInitial()) {
+    on<FetchHomeChatsEvent>(_onFetchHomeChats);
+    on<RealtimeHomeMessageReceivedEvent>(_onRealtimeHomeMessageReceived);
+
+    _listenRealtimeEvents();
+    _startPeriodicPolling();
   }
 
-  Future<void> __Init(_Init event, Emitter<HomeState> emit) async {
-    emit(state.copyWith(homeChatsStatus: Status.loading));
-
-    try {
-      final chats = await _getHomeChatsListUseCase();
-      final prefs = await SharedPreferences.getInstance();
-      final idString = prefs.getString("id");
-
-      if (idString == null || idString.isEmpty) {
-        emit(state.copyWith(homeChatsStatus: Status.error));
-        return;
-      }
-
-      final myId = int.tryParse(idString);
-      if (myId == null) {
-        emit(state.copyWith(homeChatsStatus: Status.error));
-        return;
-      }
-
-      if (chats.isEmpty) {
-        emit(state.copyWith(homeChatsStatus: Status.error));
-        return;
-      }
-
-      final users = buildConversationList(chats.cast<HomeChatModel>(), myId);
-
-      emit(
-        state.copyWith(homeChatsStatus: Status.success, homePageChats: users),
-      );
-    } catch (e, stack) {
-      print("🔥 ERROR: $e");
-      print(stack);
-      emit(state.copyWith(homeChatsStatus: Status.error));
-    }
+  void _startPeriodicPolling() {
+    _pollTimer?.cancel();
+    _pollTimer = Timer.periodic(const Duration(seconds: 10), (_) {
+      add(FetchHomeChatsEvent());
+    });
   }
 
-  List<HomeChatModel> buildConversationList(
-    List<HomeChatModel> chats,
-    int myId,
-  ) {
-    final Map<int, HomeChatModel> conversationMap = {};
-    final Map<int, int> unreadCountMap = {};
+  void _listenRealtimeEvents() {
+    _realtimeSub = _realtimeService.newMessageStream.listen((msg) {
+      add(RealtimeHomeMessageReceivedEvent(msg));
+    });
+  }
 
-    for (var chat in chats) {
-      if (chat.message.isEmpty) continue;
-
-      final otherUserId = chat.sender.id == myId
-          ? chat.receiver.id
-          : chat.sender.id;
-
-      if (chat.receiver.id == myId && !chat.seen) {
-        unreadCountMap[otherUserId] = (unreadCountMap[otherUserId] ?? 0) + 1;
-      }
-
-      if (!conversationMap.containsKey(otherUserId) ||
-          chat.createdAt.isAfter(conversationMap[otherUserId]!.createdAt)) {
-        conversationMap[otherUserId] = chat;
-      }
-    }
-
-    final conversations = conversationMap.values.map((chat) {
-      final otherUserId = chat.sender.id == myId
-          ? chat.receiver.id
-          : chat.sender.id;
-
-      return chat.copyWith(unSeenCount: unreadCountMap[otherUserId] ?? 0);
+  List<ChatSummaryEntity> _filterAndSort(List<ChatSummaryEntity> chats) {
+    final filtered = chats.where((c) {
+      if (c.chatType == 'SYSTEM') return false;
+      return c.targetUserName.isNotEmpty;
     }).toList();
 
-    conversations.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    filtered.sort((a, b) {
+      if (a.lastMessageTime.isEmpty) return 1;
+      if (b.lastMessageTime.isEmpty) return -1;
+      try {
+        final dtA = DateTime.parse(a.lastMessageTime);
+        final dtB = DateTime.parse(b.lastMessageTime);
+        return dtB.compareTo(dtA);
+      } catch (_) {
+        return 0;
+      }
+    });
 
-    return conversations;
+    return filtered;
+  }
+
+  Future<void> _onFetchHomeChats(
+    FetchHomeChatsEvent event,
+    Emitter<HomeState> emit,
+  ) async {
+    final cached = _homeRepository.getCachedChats();
+    final filteredCached = _filterAndSort(cached);
+
+    if (state is! HomeLoaded) {
+      if (filteredCached.isNotEmpty) {
+        emit(HomeLoaded(filteredCached));
+      } else {
+        emit(HomeLoading());
+      }
+    }
+
+    try {
+      final remoteChats = await _homeRepository.fetchChats();
+      final filteredRemote = _filterAndSort(remoteChats);
+      if (filteredRemote.isNotEmpty) {
+        emit(HomeLoaded(filteredRemote));
+      } else if (filteredCached.isNotEmpty) {
+        emit(HomeLoaded(filteredCached));
+      } else {
+        emit(HomeLoaded(const []));
+      }
+    } catch (e) {
+      if (state is! HomeLoaded) {
+        if (filteredCached.isNotEmpty) {
+          emit(HomeLoaded(filteredCached));
+        } else {
+          emit(HomeError(e.toString().replaceAll("Exception: ", "")));
+        }
+      } else {
+        // If already in HomeLoaded, retain current data on network failure
+        final current = (state as HomeLoaded).chats;
+        if (current.isEmpty && filteredCached.isNotEmpty) {
+          emit(HomeLoaded(filteredCached));
+        }
+      }
+    }
+  }
+
+  void _onRealtimeHomeMessageReceived(
+    RealtimeHomeMessageReceivedEvent event,
+    Emitter<HomeState> emit,
+  ) {
+    if (state is HomeLoaded) {
+      final currentList = List<ChatSummaryEntity>.from(
+        (state as HomeLoaded).chats,
+      );
+      final msg = event.message;
+
+      final index = currentList.indexWhere((c) => c.chatId == msg.chatId);
+      if (index != -1) {
+        final existing = currentList[index];
+
+        String formattedContent = msg.content;
+        if (msg.type == "IMAGE") formattedContent = "📷 Photo";
+        if (msg.type == "VIDEO") formattedContent = "🎥 Video";
+        if (msg.type == "AUDIO") formattedContent = "🎵 Voice message";
+        if (msg.type == "FILE") formattedContent = "📁 File";
+
+        final isIncoming = msg.senderId == existing.targetUserId;
+        final isOutgoing = !isIncoming;
+
+        if (isOutgoing && formattedContent.isNotEmpty && !formattedContent.startsWith("You: ")) {
+          formattedContent = "You: $formattedContent";
+        }
+
+        final updatedChat = ChatSummaryEntity(
+          chatId: existing.chatId,
+          chatType: existing.chatType,
+          targetUserId: existing.targetUserId,
+          targetUserName: existing.targetUserName,
+          targetUserImage: existing.targetUserImage,
+          targetUserAbout: existing.targetUserAbout,
+          targetUserPhone: existing.targetUserPhone,
+          lastMessageContent: formattedContent.isNotEmpty
+              ? formattedContent
+              : existing.lastMessageContent,
+          lastMessageTime: msg.createdAt.isNotEmpty
+              ? msg.createdAt
+              : existing.lastMessageTime,
+          unreadCount: isIncoming ? existing.unreadCount + 1 : 0,
+          online: existing.online,
+        );
+
+        currentList.removeAt(index);
+        currentList.insert(0, updatedChat);
+
+        emit(HomeLoaded(_filterAndSort(currentList)));
+      } else {
+        add(FetchHomeChatsEvent());
+      }
+    }
+  }
+
+  @override
+  Future<void> close() {
+    _pollTimer?.cancel();
+    _realtimeSub?.cancel();
+    return super.close();
   }
 }

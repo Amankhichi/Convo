@@ -1,26 +1,26 @@
+import 'package:convo/app/theme/app_colors.dart';
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
 
 class AppLoader extends StatelessWidget {
-  final double size;
-  final Color color;
-  final double strokeWidth;
+  final String? message;
 
-  const AppLoader({
-    super.key,
-    this.size = 35,
-    this.color = AppColors.primary,
-    this.strokeWidth = 3,
-  });
+  const AppLoader({super.key, this.message});
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: size,
-      width: size,
-      child: CircularProgressIndicator(
-        strokeWidth: strokeWidth,
-        valueColor: AlwaysStoppedAnimation<Color>(color),
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const CircularProgressIndicator(color: AppColors.primary),
+          if (message != null) ...[
+            const SizedBox(height: 16),
+            Text(
+              message!,
+              style: TextStyle(color: AppColors.greyText(context)),
+            ),
+          ],
+        ],
       ),
     );
   }

@@ -1,21 +1,31 @@
-part of 'home_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:convo/features/home/domain/entities/chat_summary_entity.dart';
 
-class HomeState {
-  final Status homeChatsStatus;
-  final List<HomeChatModel> homePageChats;
+abstract class HomeState extends Equatable {
+  const HomeState();
 
-  const HomeState({
-    this.homeChatsStatus = Status.init,
-    this.homePageChats = const [],
-  });
+  @override
+  List<Object?> get props => [];
+}
 
-  HomeState copyWith({
-    Status? homeChatsStatus,
-    List<HomeChatModel>? homePageChats,
-  }) {
-    return HomeState(
-      homeChatsStatus: homeChatsStatus ?? this.homeChatsStatus,
-      homePageChats: homePageChats ?? this.homePageChats,
-    );
-  }
+class HomeInitial extends HomeState {}
+
+class HomeLoading extends HomeState {}
+
+class HomeLoaded extends HomeState {
+  final List<ChatSummaryEntity> chats;
+
+  const HomeLoaded(this.chats);
+
+  @override
+  List<Object?> get props => [chats];
+}
+
+class HomeError extends HomeState {
+  final String message;
+
+  const HomeError(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }

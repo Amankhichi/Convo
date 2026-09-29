@@ -1,168 +1,161 @@
+import 'package:convo/app/theme/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import '../theme/app_theme.dart';
 
-class PremiumAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final String title;
-  final String? subtitle;
-  final List<Widget>? actions;
-  final bool showBack;
-  final VoidCallback? onBack;
+class PremiumGlassContainer extends StatelessWidget {
+  final Widget child;
+  final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry? margin;
+  final double borderRadius;
+  final VoidCallback? onTap;
 
-  const PremiumAppBar({
+  const PremiumGlassContainer({
     super.key,
-    required this.title,
-    this.subtitle,
-    this.actions,
-    this.showBack = true,
-    this.onBack,
+    required this.child,
+    this.padding,
+    this.margin,
+    this.borderRadius = 20,
+    this.onTap,
   });
 
   @override
-  Size get preferredSize => Size.fromHeight(subtitle == null ? 68 : 82);
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    Widget container = Container(
+      padding: padding ?? const EdgeInsets.all(16),
+      margin: margin,
+      decoration: BoxDecoration(
+        color: isDark
+            ? const Color(0xFF1E293B).withValues(alpha: 0.8)
+            : Colors.white.withValues(alpha: 0.9),
+        borderRadius: BorderRadius.circular(borderRadius),
+        border: Border.all(
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.1)
+              : AppColors.primary.withValues(alpha: 0.12),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.05),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: child,
+    );
+
+    if (onTap != null) {
+      return InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(borderRadius),
+        child: container,
+      );
+    }
+    return container;
+  }
+}
+
+class PremiumHeaderBanner extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final IconData icon;
+
+  const PremiumHeaderBanner({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final canPop = Navigator.canPop(context);
-    final showBackButton = showBack && (onBack != null || canPop);
-
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light,
-      child: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF1D4ED8), Color(0xFF0EA5E9)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 22),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [AppColors.primary, Color(0xFF6366F1)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-        child: SafeArea(
-          bottom: false,
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(
-              showBackButton ? 4 : 20,
-              4,
-              16,
-              10,
-            ),
-            child: Row(
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.35),
+            blurRadius: 18,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (showBackButton)
-                  IconButton(
-                    icon: const Icon(
-                      Icons.arrow_back_ios_new_rounded,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                    onPressed: () {
-                      if (onBack != null) {
-                        onBack!();
-                      } else {
-                        Navigator.pop(context);
-                      }
-                    },
-                  ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        title,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                      if (subtitle != null) ...[
-                        const SizedBox(height: 4),
-                        Text(
-                          subtitle!,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: Colors.white.withOpacity(.78),
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ],
+                Text(
+                  title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                ...?actions,
+                const SizedBox(height: 6),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.85),
+                    fontSize: 13,
+                  ),
+                ),
               ],
             ),
           ),
-        ),
+          CircleAvatar(
+            radius: 26,
+            backgroundColor: Colors.white.withValues(alpha: 0.2),
+            child: Icon(icon, color: Colors.white, size: 28),
+          ),
+        ],
       ),
     );
   }
 }
 
-class PremiumSectionTitle extends StatelessWidget {
-  final String title;
-  final String? trailing;
-
-  const PremiumSectionTitle({super.key, required this.title, this.trailing});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Text(
-            title,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: context.appText,
-              fontWeight: FontWeight.w800,
-              letterSpacing: .2,
-            ),
-          ),
-        ),
-        if (trailing != null)
-          Text(
-            trailing!,
-            style: const TextStyle(
-              color: AppColors.primary,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-      ],
-    );
-  }
-}
-
 class PremiumEmptyState extends StatelessWidget {
-  final IconData icon;
   final String title;
   final String message;
+  final IconData icon;
   final Widget? action;
 
   const PremiumEmptyState({
     super.key,
-    required this.icon,
     required this.title,
     required this.message,
+    this.icon = Icons.inbox_rounded,
     this.action,
   });
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(28),
+        padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              padding: const EdgeInsets.all(22),
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: context.appSurface,
-                borderRadius: BorderRadius.circular(26),
-                border: Border.all(color: context.appBorder),
+                color: AppColors.primary.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: isDark ? Colors.white12 : Colors.grey.shade300,
+                ),
               ),
               child: Icon(icon, color: AppColors.primary, size: 44),
             ),
@@ -171,7 +164,7 @@ class PremiumEmptyState extends StatelessWidget {
               title,
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: context.appText,
+                color: AppColors.textColor(context),
                 fontSize: 20,
                 fontWeight: FontWeight.w900,
               ),
@@ -180,7 +173,7 @@ class PremiumEmptyState extends StatelessWidget {
             Text(
               message,
               textAlign: TextAlign.center,
-              style: TextStyle(color: context.appMutedText, height: 1.45),
+              style: TextStyle(color: AppColors.greyText(context), height: 1.45),
             ),
             if (action != null) ...[const SizedBox(height: 22), action!],
           ],

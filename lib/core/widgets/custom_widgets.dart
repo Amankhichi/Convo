@@ -1,5 +1,5 @@
+import 'package:convo/app/theme/app_colors.dart';
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
 
 class CustomIcon extends StatelessWidget {
   const CustomIcon({
@@ -79,8 +79,8 @@ class CustomTextfield extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(color: Colors.grey.shade300, width: 1.2),
           ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+          focusedBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(12)),
             borderSide: BorderSide(color: AppColors.primary, width: 1.8),
           ),
           contentPadding: const EdgeInsets.symmetric(
