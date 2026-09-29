@@ -77,66 +77,72 @@ class ProfilePage extends StatelessWidget {
     final localStorage = sl<LocalStorage>();
     final name = localStorage.getString(StorageKeys.name) ?? "ConVo User";
     final phone = localStorage.getString(StorageKeys.phone) ?? "Not available";
-    final about = localStorage.getString(StorageKeys.about) ?? "Hey there! I am using ConVo.";
+    final about =
+        localStorage.getString(StorageKeys.about) ??
+        "Hey there! I am using ConVo.";
 
-      final image = localStorage.getString(StorageKeys.profileImage) ?? "";
+    final image = localStorage.getString(StorageKeys.profileImage) ?? "";
 
-      return BlocProvider(
-        create: (_) => sl<AuthBloc>(),
-        child: BlocConsumer<AuthBloc, AuthState>(
-          listener: (context, state) {
-            if (state is LoggedOutState) {
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                RouteNames.login,
-                (route) => false,
-              );
-            } else if (state is AccountDeletedSuccess) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Account deleted successfully")),
-              );
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                RouteNames.login,
-                (route) => false,
-              );
-            } else if (state is AuthError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message), backgroundColor: Colors.red),
-              );
-            }
-          },
-          builder: (context, state) {
-            final isLoading = state is AuthLoading;
+    return BlocProvider(
+      create: (_) => sl<AuthBloc>(),
+      child: BlocConsumer<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is LoggedOutState) {
+            Navigator.of(
+              context,
+            ).pushNamedAndRemoveUntil(RouteNames.login, (route) => false);
+          } else if (state is AccountDeletedSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Account deleted successfully")),
+            );
+            Navigator.of(
+              context,
+            ).pushNamedAndRemoveUntil(RouteNames.login, (route) => false);
+          } else if (state is AuthError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        },
+        builder: (context, state) {
+          final isLoading = state is AuthLoading;
 
-            return AppScaffold(
-              appBar: AppBar(title: const Text("Profile")),
-              body: Stack(
-                children: [
-                  SingleChildScrollView(
-                    padding: const EdgeInsets.all(24),
-                    child: Column(
-                      children: [
-                        CircleAvatar(
-                          radius: 50,
-                          backgroundColor: AppColors.primary,
-                          backgroundImage: image.isNotEmpty
-                              ? NetworkImage(image)
-                              : null,
-                          child: image.isEmpty
-                              ? Text(
-                                  name.isNotEmpty ? name[0].toUpperCase() : "?",
-                                  style: const TextStyle(
-                                    fontSize: 44,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                )
-                              : null,
+          return AppScaffold(
+            appBar: AppBar(title: const Text("Profile")),
+            body: Stack(
+              children: [
+                SingleChildScrollView(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    children: [
+                      CircleAvatar(
+                        radius: 50,
+                        backgroundColor: AppColors.primary,
+                        backgroundImage: image.isNotEmpty
+                            ? NetworkImage(image)
+                            : null,
+                        child: image.isEmpty
+                            ? Text(
+                                name.isNotEmpty ? name[0].toUpperCase() : "?",
+                                style: const TextStyle(
+                                  fontSize: 44,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              )
+                            : null,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        name,
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
                         ),
-                        const SizedBox(height: 16),
-                        Text(
-                          name,
-                          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                        ),
+                      ),
                       const SizedBox(height: 8),
                       Text(
                         phone,
@@ -144,13 +150,19 @@ class ProfilePage extends StatelessWidget {
                       ),
                       const SizedBox(height: 24),
                       ListTile(
-                        leading: const Icon(Icons.info_outline, color: AppColors.primary),
+                        leading: const Icon(
+                          Icons.info_outline,
+                          color: AppColors.primary,
+                        ),
                         title: const Text("About"),
                         subtitle: Text(about),
                       ),
                       const Divider(),
                       ListTile(
-                        leading: const Icon(Icons.lock_outline, color: AppColors.primary),
+                        leading: const Icon(
+                          Icons.lock_outline,
+                          color: AppColors.primary,
+                        ),
                         title: const Text("Privacy"),
                         subtitle: const Text("End-to-end encrypted"),
                       ),
@@ -158,26 +170,43 @@ class ProfilePage extends StatelessWidget {
 
                       /// Logout Button
                       ListTile(
-                        leading: const Icon(Icons.logout, color: AppColors.primary),
+                        leading: const Icon(
+                          Icons.logout,
+                          color: AppColors.primary,
+                        ),
                         title: const Text(
                           "Logout",
                           style: TextStyle(fontWeight: FontWeight.w600),
                         ),
                         trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                        onTap: isLoading ? null : () => _showLogoutConfirmation(context),
+                        onTap: isLoading
+                            ? null
+                            : () => _showLogoutConfirmation(context),
                       ),
 
                       const Divider(),
 
                       /// Delete Account Button
                       ListTile(
-                        leading: const Icon(Icons.delete_forever, color: Colors.red),
+                        leading: const Icon(
+                          Icons.delete_forever,
+                          color: Colors.red,
+                        ),
                         title: const Text(
                           "Delete Account",
-                          style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                        trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.red),
-                        onTap: isLoading ? null : () => _showDeleteAccountConfirmation(context),
+                        trailing: const Icon(
+                          Icons.arrow_forward_ios,
+                          size: 16,
+                          color: Colors.red,
+                        ),
+                        onTap: isLoading
+                            ? null
+                            : () => _showDeleteAccountConfirmation(context),
                       ),
                     ],
                   ),
@@ -186,7 +215,9 @@ class ProfilePage extends StatelessWidget {
                   Container(
                     color: Colors.black.withOpacity(0.3),
                     child: const Center(
-                      child: CircularProgressIndicator(color: AppColors.primary),
+                      child: CircularProgressIndicator(
+                        color: AppColors.primary,
+                      ),
                     ),
                   ),
               ],
