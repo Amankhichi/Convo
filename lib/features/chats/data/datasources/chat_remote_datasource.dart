@@ -1,6 +1,7 @@
 import 'package:convo/app/config/api_config.dart';
 import 'package:convo/core/network/api_client.dart';
 import 'package:convo/features/chats/data/models/message_model.dart';
+import 'package:convo/features/chats/domain/entities/story_reply_entity.dart';
 
 abstract class ChatRemoteDataSource {
   Future<int> createOrGetChatId(int targetUserId);
@@ -12,6 +13,7 @@ abstract class ChatRemoteDataSource {
     String type = "TEXT",
     String? mediaUrl,
     int? replyToId,
+    StoryReplyEntity? storyReply,
   });
   Future<MessageModel> editMessage(int messageId, String content);
   Future<void> deleteMessage(int messageId);
@@ -77,6 +79,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
     String type = "TEXT",
     String? mediaUrl,
     int? replyToId,
+    StoryReplyEntity? storyReply,
   }) async {
     final body = {
       "chatId": chatId,
@@ -85,6 +88,8 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
       "content": content,
       "mediaUrl": mediaUrl,
       "replyToId": replyToId,
+      if (storyReply != null) "storyId": int.tryParse(storyReply.storyId) ?? storyReply.storyId,
+      if (storyReply != null) "storyReply": storyReply.toJson(),
     };
 
     final res = await _apiClient.post(ApiConfig.messages, body: body);

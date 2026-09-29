@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:convo/features/chats/domain/entities/message_entity.dart';
+import 'package:convo/features/chats/domain/entities/story_reply_entity.dart';
 
 abstract class ChatEvent extends Equatable {
   const ChatEvent();
@@ -25,6 +26,7 @@ class SendMessageEvent extends ChatEvent {
   final String? mediaUrl;
   final String? clientMessageId;
   final int? replyToId;
+  final StoryReplyEntity? storyReply;
 
   const SendMessageEvent({
     required this.chatId,
@@ -34,10 +36,11 @@ class SendMessageEvent extends ChatEvent {
     this.mediaUrl,
     this.clientMessageId,
     this.replyToId,
+    this.storyReply,
   });
 
   @override
-  List<Object?> get props => [chatId, receiverId, content, type, mediaUrl, clientMessageId, replyToId];
+  List<Object?> get props => [chatId, receiverId, content, type, mediaUrl, clientMessageId, replyToId, storyReply];
 }
 
 class SendMediaMessageEvent extends ChatEvent {
@@ -120,4 +123,3 @@ class DeleteMessageEvent extends ChatEvent {
   @override
   List<Object?> get props => [messageId];
 }
-

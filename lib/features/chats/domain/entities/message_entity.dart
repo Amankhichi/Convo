@@ -1,3 +1,5 @@
+import 'package:convo/features/chats/domain/entities/story_reply_entity.dart';
+
 enum MessageStatus {
   sending,
   sent,
@@ -53,6 +55,7 @@ class MessageEntity {
   final bool edited;
   final int? replyToId;
   final String? replyToContent;
+  final StoryReplyEntity? storyReply;
   final String? deliveredAt;
   final String? seenAt;
 
@@ -71,6 +74,7 @@ class MessageEntity {
     this.edited = false,
     this.replyToId,
     this.replyToContent,
+    this.storyReply,
     this.deliveredAt,
     this.seenAt,
   });
@@ -95,4 +99,3 @@ class MessageEntity {
     return newStatus.rank > messageStatus.rank;
   }
 }
-

@@ -2,6 +2,7 @@ import 'package:convo/features/chats/data/datasources/chat_local_datasource.dart
 import 'package:convo/features/chats/data/datasources/chat_remote_datasource.dart';
 import 'package:convo/features/chats/data/models/message_model.dart';
 import 'package:convo/features/chats/domain/entities/message_entity.dart';
+import 'package:convo/features/chats/domain/entities/story_reply_entity.dart';
 import 'package:convo/features/chats/domain/repositories/chat_repository.dart';
 
 class ChatRepositoryImpl implements ChatRepository {
@@ -58,6 +59,7 @@ class ChatRepositoryImpl implements ChatRepository {
     String type = "TEXT",
     String? mediaUrl,
     int? replyToId,
+    StoryReplyEntity? storyReply,
   }) async {
     final sentMessage = await _remoteDataSource.sendMessage(
       chatId: chatId,
@@ -66,6 +68,7 @@ class ChatRepositoryImpl implements ChatRepository {
       type: type,
       mediaUrl: mediaUrl,
       replyToId: replyToId,
+      storyReply: storyReply,
     );
 
     // Save newly sent message into local cache list

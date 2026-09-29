@@ -325,8 +325,9 @@ class _OtpPageState extends State<OtpPage> {
                   const SizedBox(height: 24),
 
                   /// Resend OTP Section with 30s Countdown Timer
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       Text(
                         loc?.translate("didnt_receive_otp") ?? "Didn't receive the code? ",

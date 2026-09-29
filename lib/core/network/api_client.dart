@@ -20,7 +20,9 @@ class ApiClient {
     };
     final token = _secureStorage.getToken();
     if (token != null && token.isNotEmpty) {
-      headers["Authorization"] = "Bearer $token";
+      final clean = token.trim().replaceAll(RegExp(r'[\s\r\n\t]+'), '').replaceAll('#', '');
+      final cleanToken = clean.contains('#') ? clean.split('#').first : clean;
+      headers["Authorization"] = "Bearer $cleanToken";
     }
     if (customHeaders != null) {
       headers.addAll(customHeaders);
@@ -28,9 +30,19 @@ class ApiClient {
     return headers;
   }
 
+  Uri _buildUri(String path, [Map<String, String>? queryParameters]) {
+    final cleanPath = path.trim().replaceAll('#', '').split('#').first;
+    final isAbsolute = cleanPath.startsWith('http://') || cleanPath.startsWith('https://');
+    final baseUri = (isAbsolute ? Uri.parse(cleanPath) : Uri.parse("${ApiConfig.baseUrl}$cleanPath")).removeFragment();
+    if (queryParameters != null && queryParameters.isNotEmpty) {
+      return baseUri.replace(queryParameters: queryParameters).removeFragment();
+    }
+    return baseUri;
+  }
+
   Future<dynamic> get(String path, {Map<String, String>? queryParameters}) async {
     final requestId = ApiDebugLogger.generateRequestId();
-    final uri = Uri.parse("${ApiConfig.baseUrl}$path").replace(queryParameters: queryParameters);
+    final uri = _buildUri(path, queryParameters);
     final headers = _buildHeaders();
     final stopwatch = Stopwatch()..start();
 
@@ -70,7 +82,7 @@ class ApiClient {
 
   Future<dynamic> post(String path, {dynamic body, Map<String, String>? queryParameters}) async {
     final requestId = ApiDebugLogger.generateRequestId();
-    final uri = Uri.parse("${ApiConfig.baseUrl}$path").replace(queryParameters: queryParameters);
+    final uri = _buildUri(path, queryParameters);
     final headers = _buildHeaders();
     final encodedBody = body != null ? jsonEncode(body) : null;
     final stopwatch = Stopwatch()..start();
@@ -116,7 +128,7 @@ class ApiClient {
 
   Future<dynamic> put(String path, {dynamic body, Map<String, String>? queryParameters}) async {
     final requestId = ApiDebugLogger.generateRequestId();
-    final uri = Uri.parse("${ApiConfig.baseUrl}$path").replace(queryParameters: queryParameters);
+    final uri = _buildUri(path, queryParameters);
     final headers = _buildHeaders();
     final encodedBody = body != null ? jsonEncode(body) : null;
     final stopwatch = Stopwatch()..start();
@@ -162,7 +174,7 @@ class ApiClient {
 
   Future<dynamic> patch(String path, {dynamic body, Map<String, String>? queryParameters}) async {
     final requestId = ApiDebugLogger.generateRequestId();
-    final uri = Uri.parse("${ApiConfig.baseUrl}$path").replace(queryParameters: queryParameters);
+    final uri = _buildUri(path, queryParameters);
     final headers = _buildHeaders();
     final encodedBody = body != null ? jsonEncode(body) : null;
     final stopwatch = Stopwatch()..start();
@@ -208,7 +220,7 @@ class ApiClient {
 
   Future<dynamic> delete(String path, {Map<String, String>? queryParameters}) async {
     final requestId = ApiDebugLogger.generateRequestId();
-    final uri = Uri.parse("${ApiConfig.baseUrl}$path").replace(queryParameters: queryParameters);
+    final uri = _buildUri(path, queryParameters);
     final headers = _buildHeaders();
     final stopwatch = Stopwatch()..start();
 
@@ -254,7 +266,7 @@ class ApiClient {
     String filename = "profile.jpg",
   }) async {
     final requestId = ApiDebugLogger.generateRequestId();
-    final uri = Uri.parse("${ApiConfig.baseUrl}$path").replace(queryParameters: queryParameters);
+    final uri = _buildUri(path, queryParameters);
     final headers = _buildHeaders();
     final stopwatch = Stopwatch()..start();
 

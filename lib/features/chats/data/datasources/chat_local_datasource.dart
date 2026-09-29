@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:convo/core/storage/local_storage.dart';
+import 'package:convo/core/storage/secure_storage.dart';
 import 'package:convo/features/chats/data/models/message_model.dart';
 
 abstract class ChatLocalDataSource {
@@ -13,17 +14,23 @@ abstract class ChatLocalDataSource {
 
 class ChatLocalDataSourceImpl implements ChatLocalDataSource {
   final LocalStorage _localStorage;
+  final SecureStorage _secureStorage;
 
-  ChatLocalDataSourceImpl(this._localStorage);
+  ChatLocalDataSourceImpl(this._localStorage, this._secureStorage);
+
+  String _getUserPrefix() {
+    final userId = _secureStorage.getUserId();
+    return userId > 0 ? "user_${userId}_" : "";
+  }
 
   @override
   Future<void> saveChatId(int targetUserId, int chatId) async {
-    await _localStorage.setString('chat_id_user_$targetUserId', chatId.toString());
+    await _localStorage.setString('${_getUserPrefix()}chat_id_user_$targetUserId', chatId.toString());
   }
 
   @override
   int? getChatId(int targetUserId) {
-    final str = _localStorage.getString('chat_id_user_$targetUserId');
+    final str = _localStorage.getString('${_getUserPrefix()}chat_id_user_$targetUserId');
     if (str != null && str.isNotEmpty) {
       return int.tryParse(str);
     }
@@ -33,12 +40,12 @@ class ChatLocalDataSourceImpl implements ChatLocalDataSource {
   @override
   Future<void> saveMessages(int chatId, List<MessageModel> messages) async {
     final jsonList = messages.map((m) => m.toJson()).toList();
-    await _localStorage.setString('chat_messages_$chatId', jsonEncode(jsonList));
+    await _localStorage.setString('${_getUserPrefix()}chat_messages_$chatId', jsonEncode(jsonList));
   }
 
   @override
   List<MessageModel> getCachedMessages(int chatId) {
-    final jsonString = _localStorage.getString('chat_messages_$chatId');
+    final jsonString = _localStorage.getString('${_getUserPrefix()}chat_messages_$chatId');
     if (jsonString == null || jsonString.isEmpty) return [];
 
     try {
@@ -54,12 +61,12 @@ class ChatLocalDataSourceImpl implements ChatLocalDataSource {
 
   @override
   Future<void> saveChatUserProfile(int chatId, Map<String, dynamic> userProfile) async {
-    await _localStorage.setString('chat_user_profile_$chatId', jsonEncode(userProfile));
+    await _localStorage.setString('${_getUserPrefix()}chat_user_profile_$chatId', jsonEncode(userProfile));
   }
 
   @override
   Map<String, dynamic>? getChatUserProfile(int chatId) {
-    final jsonString = _localStorage.getString('chat_user_profile_$chatId');
+    final jsonString = _localStorage.getString('${_getUserPrefix()}chat_user_profile_$chatId');
     if (jsonString == null || jsonString.isEmpty) return null;
     try {
       final decoded = jsonDecode(jsonString);
@@ -70,3 +77,4 @@ class ChatLocalDataSourceImpl implements ChatLocalDataSource {
     return null;
   }
 }
+

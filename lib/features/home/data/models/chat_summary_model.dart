@@ -22,19 +22,36 @@ class ChatSummaryModel extends ChatSummaryEntity {
 
     final lastMsg = json['lastMessage'] as Map<String, dynamic>?;
 
-    final name = otherUser?['name']?.toString() ?? 'ConVo User';
-    final rawImage = otherUser?['profileImage']?.toString() ?? '';
-    final image = ApiConfig.sanitizeUrl(rawImage);
-    final about = otherUser?['about']?.toString() ?? '';
-    final phone = otherUser?['phoneNumber']?.toString() ??
+    final String name = json['targetUserName']?.toString() ??
+        otherUser?['name']?.toString() ??
+        otherUser?['username']?.toString() ??
+        'ConVo User';
+
+    final String rawImage = json['targetUserImage']?.toString() ??
+        otherUser?['profileImage']?.toString() ??
+        otherUser?['profile']?.toString() ??
+        otherUser?['avatar']?.toString() ??
+        '';
+    final String image = ApiConfig.sanitizeUrl(rawImage);
+
+    final String about = json['targetUserAbout']?.toString() ??
+        otherUser?['about']?.toString() ??
+        '';
+
+    final String phone = json['targetUserPhone']?.toString() ??
+        otherUser?['phoneNumber']?.toString() ??
         otherUser?['phone']?.toString() ??
         '';
 
-    final userId = otherUser?['id'] is int
-        ? otherUser!['id']
-        : int.tryParse(otherUser?['id']?.toString() ?? '0') ?? 0;
+    final int userId = json['targetUserId'] is int
+        ? json['targetUserId']
+        : int.tryParse(json['targetUserId']?.toString() ?? '') ??
+            (otherUser?['id'] is int
+                ? otherUser!['id']
+                : int.tryParse(otherUser?['id']?.toString() ?? '0') ?? 0);
 
-    String rawContent = lastMsg?['content']?.toString() ??
+    String rawContent = json['lastMessageContent']?.toString() ??
+        lastMsg?['content']?.toString() ??
         lastMsg?['message']?.toString() ??
         lastMsg?['mssg']?.toString() ??
         '';

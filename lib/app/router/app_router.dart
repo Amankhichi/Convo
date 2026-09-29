@@ -14,6 +14,8 @@ import 'package:convo/features/splash/presentation/pages/splash_page.dart';
 import 'package:flutter/material.dart';
 
 class AppRouter {
+  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case RouteNames.splash:

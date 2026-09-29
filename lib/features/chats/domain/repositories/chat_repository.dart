@@ -1,4 +1,5 @@
 import 'package:convo/features/chats/domain/entities/message_entity.dart';
+import 'package:convo/features/chats/domain/entities/story_reply_entity.dart';
 
 abstract class ChatRepository {
   Future<int> getOrCreateChatId(int targetUserId);
@@ -12,6 +13,7 @@ abstract class ChatRepository {
     String type = "TEXT",
     String? mediaUrl,
     int? replyToId,
+    StoryReplyEntity? storyReply,
   });
   Future<MessageEntity> editMessage(int messageId, String content);
   Future<void> deleteMessage(int messageId);

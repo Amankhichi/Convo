@@ -68,24 +68,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   void _startPolling(int chatId) {
     _pollTimer?.cancel();
-    if (chatId <= 0) return;
-    _pollTimer = Timer.periodic(const Duration(seconds: 2), (_) async {
-      if (_activeChatId != chatId) return;
-      try {
-        final remote = await _chatRepository.fetchMessages(chatId);
-        if (state is ChatLoaded) {
-          final currentList = (state as ChatLoaded).messages;
-          for (final msg in remote) {
-            final idx = currentList.indexWhere((m) =>
-                (msg.clientMessageId != null && m.clientMessageId == msg.clientMessageId) ||
-                (msg.id != 0 && m.id == msg.id));
-            if (idx == -1) {
-              add(RealtimeMessageReceivedEvent(msg));
-            }
-          }
-        }
-      } catch (_) {}
-    });
   }
 
   Future<void> _onFetchMessages(
@@ -148,6 +130,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       status: "SENDING",
       createdAt: DateTime.now().toIso8601String(),
       seen: false,
+      storyReply: event.storyReply,
     );
 
     // Insert at index 0 (newest first)
@@ -163,6 +146,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         type: event.type,
         mediaUrl: event.mediaUrl,
         replyToId: event.replyToId,
+        storyReply: event.storyReply,
       );
 
       AppLogger.d("[SENT] messageId=${sentMessage.id} clientMessageId=$clientMsgId");
@@ -190,6 +174,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           status: targetStatus,
           createdAt: sentMessage.createdAt,
           seen: existing.seen || sentMessage.seen || targetStatus == 'SEEN',
+          storyReply: sentMessage.storyReply ?? existing.storyReply ?? event.storyReply,
         );
       } else {
         optimisticList.insert(0, sentMessage);
@@ -210,11 +195,12 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           chatId: event.chatId,
           senderId: 0,
           receiverId: event.receiverId,
-          type: "TEXT",
+          type: event.type,
           content: event.content,
           status: "FAILED",
           createdAt: tempPendingMessage.createdAt,
           seen: false,
+          storyReply: event.storyReply,
         );
         final failedList = List<MessageEntity>.from(optimisticList);
         emit(ChatLoaded(failedList, reason: ChatLoadedReason.statusUpdated));
@@ -513,6 +499,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           status: targetStatus,
           createdAt: newMsg.createdAt,
           seen: existing.seen || newMsg.seen || targetStatus == 'SEEN',
+          replyToId: newMsg.replyToId ?? existing.replyToId,
+          replyToContent: newMsg.replyToContent ?? existing.replyToContent,
+          storyReply: newMsg.storyReply ?? existing.storyReply,
         );
       } else {
         currentList.insert(0, newMsg); // Insert at index 0 (newest first)

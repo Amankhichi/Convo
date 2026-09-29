@@ -16,6 +16,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback onClearSelection;
   final VoidCallback onOpenProfile;
   final VoidCallback onStartSearch;
+  final VoidCallback? onStartCall;
 
   const ChatAppBar({
     super.key,
@@ -32,6 +33,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.onClearSelection,
     required this.onOpenProfile,
     required this.onStartSearch,
+    this.onStartCall,
   });
 
   @override
@@ -140,7 +142,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         IconButton(
           icon: const Icon(Icons.call_outlined, color: AppColors.primary),
-          onPressed: () {},
+          onPressed: onStartCall,
         ),
         IconButton(
           icon: const Icon(Icons.search, color: AppColors.primary),

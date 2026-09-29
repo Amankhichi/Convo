@@ -8,9 +8,7 @@ import 'package:convo/features/home/domain/entities/chat_summary_entity.dart';
 import 'package:convo/features/home/presentation/bloc/home_bloc.dart';
 import 'package:convo/features/home/presentation/bloc/home_event.dart';
 import 'package:convo/features/home/presentation/bloc/home_state.dart';
-import 'package:convo/features/stories/domain/entities/story_entity.dart';
-import 'package:convo/features/stories/domain/repositories/story_repository.dart';
-import 'package:convo/features/stories/presentation/pages/story_viewer_page.dart';
+import 'package:convo/features/stories/presentation/widgets/story_bar_widget.dart';
 import 'package:convo/injection/dependency_injection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -52,6 +50,17 @@ class _HomePageState extends State<HomePage> {
     } catch (_) {
       return "";
     }
+  }
+
+  String _getChatPreviewText(ChatSummaryEntity chat) {
+    if (chat.lastMessageContent.trim().isNotEmpty &&
+        chat.lastMessageContent != "Tap to chat") {
+      return chat.lastMessageContent;
+    }
+    if (chat.targetUserAbout.trim().isNotEmpty) {
+      return chat.targetUserAbout;
+    }
+    return "No messages yet";
   }
 
   List<ChatSummaryEntity> _filterChats(List<ChatSummaryEntity> chats) {
@@ -275,15 +284,16 @@ class _HomePageState extends State<HomePage> {
                 color: backgroundColor,
                 child: Column(
                   children: [
-                    // Stories / Status Bar
-                    _buildStoriesRow(state, isDark),
+                    // Stori
+                    //es / Status Bar
+                    const StoryBarWidget(),
 
-                    const SizedBox(height: 12),
+                    // const SizedBox(height: 4),
 
                     // Filter Chips Bar
                     _buildFilterChips(isDark),
 
-                    const SizedBox(height: 12),
+                    // const SizedBox(height: 6),
 
                     // Main Content List (Chats or Calls)
                     Expanded(
@@ -310,208 +320,10 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  /// Story / Status Bar Component
-  Widget _buildStoriesRow(HomeState state, bool isDark) {
-    final storyRepo = sl<StoryRepository>();
-    final storyGroups = storyRepo.getStoryGroups();
-
-    List<ChatSummaryEntity> chats = [];
-    if (state is HomeLoaded) {
-      chats = state.chats;
-    }
-
-    return Container(
-      height: 100,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(),
-        children: [
-          // My Status Add Circle
-          GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(context, RouteNames.media);
-            },
-            child: Padding(
-              padding: const EdgeInsets.only(right: 14),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 62,
-                    height: 62,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: isDark ? Colors.white38 : Colors.grey.shade400,
-                        width: 2,
-                      ),
-                    ),
-                    child: Container(
-                      margin: const EdgeInsets.all(3),
-                      decoration: BoxDecoration(
-                        color: isDark
-                            ? const Color(0xFF23232C)
-                            : const Color(0xFFEAEAEA),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.add,
-                        color: Color(0xFF8B5CF6),
-                        size: 28,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    "My Story",
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: isDark ? Colors.white : Colors.black87,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          // User Story Groups
-          if (storyGroups.isNotEmpty)
-            ...storyGroups.asMap().entries.map((entry) {
-              final idx = entry.key;
-              final group = entry.value;
-
-              return _buildStoryGroupCircle(
-                group: group,
-                isDark: isDark,
-                onTap: () async {
-                  await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => StoryViewerPage(
-                        storyGroups: storyGroups,
-                        initialGroupIndex: idx,
-                      ),
-                    ),
-                  );
-                  setState(() {});
-                },
-              );
-            })
-          else ...[
-            // Fallback story circles generated from chat users if no stories created yet
-            ...chats.take(4).map((chat) {
-              final dummyGroup = UserStoryGroupEntity(
-                userId: chat.targetUserId,
-                userName: chat.targetUserName,
-                userImage: chat.targetUserImage,
-                stories: [
-                  StoryItemEntity(
-                    id: chat.chatId.toString(),
-                    mediaUrl: chat.targetUserImage,
-                    createdAt: chat.lastMessageTime,
-                    isSeen: false,
-                  ),
-                ],
-              );
-
-              return _buildStoryGroupCircle(
-                group: dummyGroup,
-                isDark: isDark,
-                onTap: () async {
-                  await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => StoryViewerPage(
-                        storyGroups: [dummyGroup],
-                        initialGroupIndex: 0,
-                      ),
-                    ),
-                  );
-                  setState(() {});
-                },
-              );
-            }),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStoryGroupCircle({
-    required UserStoryGroupEntity group,
-    required bool isDark,
-    required VoidCallback onTap,
-  }) {
-    final hasUnseen = group.hasUnseenStories;
-    final displayName = group.userName.split(' ').first;
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.only(right: 14),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 62,
-              height: 62,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: hasUnseen ? Colors.green : Colors.grey.shade600,
-                  width: hasUnseen ? 2.5 : 1.5,
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(2.5),
-                child: CircleAvatar(
-                  radius: 26,
-                  backgroundColor: const Color(0xFFE2D6FF),
-                  backgroundImage: group.userImage.isNotEmpty
-                      ? NetworkImage(ApiConfig.sanitizeUrl(group.userImage))
-                      : null,
-                  child: group.userImage.isEmpty
-                      ? Text(
-                          displayName.isNotEmpty
-                              ? displayName[0].toUpperCase()
-                              : "?",
-                          style: const TextStyle(
-                            color: Color(0xFF5B21B6),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
-                        )
-                      : null,
-                ),
-              ),
-            ),
-            const SizedBox(height: 6),
-            SizedBox(
-              width: 66,
-              child: Text(
-                displayName,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: hasUnseen ? FontWeight.bold : FontWeight.w500,
-                  color: isDark ? Colors.white : Colors.black87,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   /// Filter Chips Component
   Widget _buildFilterChips(bool isDark) {
     return SizedBox(
-      height: 42, // Adjusted height to comfortably fit padding + text
+      height: 30, // Adjusted height to comfortably fit padding + text
       child: ListView.separated(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         scrollDirection: Axis.horizontal,
@@ -534,13 +346,13 @@ class _HomePageState extends State<HomePage> {
               child: Ink(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 18,
-                  vertical: 4,
+                  // vertical: 4,
                 ),
                 decoration: BoxDecoration(
                   color: isSelected
                       ? const Color(0xFF00A3FF)
                       : (isDark ? Colors.transparent : Colors.grey.shade200),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(8),
                   border: isSelected
                       ? null
                       : Border.all(
@@ -627,26 +439,10 @@ class _HomePageState extends State<HomePage> {
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(2),
-                        child: CircleAvatar(
+                        child: CachedProfileAvatar(
+                          imageUrl: chat.targetUserImage,
+                          name: chat.targetUserName,
                           radius: 24,
-                          backgroundColor: const Color(0xFF23232C),
-                          backgroundImage: chat.targetUserImage.isNotEmpty
-                              ? NetworkImage(
-                                  ApiConfig.sanitizeUrl(chat.targetUserImage),
-                                )
-                              : null,
-                          child: chat.targetUserImage.isEmpty
-                              ? Text(
-                                  chat.targetUserName.isNotEmpty
-                                      ? chat.targetUserName[0].toUpperCase()
-                                      : "?",
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                  ),
-                                )
-                              : null,
                         ),
                       ),
                     ),
@@ -711,11 +507,7 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Expanded(
                       child: Text(
-                        chat.lastMessageContent.isNotEmpty
-                            ? chat.lastMessageContent
-                            : chat.targetUserAbout.isNotEmpty
-                            ? chat.targetUserAbout
-                            : "Tap to chat",
+                        _getChatPreviewText(chat),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -972,6 +764,70 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class CachedProfileAvatar extends StatefulWidget {
+  final String imageUrl;
+  final String name;
+  final double radius;
+  final Color backgroundColor;
+
+  const CachedProfileAvatar({
+    super.key,
+    required this.imageUrl,
+    required this.name,
+    this.radius = 24,
+    this.backgroundColor = const Color(0xFF23232C),
+  });
+
+  @override
+  State<CachedProfileAvatar> createState() => _CachedProfileAvatarState();
+}
+
+class _CachedProfileAvatarState extends State<CachedProfileAvatar> {
+  bool _hasError = false;
+
+  @override
+  void didUpdateWidget(CachedProfileAvatar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.imageUrl != widget.imageUrl) {
+      _hasError = false;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final sanitized = ApiConfig.sanitizeUrl(widget.imageUrl);
+    final hasImage = sanitized.isNotEmpty && !_hasError;
+    final initial = widget.name.trim().isNotEmpty
+        ? widget.name.trim()[0].toUpperCase()
+        : "?";
+
+    return CircleAvatar(
+      radius: widget.radius,
+      backgroundColor: widget.backgroundColor,
+      backgroundImage: hasImage ? NetworkImage(sanitized) : null,
+      onBackgroundImageError: hasImage
+          ? (_, __) {
+              if (mounted) {
+                setState(() {
+                  _hasError = true;
+                });
+              }
+            }
+          : null,
+      child: !hasImage
+          ? Text(
+              initial,
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: widget.radius * 0.75,
+              ),
+            )
+          : null,
     );
   }
 }

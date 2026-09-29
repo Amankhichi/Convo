@@ -1,5 +1,6 @@
 import 'package:convo/app/config/api_config.dart';
 import 'package:convo/features/chats/domain/entities/message_entity.dart';
+import 'package:convo/features/chats/domain/entities/story_reply_entity.dart';
 
 class MessageModel extends MessageEntity {
   const MessageModel({
@@ -17,6 +18,7 @@ class MessageModel extends MessageEntity {
     super.edited = false,
     super.replyToId,
     super.replyToContent,
+    super.storyReply,
     super.deliveredAt,
     super.seenAt,
   });
@@ -37,6 +39,7 @@ class MessageModel extends MessageEntity {
       edited: entity.edited,
       replyToId: entity.replyToId,
       replyToContent: entity.replyToContent,
+      storyReply: entity.storyReply,
       deliveredAt: entity.deliveredAt,
       seenAt: entity.seenAt,
     );
@@ -72,6 +75,22 @@ class MessageModel extends MessageEntity {
         ? json['replyToId']
         : int.tryParse(json['replyToId']?.toString() ?? '0');
 
+    // Parse storyReply metadata
+    StoryReplyEntity? parsedStoryReply;
+    if (json['storyReply'] != null && json['storyReply'] is Map<String, dynamic>) {
+      parsedStoryReply = StoryReplyEntity.fromJson(json['storyReply'] as Map<String, dynamic>);
+    } else if (json['story_reply'] != null && json['story_reply'] is Map<String, dynamic>) {
+      parsedStoryReply = StoryReplyEntity.fromJson(json['story_reply'] as Map<String, dynamic>);
+    } else if (json['type']?.toString().toUpperCase() == 'STORY_REPLY' && json['storyId'] != null) {
+      parsedStoryReply = StoryReplyEntity(
+        storyId: json['storyId'].toString(),
+        mediaUrl: json['storyMediaUrl']?.toString() ?? rawMedia ?? '',
+        mediaType: json['storyMediaType']?.toString().toUpperCase() ?? 'IMAGE',
+        createdAt: json['storyCreatedAt']?.toString(),
+        isExpired: json['isExpired'] == true,
+      );
+    }
+
     return MessageModel(
       id: json['id'] is int
           ? json['id']
@@ -86,7 +105,7 @@ class MessageModel extends MessageEntity {
       receiverId: json['receiverId'] is int
           ? json['receiverId']
           : int.tryParse(json['receiverId']?.toString() ?? '0'),
-      type: json['type']?.toString() ?? 'TEXT',
+      type: json['type']?.toString() ?? (parsedStoryReply != null ? 'STORY_REPLY' : 'TEXT'),
       content:
           json['content']?.toString() ??
           json['message']?.toString() ??
@@ -100,6 +119,7 @@ class MessageModel extends MessageEntity {
       edited: isEdited,
       replyToId: (rId != null && rId > 0) ? rId : null,
       replyToContent: json['replyToContent']?.toString(),
+      storyReply: parsedStoryReply,
       deliveredAt: json['deliveredAt']?.toString(),
       seenAt: json['seenAt']?.toString(),
     );
@@ -121,6 +141,7 @@ class MessageModel extends MessageEntity {
       'edited': edited,
       'replyToId': replyToId,
       'replyToContent': replyToContent,
+      'storyReply': storyReply?.toJson(),
       'deliveredAt': deliveredAt,
       'seenAt': seenAt,
     };

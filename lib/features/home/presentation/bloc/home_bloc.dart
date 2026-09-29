@@ -27,7 +27,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   void _startPeriodicPolling() {
     _pollTimer?.cancel();
-    _pollTimer = Timer.periodic(const Duration(seconds: 2), (_) {
+    _pollTimer = Timer.periodic(const Duration(seconds: 10), (_) {
       add(FetchHomeChatsEvent());
     });
   }
@@ -41,8 +41,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   List<ChatSummaryEntity> _filterAndSort(List<ChatSummaryEntity> chats) {
     final filtered = chats.where((c) {
       if (c.chatType == 'SYSTEM') return false;
-      return c.lastMessageContent.trim().isNotEmpty ||
-          c.lastMessageTime.trim().isNotEmpty;
+      return c.targetUserName.isNotEmpty;
     }).toList();
 
     filtered.sort((a, b) {
@@ -78,13 +77,25 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     try {
       final remoteChats = await _homeRepository.fetchChats();
       final filteredRemote = _filterAndSort(remoteChats);
-      emit(HomeLoaded(filteredRemote));
+      if (filteredRemote.isNotEmpty) {
+        emit(HomeLoaded(filteredRemote));
+      } else if (filteredCached.isNotEmpty) {
+        emit(HomeLoaded(filteredCached));
+      } else {
+        emit(HomeLoaded(const []));
+      }
     } catch (e) {
       if (state is! HomeLoaded) {
         if (filteredCached.isNotEmpty) {
           emit(HomeLoaded(filteredCached));
         } else {
-          emit(HomeError(e.toString()));
+          emit(HomeError(e.toString().replaceAll("Exception: ", "")));
+        }
+      } else {
+        // If already in HomeLoaded, retain current data on network failure
+        final current = (state as HomeLoaded).chats;
+        if (current.isEmpty && filteredCached.isNotEmpty) {
+          emit(HomeLoaded(filteredCached));
         }
       }
     }
@@ -104,17 +115,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       if (index != -1) {
         final existing = currentList[index];
 
-        if (msg.content.trim().isEmpty) {
-          currentList.removeAt(index);
-          emit(HomeLoaded(_filterAndSort(currentList)));
-          return;
-        }
+        String formattedContent = msg.content;
+        if (msg.type == "IMAGE") formattedContent = "📷 Photo";
+        if (msg.type == "VIDEO") formattedContent = "🎥 Video";
+        if (msg.type == "AUDIO") formattedContent = "🎵 Voice message";
+        if (msg.type == "FILE") formattedContent = "📁 File";
 
         final isIncoming = msg.senderId == existing.targetUserId;
         final isOutgoing = !isIncoming;
 
-        String formattedContent = msg.content;
-        if (isOutgoing && !formattedContent.startsWith("You: ")) {
+        if (isOutgoing && formattedContent.isNotEmpty && !formattedContent.startsWith("You: ")) {
           formattedContent = "You: $formattedContent";
         }
 
@@ -126,8 +136,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           targetUserImage: existing.targetUserImage,
           targetUserAbout: existing.targetUserAbout,
           targetUserPhone: existing.targetUserPhone,
-          lastMessageContent: formattedContent,
-          lastMessageTime: msg.createdAt,
+          lastMessageContent: formattedContent.isNotEmpty
+              ? formattedContent
+              : existing.lastMessageContent,
+          lastMessageTime: msg.createdAt.isNotEmpty
+              ? msg.createdAt
+              : existing.lastMessageTime,
           unreadCount: isIncoming ? existing.unreadCount + 1 : 0,
           online: existing.online,
         );

@@ -1,3 +1,24 @@
+class StoryViewerEntity {
+  final int userId;
+  final String userName;
+  final String userProfileImage;
+  final String viewedAt;
+  final bool hasLiked;
+
+  const StoryViewerEntity({
+    required this.userId,
+    required this.userName,
+    required this.userProfileImage,
+    required this.viewedAt,
+    this.hasLiked = false,
+  });
+
+  // Backward-compatible getters
+  int get viewerId => userId;
+  String get viewerName => userName;
+  String get viewerImage => userProfileImage;
+}
+
 class StoryItemEntity {
   final String id;
   final String mediaUrl;
@@ -5,6 +26,10 @@ class StoryItemEntity {
   final int durationSeconds;
   final String createdAt;
   final bool isSeen;
+  final int viewCount;
+  final int likeCount;
+  final bool hasLiked;
+  final List<StoryViewerEntity> viewers;
 
   const StoryItemEntity({
     required this.id,
@@ -13,11 +38,15 @@ class StoryItemEntity {
     this.durationSeconds = 5,
     required this.createdAt,
     this.isSeen = false,
+    this.viewCount = 0,
+    this.likeCount = 0,
+    this.hasLiked = false,
+    this.viewers = const [],
   });
 
   bool get isExpired {
     try {
-      final created = DateTime.parse(createdAt);
+      final created = DateTime.parse(createdAt).toLocal();
       final now = DateTime.now();
       return now.difference(created).inHours >= 24;
     } catch (_) {
@@ -25,7 +54,13 @@ class StoryItemEntity {
     }
   }
 
-  StoryItemEntity copyWith({bool? isSeen}) {
+  StoryItemEntity copyWith({
+    bool? isSeen,
+    int? viewCount,
+    int? likeCount,
+    bool? hasLiked,
+    List<StoryViewerEntity>? viewers,
+  }) {
     return StoryItemEntity(
       id: id,
       mediaUrl: mediaUrl,
@@ -33,6 +68,10 @@ class StoryItemEntity {
       durationSeconds: durationSeconds,
       createdAt: createdAt,
       isSeen: isSeen ?? this.isSeen,
+      viewCount: viewCount ?? this.viewCount,
+      likeCount: likeCount ?? this.likeCount,
+      hasLiked: hasLiked ?? this.hasLiked,
+      viewers: viewers ?? this.viewers,
     );
   }
 }

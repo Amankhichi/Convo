@@ -17,13 +17,14 @@ class StompService {
 
   final Set<String> _activeSubscriptions = {};
   final Map<String, StompUnsubscribe> _subscriptionHandles = {};
-  final Set<String> _desiredDestinations = {
+  static const Set<String> _defaultDestinations = {
     '/user/queue/messages',
     '/user/queue/notifications',
     '/topic/messages',
     '/topic/presence',
     '/topic/user/presence',
   };
+  final Set<String> _desiredDestinations = Set.from(_defaultDestinations);
 
   StompService(this._secureStorage);
 
@@ -33,6 +34,10 @@ class StompService {
     if (_stompClient != null && _stompClient!.connected) return;
 
     final token = _secureStorage.getToken();
+    if (token == null || token.isEmpty) return;
+
+    _desiredDestinations.addAll(_defaultDestinations);
+
     final sockJsUrl =
         '${ApiConfig.baseUrl.replaceFirst('http', 'ws')}/ws/websocket';
 
@@ -50,10 +55,10 @@ class StompService {
           _activeSubscriptions.clear();
           _subscriptionHandles.clear();
         },
-        stompConnectHeaders: token != null && token.isNotEmpty
+        stompConnectHeaders: token.isNotEmpty
             ? {'Authorization': 'Bearer $token'}
             : {},
-        webSocketConnectHeaders: token != null && token.isNotEmpty
+        webSocketConnectHeaders: token.isNotEmpty
             ? {'Authorization': 'Bearer $token'}
             : {},
         reconnectDelay: const Duration(seconds: 3),

@@ -43,3 +43,8 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Java / Android heap dumps
+*.hprof
+*.hprof.*
+android/*.hprof

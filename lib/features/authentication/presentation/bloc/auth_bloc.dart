@@ -1,6 +1,9 @@
 import 'package:convo/core/constants/storage_keys.dart';
+import 'package:convo/features/calling/data/datasources/calling_websocket_service.dart';
+import 'package:convo/core/network/stomp_service.dart';
 import 'package:convo/core/presence/presence_manager.dart';
 import 'package:convo/core/storage/local_storage.dart';
+import 'package:convo/core/storage/secure_storage.dart';
 import 'package:convo/features/authentication/domain/usecases/delete_account_usecase.dart';
 import 'package:convo/features/authentication/domain/usecases/request_otp_usecase.dart';
 import 'package:convo/features/authentication/domain/usecases/verify_otp_usecase.dart';
@@ -14,16 +17,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final VerifyOtpUseCase _verifyOtpUseCase;
   final DeleteAccountUseCase _deleteAccountUseCase;
   final LocalStorage _localStorage;
+  final SecureStorage _secureStorage;
 
   AuthBloc({
     required RequestOtpUseCase requestOtpUseCase,
     required VerifyOtpUseCase verifyOtpUseCase,
     required DeleteAccountUseCase deleteAccountUseCase,
     required LocalStorage localStorage,
+    required SecureStorage secureStorage,
   })  : _requestOtpUseCase = requestOtpUseCase,
         _verifyOtpUseCase = verifyOtpUseCase,
         _deleteAccountUseCase = deleteAccountUseCase,
         _localStorage = localStorage,
+        _secureStorage = secureStorage,
         super(AuthInitial()) {
     on<RequestOtpEvent>(_onRequestOtp);
     on<VerifyOtpEvent>(_onVerifyOtp);
@@ -55,15 +61,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         event.otp,
       );
       if (response.token.isNotEmpty) {
-        await _localStorage.setString(StorageKeys.jwtToken, response.token);
+        await _secureStorage.saveToken(response.token);
         await _localStorage.setString(StorageKeys.phone, "${event.countryCode}${event.phoneNumber}");
+        await _localStorage.setString(StorageKeys.isLoggedIn, "true");
+
         if (response.user != null) {
-          await _localStorage.setString(StorageKeys.userId, response.user!.id.toString());
+          await _secureStorage.saveUserId(response.user!.id);
           await _localStorage.setString(StorageKeys.name, response.user!.name);
           await _localStorage.setString(StorageKeys.about, response.user!.about);
           await _localStorage.setString(StorageKeys.profileImage, response.user!.profileImage);
         }
+
         sl<PresenceManager>().start();
+        sl<StompService>().connect();
+
         emit(OtpVerifiedSuccess(response));
       } else {
         emit(const AuthError("Authentication failed: Missing token."));
@@ -74,9 +85,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   Future<void> _onCheckAuthSession(CheckAuthSessionEvent event, Emitter<AuthState> emit) async {
-    final token = _localStorage.getString(StorageKeys.jwtToken);
+    final token = await _secureStorage.getTokenAsync() ?? _secureStorage.getToken();
     if (token != null && token.isNotEmpty) {
       sl<PresenceManager>().start();
+      sl<StompService>().connect();
       emit(AuthenticatedState());
     } else {
       sl<PresenceManager>().stop();
@@ -84,10 +96,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
+  Future<void> _performFullLogoutCleanup() async {
+    try {
+      sl<PresenceManager>().stop();
+    } catch (_) {}
+    try {
+      sl<StompService>().disconnect();
+    } catch (_) {}
+    try {
+      sl<CallingWebSocketService>().disconnect();
+    } catch (_) {}
+
+    await _secureStorage.clearToken();
+    await _localStorage.clear();
+  }
+
   Future<void> _onLogout(LogoutEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
-    sl<PresenceManager>().stop();
-    await _localStorage.clear();
+    await _performFullLogoutCleanup();
     emit(LoggedOutState());
   }
 
@@ -96,8 +122,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       final success = await _deleteAccountUseCase.execute();
       if (success) {
-        sl<PresenceManager>().stop();
-        await _localStorage.clear();
+        await _performFullLogoutCleanup();
         emit(AccountDeletedSuccess());
       } else {
         emit(const AuthError("Failed to delete account. Please try again."));
@@ -107,3 +132,4 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 }
+

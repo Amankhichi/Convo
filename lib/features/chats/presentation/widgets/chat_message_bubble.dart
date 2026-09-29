@@ -4,6 +4,7 @@ import 'package:convo/features/chats/presentation/widgets/audio_message_bubble.d
 import 'package:convo/features/chats/presentation/widgets/image_message_widget.dart';
 import 'package:convo/features/chats/presentation/widgets/message_status_widget.dart';
 import 'package:convo/features/chats/presentation/widgets/reply_preview_widget.dart';
+import 'package:convo/features/chats/presentation/widgets/story_reply_preview_widget.dart';
 import 'package:convo/features/chats/presentation/widgets/text_message_widget.dart';
 import 'package:convo/features/chats/presentation/widgets/video_message_widget.dart';
 import 'package:flutter/material.dart';
@@ -65,7 +66,7 @@ class ChatMessageBubble extends StatelessWidget {
               ? AppColors.primary
               : (isDark ? const Color(0xFF1E293B) : const Color(0xFFE2E8F0)));
 
-    final bool isMediaBubble = (message.type == "IMAGE" || message.type == "VIDEO");
+    final bool isMediaBubble = (message.type == "IMAGE" || message.type == "VIDEO") && message.storyReply == null;
 
     return GestureDetector(
       onTap: onTap,
@@ -119,8 +120,14 @@ class ChatMessageBubble extends StatelessWidget {
                       isMe: isMe,
                     ),
 
-                  // Message Content Dispatcher
-                  if (message.type == "AUDIO")
+                  // Story Reply Preview Card
+                  if (message.storyReply != null || message.type == "STORY_REPLY")
+                    StoryReplyPreviewWidget(
+                      storyReply: message.storyReply!,
+                      textContent: message.content,
+                      isMe: isMe,
+                    )
+                  else if (message.type == "AUDIO")
                     AudioMessageBubble(
                       audioUrl: (message.mediaUrl != null && message.mediaUrl!.isNotEmpty)
                           ? message.mediaUrl!

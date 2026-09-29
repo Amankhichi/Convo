@@ -1,7 +1,7 @@
 class ApiEndpoints {
   static const String baseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: "http://192.168.0.114:7000",
+    defaultValue: "http://192.168.0.117:7000",
   );
 
   static const String sendOtp = "/auth/send-otp";

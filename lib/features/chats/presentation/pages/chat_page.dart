@@ -16,9 +16,16 @@ import 'package:convo/features/chats/presentation/widgets/chat_input_bar.dart';
 import 'package:convo/features/chats/presentation/widgets/chat_message_list.dart';
 import 'package:convo/features/chats/presentation/widgets/chat_search_widget.dart';
 import 'package:convo/injection/dependency_injection.dart';
+import 'package:convo/core/storage/secure_storage.dart';
+import 'package:convo/features/calling/domain/entities/call_status.dart';
+import 'package:convo/features/calling/presentation/bloc/call_bloc.dart';
+import 'package:convo/features/calling/presentation/bloc/call_event.dart';
+import 'package:convo/features/calling/presentation/pages/call_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
+
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
@@ -218,6 +225,44 @@ class _ChatPageState extends State<ChatPage> {
         'isOnline': _displayOnline,
         'lastSeen': _displayLastSeen,
       },
+    );
+  }
+
+  Future<void> _initiateCall() async {
+    final currentUserId = sl<SecureStorage>().getUserId();
+    if (widget.targetUserId <= 0 || widget.targetUserId == currentUserId) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Cannot initiate call to this contact.")),
+      );
+      return;
+    }
+
+    final micStatus = await Permission.microphone.request();
+    if (!micStatus.isGranted) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Microphone permission is required to make voice calls."),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
+      return;
+    }
+
+    if (!mounted) return;
+    context.read<CallBloc>().add(
+          InitiateOutgoingCallEvent(
+            targetUserId: widget.targetUserId,
+            targetName: _displayName,
+            targetAvatar: _displayImage,
+            targetPhone: widget.contactPhone,
+            callType: CallType.voice,
+          ),
+        );
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const CallPage()),
     );
   }
 
@@ -575,6 +620,7 @@ class _ChatPageState extends State<ChatPage> {
                 });
               },
               onOpenProfile: _openUserProfile,
+              onStartCall: _initiateCall,
               onStartSearch: () {
                 setState(() {
                   _isSearching = true;
