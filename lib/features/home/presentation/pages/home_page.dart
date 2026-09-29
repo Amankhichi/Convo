@@ -284,8 +284,6 @@ class _HomePageState extends State<HomePage> {
                 color: backgroundColor,
                 child: Column(
                   children: [
-                    // Stori
-                    //es / Status Bar
                     const StoryBarWidget(),
 
                     // const SizedBox(height: 4),
